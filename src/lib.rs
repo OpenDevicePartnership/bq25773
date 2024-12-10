@@ -10,3 +10,9 @@
 
 #![doc = include_str!("../README.md")]
 #![no_std]
+#![allow(missing_docs)]
+
+device_driver::create_device!(
+    device_name: Device,
+    manifest: "device.yaml"
+);

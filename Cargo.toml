@@ -19,6 +19,7 @@ edition = "2021"
 
 [dependencies]
 device-driver = { version = "=1.0.0-rc.1", default-features = false, features = ["yaml"] }
+defmt = { version = "0.3", optional = true }
 
 [lints.rust]
 unsafe_code = "forbid"
@@ -31,3 +32,6 @@ suspicious = "forbid"
 perf = "forbid"
 style = "forbid"
 pedantic = "deny"
+
+[features]
+defmt-03 = ["dep:defmt", "device-driver/defmt-03"]
