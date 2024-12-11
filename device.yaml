@@ -1,0 +1,4 @@
+config:
+  register_address_type: u8
+  defmt_feature: defmt-03
+

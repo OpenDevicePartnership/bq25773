@@ -1,0 +1,33 @@
+[package]
+name = "bq25773"
+version = "0.1.0"
+repository = "https://github.com/pop-project/bq25773"
+license = "MIT"
+description = "Platform-agnostic Rust driver for the Texas Instruments BQ25773 battery charge controller."
+readme = "README.md"
+keywords = ["bq25773", "TI", "Texas Instruments", "battery", "charge", "charging", "i2c", "driver", "embedded-hal-driver"]
+categories = ["embedded", "hardware-support", "no-std"]
+documentation = "https://docs.rs/bq25773"
+include = [
+	"/**/*.rs",
+	"/Cargo.toml",
+	"/README.md",
+	"/LICENSE",
+	"/device.yaml",
+]
+edition = "2021"
+
+[dependencies]
+device-driver = { version = "=1.0.0-rc.1", default-features = false, features = ["yaml"] }
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "deny"
+
+
+[lints.clippy]
+correctness = "forbid"
+suspicious = "forbid"
+perf = "forbid"
+style = "forbid"
+pedantic = "deny"
