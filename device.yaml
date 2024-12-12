@@ -135,7 +135,7 @@ CHARGE_VOLTAGE:
   size_bits: 16
   reset_value: 0x0000
   fields:
-    CHARGE_CURRENT:
+    CHARGE_VOLTAGE:
       base: uint
       start: 2
       end: 15
