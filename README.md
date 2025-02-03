@@ -2,7 +2,7 @@
 
 A `#[no_std]` platform-agnostic driver for the [BQ25773](https://www.ti.com/lit/ds/symlink/bq25773.pdf) buck-boost battery charge controller, capable of charging a 2- to 5-cell battery, using the [embedded-hal](https://docs.rs/embedded-hal) traits.
 
-A higher level API will be built on top of the lower level register accessor using the [embedded-batteries](https://github.com/pop-project/embedded-batteries) traits.
+A higher level API will be built on top of the lower level register accessor using the [embedded-batteries](https://github.com/OpenDevicePartnership/embedded-batteries) traits.
 
 
 ## MSRV
