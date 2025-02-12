@@ -18,7 +18,7 @@ include = [
 edition = "2021"
 
 [dependencies]
-device-driver = { version = "=1.0.0-rc.1", default-features = false, features = ["yaml"] }
+device-driver = { version = "1.0.3", default-features = false, features = ["yaml"] }
 defmt = { version = "0.3", optional = true }
 embedded-hal = "1.0.0"
 embedded-hal-async = "1.0.0"
