@@ -7,7 +7,7 @@ A higher level API will be built on top of the lower level register accessor usi
 
 ## MSRV
 
-Currently, rust `1.81` and up is supported.
+Currently, rust `1.85` and up is supported.
 
 ## License
 
