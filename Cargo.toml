@@ -15,7 +15,7 @@ include = [
 	"/LICENSE",
 	"/device.yaml",
 ]
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 device-driver = { version = "1.0.3", default-features = false, features = ["yaml"] }
@@ -41,4 +41,4 @@ style = "forbid"
 pedantic = "deny"
 
 [features]
-defmt-03 = ["dep:defmt", "device-driver/defmt-03"]
+defmt-03 = ["dep:defmt", "device-driver/defmt-03", "embedded-batteries-async/defmt"]
