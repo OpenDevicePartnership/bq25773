@@ -123,9 +123,6 @@ jobs:
   #       uses: obi1kenobi/cargo-semver-checks-action@v2
 
   doc:
-    # run docs generation on nightly rather than stable. This enables features like
-    # https://doc.rust-lang.org/beta/unstable-book/language-features/doc-cfg.html which allows an
-    # API be documented as only available in some specific platforms.
     runs-on: ubuntu-latest
     name: nightly / doc
     needs: commit_list
@@ -139,7 +136,7 @@ jobs:
           submodules: true
           ref: ${{ matrix.commit }}
       - name: Install nightly
-        uses: dtolnay/rust-toolchain@nightly
+        uses: dtolnay/rust-toolchain@stable
       - name: cargo doc
         run: cargo doc --no-deps --all-features
         env:
@@ -223,9 +220,9 @@ jobs:
         with:
           submodules: true
           ref: ${{ matrix.commit }}
-      - name: Install ${{ matrix.msrv }}
-        uses: dtolnay/rust-toolchain@master
+      - name: Install stable
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: ${{ matrix.msrv }}
-      - name: cargo +${{ matrix.msrv }} check
+          toolchain: stable
+      - name: cargo +stable check
         run: cargo check
