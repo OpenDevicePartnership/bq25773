@@ -19,6 +19,7 @@ use embedded_batteries_async::charger;
 /// BQ25773 errors
 pub enum BQ25773Error<I2cError> {
     Bus(I2cError),
+    RegisterSizeError,
 }
 
 const BQ_ADDR: u8 = 0x6B;
@@ -45,18 +46,20 @@ impl<I2c: embedded_hal_async::i2c::I2c> device_driver::AsyncRegisterInterface fo
         _size_bits: u32,
         data: &[u8],
     ) -> Result<(), Self::Error> {
-        debug_assert!((data.len() <= LARGEST_REG_SIZE_BYTES), "Register size too big");
-
         // Add one byte for register address
         let mut buf = [0u8; 1 + LARGEST_REG_SIZE_BYTES];
         buf[0] = address;
-        buf[1..=data.len()].copy_from_slice(data);
+
+        // Check if buffer size is big enough to hold data.len(), otherwise return an error.
+        buf.get_mut(1..=data.len())
+            .ok_or(BQ25773Error::RegisterSizeError)?
+            .copy_from_slice(data);
 
         // Because the BQ25773 has a mix of 1 byte and 2 byte registers that can be written to,
         // we pass in a slice of the appropriate size so we do not accidentally write to the register at
         // address + 1 when writing to a 1 byte register
         self.i2c
-            .write(BQ_ADDR, &buf[..=data.len()])
+            .write(BQ_ADDR, buf.get(..=data.len()).ok_or(BQ25773Error::RegisterSizeError)?)
             .await
             .map_err(BQ25773Error::Bus)
     }
@@ -78,6 +81,7 @@ impl<E: embedded_hal_async::i2c::Error> charger::Error for BQ25773Error<E> {
     fn kind(&self) -> charger::ErrorKind {
         match self {
             Self::Bus(_) => charger::ErrorKind::CommError,
+            Self::RegisterSizeError => charger::ErrorKind::Other,
         }
     }
 }
