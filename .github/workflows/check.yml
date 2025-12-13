@@ -57,11 +57,7 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           components: clippy
       - name: cargo clippy
-        uses: giraffate/clippy-action@v1
-        with:
-          reporter: 'github-pr-check'
-          clippy_flags: -- -F clippy::suspicious -F clippy::correctness -F clippy::perf -F clippy::style
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        run: cargo clippy --locked -- -Dwarnings
 
   # Enable once we have a released crate
   # semver:
