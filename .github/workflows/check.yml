@@ -44,7 +44,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Get early warning of new lints which are regularly introduced in beta channels.
         toolchain: [stable]
     steps:
       - uses: actions/checkout@v4
@@ -77,12 +76,12 @@ jobs:
 
   doc:
     runs-on: ubuntu-latest
-    name: nightly / doc
+    name: stable / doc
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Install nightly
+      - name: Install Stable
         uses: dtolnay/rust-toolchain@stable
       - name: cargo doc
         run: cargo doc --no-deps --all-features
