@@ -1,4 +1,4 @@
-# This workflow runs whenever a PR is opened or updated, or a commit is pushed to main. It runs
+# This workflow runs whenever a PR is opened or updated. It runs
 # several checks:
 # - fmt: checks that the code is formatted according to rustfmt
 # - clippy: checks that the code does not contain any clippy warnings
@@ -29,7 +29,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          ref: ${{ matrix.commit }}
       - name: Install nightly
         uses: dtolnay/rust-toolchain@nightly
         with:
@@ -39,7 +38,7 @@ jobs:
 
   clippy:
     runs-on: ubuntu-latest
-    name: ${{ matrix.toolchain }} / clippy (${{ matrix.commit }})
+    name: ${{ matrix.toolchain }} / clippy
     permissions:
       contents: read
       checks: write
@@ -52,7 +51,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          ref: ${{ matrix.commit }}
       - name: Install ${{ matrix.toolchain }}
         uses: dtolnay/rust-toolchain@master
         with:
@@ -75,7 +73,6 @@ jobs:
   #     - uses: actions/checkout@v4
   #       with:
   #         submodules: true
-  #         ref: ${{ matrix.commit }}
   #     - name: Install stable
   #       uses: dtolnay/rust-toolchain@stable
   #       with:
@@ -90,7 +87,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          ref: ${{ matrix.commit }}
       - name: Install nightly
         uses: dtolnay/rust-toolchain@stable
       - name: cargo doc
@@ -107,7 +103,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          ref: ${{ matrix.commit }}
       - name: Install stable
         uses: dtolnay/rust-toolchain@stable
       - name: cargo install cargo-hack
@@ -126,7 +121,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          ref: ${{ matrix.commit }}
       - name: Install stable
         uses: dtolnay/rust-toolchain@stable
       - name: cargo install cargo-deny
@@ -158,12 +152,11 @@ jobs:
                        # collapse_debuginfo
                        #
                        # device-driver requires 1.85 for rust2024
-    name: ubuntu / ${{ matrix.msrv }} (${{ matrix.commit }})
+    name: ubuntu / ${{ matrix.msrv }}
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          ref: ${{ matrix.commit }}
       - name: Install stable
         uses: dtolnay/rust-toolchain@stable
         with:
