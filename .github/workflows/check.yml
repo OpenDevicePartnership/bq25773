@@ -126,6 +126,24 @@ jobs:
           command: check
           arguments: --all-features
 
+  test:
+    runs-on: ubuntu-latest
+    name: ubuntu / stable / test
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Install stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: cargo test
+        run: cargo test
+        # After ensuring tests pass, finally ensure the test code itself contains no clippy warnings
+      - name: cargo clippy
+        run: |
+          cargo clippy --tests -- -Dwarnings
+
   msrv:
     # check that we can build using the minimal rust version that is specified by this crate
     runs-on: ubuntu-latest
