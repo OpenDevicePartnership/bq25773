@@ -57,7 +57,7 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           components: clippy
       - name: cargo clippy
-        run: cargo clippy --locked -- -Dwarnings
+        run: cargo clippy -- -Dwarnings
 
   # Enable once we have a released crate
   # semver:
