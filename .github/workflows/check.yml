@@ -41,12 +41,11 @@ jobs:
     name: ${{ matrix.toolchain }} / clippy
     permissions:
       contents: read
-      checks: write
     strategy:
       fail-fast: false
       matrix:
         # Get early warning of new lints which are regularly introduced in beta channels.
-        toolchain: [stable, beta]
+        toolchain: [stable]
     steps:
       - uses: actions/checkout@v4
         with:
