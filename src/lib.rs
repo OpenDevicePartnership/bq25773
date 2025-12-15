@@ -122,6 +122,7 @@ impl<I2c: embedded_hal_async::i2c::I2c> charger::Charger for Bq25773<I2c> {
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::unwrap_used)]
     use embedded_batteries_async::charger::Charger;
     use embedded_hal_mock::eh1::i2c::{Mock, Transaction};
     use field_sets::{ChargeCurrent, ChargeOption2A, ManufactureId};
