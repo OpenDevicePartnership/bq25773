@@ -32,13 +32,19 @@ tokio = { version = "1.42.0", features = ["rt", "macros"] }
 unsafe_code = "forbid"
 missing_docs = "deny"
 
-
 [lints.clippy]
 correctness = "forbid"
-suspicious = "forbid"
-perf = "forbid"
-style = "forbid"
+indexing_slicing = "deny"
+panic = "deny"
+panic_in_result_fn = "deny"
 pedantic = "deny"
+perf = "deny"
+suspicious = "deny"
+style = "deny"
+todo = "deny"
+unimplemented = "deny"
+unreachable = "deny"
+unwrap_used = "deny"
 
 [features]
 defmt-03 = ["dep:defmt", "device-driver/defmt-03", "embedded-batteries-async/defmt"]
