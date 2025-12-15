@@ -33,7 +33,7 @@ unsafe_code = "forbid"
 missing_docs = "deny"
 
 [lints.clippy]
-correctness = "forbid"
+correctness = "deny"
 indexing_slicing = "deny"
 panic = "deny"
 panic_in_result_fn = "deny"
