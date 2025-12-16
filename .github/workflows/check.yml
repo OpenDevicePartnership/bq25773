@@ -57,12 +57,9 @@ jobs:
       - name: cargo clippy
         run: cargo clippy -- -Dwarnings
 
-  # Enable once we have a released crate
   # semver:
   #   runs-on: ubuntu-latest
   #   name: semver
-  #   strategy:
-  #     fail-fast: false
   #   steps:
   #     - uses: actions/checkout@v4
   #       with:
