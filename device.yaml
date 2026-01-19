@@ -125,7 +125,7 @@ CHARGE_CURRENT:
   fields:
     CHARGE_CURRENT:
       base: uint
-      start: 3
+      start: 4
       end: 14
       description:  Charge current setting with 5mΩ sense resistor.
 
@@ -149,7 +149,7 @@ IIN_HOST:
   fields:
     IIN_HOST:
       base: uint
-      start: 2
+      start: 3
       end: 11
       description:  Maximum input current limit with 10mΩ sense resistor.
 
@@ -161,7 +161,7 @@ VINDPM:
   fields:
     VINDPM:
       base: uint
-      start: 2
+      start: 4
       end: 13
       description:  Input voltage limit.
 
@@ -173,7 +173,7 @@ OTG_CURRENT:
   fields:
     OTG_CURRENT:
       base: uint
-      start: 2
+      start: 3
       end: 11
       description:  OTG output current limit with 10mΩ Rac current sense.
 
@@ -185,7 +185,7 @@ OTG_VOLTAGE:
   fields:
     OTG_VOLTAGE:
       base: uint
-      start: 2
+      start: 1
       end: 13
       description:  OTG output voltage regulation.
 
@@ -197,7 +197,7 @@ VSYS_MIN:
   fields:
     VSYS_MIN:
       base: uint
-      start: 0
+      start: 4
       end: 13
       description:  Minimum system voltage configuration register.
 
@@ -209,7 +209,7 @@ CHARGE_PROFILE_A:
   fields:
     ITERM:
       base: uint
-      start: 0
+      start: 1
       end: 8
       description:  Termination current setting with 5mΩ sense resistor.
 
@@ -221,7 +221,7 @@ CHARGE_PROFILE_B:
   fields:
     IPRECHG:
       base: uint
-      start: 0
+      start: 1
       end: 8
       description:  Maximum precharge current clamp setting with
                     5mΩ sense resistor (The lower setting of
@@ -611,7 +611,7 @@ ADC_VBAT:
   fields:
     ADC_VBAT:
       base: uint
-      start: 0
+      start: 4
       end: 16
       access: RO
       description:  VBAT ADC reading.
@@ -625,7 +625,7 @@ ADC_PSYS:
   fields:
     ADC_PSYS:
       base: uint
-      start: 0
+      start: 4
       end: 16
       access: RO
       description:  System Power PSYS ADC reading.
@@ -865,7 +865,7 @@ IIN_DPM:
   fields:
     IIN_HOST:
       base: uint
-      start: 2
+      start: 3
       end: 11
       description:  Input current setting with 10mΩ sense resistor.
 
@@ -878,7 +878,7 @@ ADC_VBUS:
   fields:
     ADC_VBUS:
       base: uint
-      start: 0
+      start: 4
       end: 16
       access: RO
       description:  VBUS ADC reading.
@@ -892,7 +892,7 @@ ADC_IBAT:
   fields:
     ADC_IBAT:
       base: uint
-      start: 0
+      start: 4
       end: 16
       access: RO
       description:  IBAT ADC reading with 5mΩ sense resistor. Note the
@@ -910,7 +910,7 @@ ADC_IIN:
   fields:
     ADC_IIN:
       base: uint
-      start: 0
+      start: 4
       end: 16
       access: RO
       description:  IIN ADC reading with 10mΩ sense resistor. Current
@@ -927,7 +927,7 @@ ADC_VSYS:
   fields:
     ADC_VSYS:
       base: uint
-      start: 0
+      start: 4
       end: 16
       access: RO
       description:  VSYS ADC reading.
@@ -960,12 +960,8 @@ CHARGE_OPTION_1_A:
   type: register
   address: 0x30
   size_bits: 8
-  reset_value: 0x01
+  reset_value: 0x00
   fields:
-    EN_SC_VBUSACP:
-      base: bool
-      start: 0
-      description:  SC_VBUSACP protection enable.
     EN_SHIP_DCHG:
       base: bool
       start: 1
@@ -976,27 +972,6 @@ CHARGE_OPTION_1_A:
       base: bool
       start: 2
       description:  PTM enable register bit, it will automatically reset to zero.
-    FRC_CONV_OFF:
-      base: bool
-      start: 3
-      description:  Force Power Path Off.
-    CMP_DEG:
-      base: uint
-      start: 4
-      end: 6
-      conversion:
-        name: "ComparatorDeglitchTime"
-        VeryShort: 0
-        Short: 1
-        Long: 2
-        VeryLong: 3
-      description:  Independent comparator deglitch time, only applied to
-                    the falling edge of
-                    CMPOUT (HIGH to LOW).
-    CMP_POL:
-      base: bool
-      start: 6
-      description:  Independent Comparator output Polarity
     SYSOVP_MAX:
       base: bool
       start: 7
@@ -1007,7 +982,7 @@ CHARGE_OPTION_1_B:
   type: register
   address: 0x31
   size_bits: 8
-  reset_value: 0x32
+  reset_value: 0x36
   fields:
     EN_OTG_BIG_CAP:
       base: bool
@@ -1062,22 +1037,18 @@ CHARGE_OPTION_1_B:
                     PSYS circuit). In low power mode (EN_LWPWR=1b),
                     PSYS sensing and buffer are always disabled
                     regardless of this bit value.
-    EN_LWPWR_CMP:
-      base: bool
-      start: 6
-      description:  Independent Comparator Enable.
-    EN_IBAT:
+    EN_IBM:
       base: bool
       start: 7
-      description:  IBAT Enable.
-                    In low power mode (EN_LWPWR=1b), IBAT
-                    buffer is always disabled regardless of this bit value.
-
+      description:  IBM Enable
+                    Enable the IBM output buffer.
+                    0b = Disable
+                    1b = Enable
 CHARGE_OPTION_2_A:
   type: register
   address: 0x32
   size_bits: 8
-  reset_value: 0xB7
+  reset_value: 0x07
   fields:
     BATDOC_VTH:
       base: uint
@@ -1109,25 +1080,6 @@ CHARGE_OPTION_2_A:
       base: bool
       start: 3
       description:  Input overcurrent (ACOC) protection enable.
-    OCP_SW1X_HIGH_RANGE:
-      base: uint
-      start: 4
-      end: 5
-      conversion:
-        name: "OverCurrentThresholdRac"
-        ThreeHundredMillivolts: 0
-        FourHundredFiftyMillivolts: 1
-      description:  Over current protection threshold by sensing RAC
-                    resistor across voltage.
-    OCP_SW2_HIGH_RANGE:
-      base: uint
-      start: 5
-      end: 6
-      conversion:
-        name: "OverCurrentThresholdQ4Vds"
-        OneHundredFiftyMillivolts: 0
-        TwoHundredSixtyMillivolts: 1
-      description:  Over current protection threshold by sensing Q4 Vds.
     EN_ICHG_IDCHG:
       base: uint
       start: 6
@@ -1138,10 +1090,6 @@ CHARGE_OPTION_2_A:
         IBatPinAsCharge: 1
       description:  IBAT pin monitor selection for discharge current and
                     charge current.
-    EN_EXTILIM:
-      base: bool
-      start: 7
-      description:  Enable ILIM_HIZ pin to set input current limit.
 
 CHARGE_OPTION_2_B:
   type: register
@@ -1194,7 +1142,7 @@ CHARGE_OPTION_3_A:
   type: register
   address: 0x34
   size_bits: 8
-  reset_value: 0x34
+  reset_value: 0x30
   fields:
     PSYS_OTG_IDCHG:
       base: uint
@@ -1209,10 +1157,6 @@ CHARGE_OPTION_3_A:
       base: bool
       start: 1
       description:  BATFET off during HIZ mode?
-    CMP_EN:
-      base: bool
-      start: 2
-      description:  Enable Independent Comparator with effective low.
     IL_AVG:
       base: uint
       start: 3
@@ -1233,6 +1177,11 @@ CHARGE_OPTION_3_A:
         VapMode: 0
         OtgMode: 1
       description:  The selection of the external EN_OTG pin control.
+    EN_AUTO_WAKEUP:
+      base: bool
+      start: 6
+      end: 7
+      description:  Force turn off BATFET under battery only low power mode.
     PKPWR_TOVLD_DEG:
       base: bool
       start: 7
@@ -1257,14 +1206,10 @@ CHARGE_OPTION_3_B:
       description:  VSYS_MIN soft slew rate control for VSYS_MIN step
                     up transition. Note for step down doesn't need the soft
                     transition.
-    EN_PORT_CTRL:
+    EN_BATDRV_CTRL:
       base: bool
       start: 2
       description:  Enable BATFET control for dual port application.
-    EN_ICO_MODE:
-      base: bool
-      start: 3
-      description:  Enable ICO Algorithm.
     EN_OTG:
       base: bool
       start: 4
@@ -1393,7 +1338,7 @@ PROCHOT_OPTION_1_B:
   type: register
   address: 0x39
   size_bits: 8
-  reset_value: 0x41
+  reset_value: 0x8D
   fields:
     IDCHG_DEG1:
       base: uint
@@ -1442,10 +1387,10 @@ ADC_OPTION_A:
       base: bool
       start: 6
       description:  Enable VBUS pin Voltage ADC Channel.
-    EN_ADC_CMPIN:
+    EN_ADC_TDIE:
       base: bool
       start: 7
-      description:  Enable CMPIN_TR pin Voltage ADC Channel.
+      description:  Enable TDIE pin Voltage ADC Channel.
 
 ADC_OPTION_B:
   type: register
