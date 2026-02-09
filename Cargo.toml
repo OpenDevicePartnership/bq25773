@@ -8,21 +8,17 @@ readme = "README.md"
 keywords = ["TI", "battery", "charger", "i2c", "driver", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
 documentation = "https://docs.rs/bq25773"
-include = [
-	"/**/*.rs",
-	"/Cargo.toml",
-	"/README.md",
-	"/LICENSE",
-	"/device.yaml",
-]
+include = ["/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/device.yaml"]
 edition = "2024"
 
 [dependencies]
-device-driver = { version = "1.0.3", default-features = false, features = ["yaml"] }
+device-driver = { version = "1.0.3", default-features = false, features = [
+	"yaml",
+] }
 defmt = { version = "0.3", optional = true }
 embedded-hal = "1.0.0"
 embedded-hal-async = "1.0.0"
-embedded-batteries-async = "0.2.0"
+embedded-batteries-async = "0.3"
 
 [dev-dependencies]
 embedded-hal-mock = { version = "0.11.1", features = ["embedded-hal-async"] }
@@ -47,4 +43,8 @@ unreachable = "deny"
 unwrap_used = "deny"
 
 [features]
-defmt-03 = ["dep:defmt", "device-driver/defmt-03", "embedded-batteries-async/defmt"]
+defmt-03 = [
+	"dep:defmt",
+	"device-driver/defmt-03",
+	"embedded-batteries-async/defmt",
+]
