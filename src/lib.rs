@@ -25,16 +25,19 @@ pub enum BQ25773Error<I2cError> {
 const BQ_ADDR: u8 = 0x6B;
 const LARGEST_REG_SIZE_BYTES: usize = 2;
 
+#[allow(clippy::all)]
+#[allow(clippy::pedantic)]
+#[allow(clippy::unreachable)]
+#[allow(unsafe_code)]
+mod device;
+
+pub use crate::device::*;
+
 /// BQ25773 interface, which takes an async I2C bus
 pub struct DeviceInterface<I2c: embedded_hal_async::i2c::I2c> {
     /// embedded-hal-async compliant I2C bus
     pub i2c: I2c,
 }
-
-device_driver::create_device!(
-    device_name: Device,
-    manifest: "device.yaml"
-);
 
 impl<I2c: embedded_hal_async::i2c::I2c> device_driver::AsyncRegisterInterface for DeviceInterface<I2c> {
     type Error = BQ25773Error<I2c::Error>;

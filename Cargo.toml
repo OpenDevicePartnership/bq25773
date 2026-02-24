@@ -1,20 +1,18 @@
 [package]
 name = "bq25773"
-version = "0.1.0"
+version = "0.1.1"
 repository = "https://github.com/OpenDevicePartnership/bq25773"
 license = "MIT"
 description = "Platform-agnostic Rust driver for the Texas Instruments BQ25773 battery charge controller."
 readme = "README.md"
-keywords = ["TI", "battery", "charger", "i2c", "driver", "embedded-hal"]
+keywords = ["battery", "charger", "i2c", "driver", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
 documentation = "https://docs.rs/bq25773"
 include = ["/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/device.yaml"]
 edition = "2024"
 
 [dependencies]
-device-driver = { version = "1.0.3", default-features = false, features = [
-	"yaml",
-] }
+device-driver = { version = "1.0.3", default-features = false }
 defmt = { version = "0.3", optional = true }
 embedded-hal = "1.0.0"
 embedded-hal-async = "1.0.0"
@@ -25,7 +23,7 @@ embedded-hal-mock = { version = "0.11.1", features = ["embedded-hal-async"] }
 tokio = { version = "1.42.0", features = ["rt", "macros"] }
 
 [lints.rust]
-unsafe_code = "forbid"
+unsafe_code = "deny"
 missing_docs = "deny"
 
 [lints.clippy]
