@@ -12,7 +12,7 @@ include = ["/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/device.yaml"]
 edition = "2024"
 
 [dependencies]
-device-driver = { version = "1.0.3", default-features = false }
+device-driver = { version = "1.0.9", default-features = false }
 defmt = { version = "0.3", optional = true }
 embedded-hal = "1.0.0"
 embedded-hal-async = "1.0.0"
@@ -20,7 +20,7 @@ embedded-batteries-async = "0.3"
 
 [dev-dependencies]
 embedded-hal-mock = { version = "0.11.1", features = ["embedded-hal-async"] }
-tokio = { version = "1.42.0", features = ["rt", "macros"] }
+tokio = { version = "1.52.1", features = ["rt", "macros"] }
 
 [lints.rust]
 unsafe_code = "deny"
