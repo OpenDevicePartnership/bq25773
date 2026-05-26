@@ -1,4 +1,110 @@
 
 # cargo-vet audits file
 
-[audits]
+[[audits.defmt]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.3.100 -> 0.3.10"
+notes = "Downgrade delta from compat shim to full impl. Unsafe FFI to linker-provided logger symbols is sound. build.rs writes linker script to OUT_DIR only. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.defmt]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.3.100 -> 0.3.10"
+notes = "Downgrade delta from compat shim to full impl. Unsafe FFI to logger symbols is sound. build.rs writes linker script to OUT_DIR only. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.defmt-macros]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.1 -> 0.4.0"
+notes = "Downgrade delta: removes configurable defmt crate path. No unsafe, no powerful imports. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.defmt-macros]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.1 -> 0.4.0"
+notes = "Downgrade delta: removes configurable defmt crate path. No unsafe, no powerful imports. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.defmt-parser]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.0 -> 0.4.1"
+notes = "Downgrade delta: removes Cbor display hint variant. No unsafe, no build script, no powerful imports. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.defmt-parser]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.0 -> 0.4.1"
+notes = "Downgrade delta: removes Cbor display hint variant. No unsafe, no build script. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.embedded-hal-mock]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "0.8.0 -> 0.11.1"
+notes = "Delta: adds embedded-hal 1.x support. No unsafe, no network/fs access. Test mock infrastructure. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.embedded-time]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+version = "0.12.1"
+notes = "Full audit: no_std embedded time library. deny(unsafe_code). No build script, no ambient capabilities. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.num]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "0.4.0 -> 0.3.1"
+notes = "Downgrade delta: version and dep changes only. no_std meta-crate. No unsafe, no build script. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.num-complex]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "0.4.2 -> 0.3.1"
+notes = "Downgrade delta: removes ComplexFloat trait, bytemuck support. Strict feature subset, no unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.num-rational]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "0.4.1 -> 0.3.2"
+notes = "Downgrade delta: removes Default impl, ldexp helper. Pure math, no unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.syn]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.109 -> 2.0.99"
+notes = "Downgrade delta: parser logic adjustments. Pre-existing unsafe in buffer.rs unchanged. No build script, no ambient capabilities. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.syn]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.109 -> 2.0.99"
+notes = "Downgrade delta: parser logic adjustments. Pre-existing unsafe unchanged. No build script. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.thiserror]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.17 -> 2.0.12"
+notes = "Downgrade delta: simplifies build.rs OUT_DIR codegen. No unsafe. Build script limited to OUT_DIR and rustc probes. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.thiserror]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.17 -> 2.0.12"
+notes = "Downgrade delta: simplifies build.rs. No unsafe. Build script limited to OUT_DIR. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.thiserror-impl]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.17 -> 2.0.12"
+notes = "Downgrade delta: removes versioned __privateN module path. No unsafe. Proc-macro generates safe code. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.thiserror-impl]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.17 -> 2.0.12"
+notes = "Downgrade delta: removes versioned __privateN module path. No unsafe. Proc-macro generates safe code. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[audits.tokio]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-run"
+delta = "1.51.1 -> 1.52.1"
+notes = "Delta: io-uring File read, eager driver handoff, trace_with API. All new unsafe is sound. No new deps. Assisted-by: copilot-cli:claude-opus-4.6"
