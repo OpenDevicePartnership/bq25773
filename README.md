@@ -7,7 +7,7 @@ A higher level API will be built on top of the lower level register accessor usi
 
 ## MSRV
 
-Currently, rust `1.85` and up is supported.
+Rust `1.94` and up is supported, as required by `device-driver` 2.1.
 
 ## License
 
