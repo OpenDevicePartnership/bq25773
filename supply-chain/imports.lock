@@ -1,11 +1,18 @@
 
 # cargo-vet imports lock
 
+[[publisher.device-driver]]
+version = "2.1.1"
+when = "2026-09-17"
+user-id = 85562
+user-login = "diondokter"
+user-name = "Dion Dokter"
+
 [[audits.OpenDevicePartnership.audits.bitfield-struct]]
 who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-deploy"
 version = "0.10.1"
-notes = "Proc-macro crate generating safe bitfield structs. No unsafe, no build script. Standard proc-macro deps only. Assisted-by: copilot-cli:claude-opus-4.6 cargo-vet"
+notes = "Proc-macro crate generating safe bitfield structs. No unsafe, no build script. Standard proc-macro deps only. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.bitfield-struct]]
@@ -19,8 +26,28 @@ aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embed
 who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-deploy"
 version = "0.3.100"
-notes = "Compatibility shim: no_std crate that re-exports defmt 1.x items for 0.3 API compatibility. No unsafe code, no build script, no powerful imports, no logic - pure pub-use re-exports. Assisted-by: copilot-cli:claude-opus-4.6 cargo-vet"
+notes = "Compatibility shim: no_std crate that re-exports defmt 1.x items for 0.3 API compatibility. No unsafe code, no build script, no powerful imports, no logic - pure pub-use re-exports. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
+
+[[audits.OpenDevicePartnership.audits.defmt]]
+who = "Felipe Balbi <felipe.balbi@microsoft.com>"
+criteria = "safe-to-deploy"
+version = "1.0.1"
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/mcxa-pac/refs/heads/main/supply-chain/audits.toml"
+
+[[audits.OpenDevicePartnership.audits.defmt]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.1 -> 1.1.0"
+notes = "Delta audit: No new unsafe code. build.rs adds xtensa-esp32s2-none-elf to no_cas list. New Format impls for core::fmt::Error and Wrapping are safe. Assisted-by: GitHub Copilot:claude-opus-4.6"
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
+
+[[audits.OpenDevicePartnership.audits.defmt]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.1.0 -> 1.1.1"
+notes = "Reviewed version/dependency metadata and UI diagnostic updates. Runtime implementation is unchanged; defmt-macros is pinned from 1.1.0 to separately audited 1.1.1. No unsafe or ambient capability changes."
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/bq25723/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.defmt-macros]]
 who = "Felipe Balbi <felipe.balbi@microsoft.com>"
@@ -28,17 +55,25 @@ criteria = "safe-to-deploy"
 version = "1.0.1"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/mcxa-pac/refs/heads/main/supply-chain/audits.toml"
 
+[[audits.OpenDevicePartnership.audits.defmt-macros]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.1 -> 1.1.0"
+notes = "Delta: adds transparent/bound derive attrs. No unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/bq40z50/refs/heads/main/supply-chain/audits.toml"
+
+[[audits.OpenDevicePartnership.audits.defmt-macros]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "1.1.0 -> 1.1.1"
+notes = "Replaced proc-macro-error2 diagnostic handling with syn::Error across proc-macro parsing and error paths. Reviewed generated-code paths and dependency changes; no unsafe code or new filesystem, network, environment, or process capabilities were introduced."
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/bq25723/refs/heads/main/supply-chain/audits.toml"
+
 [[audits.OpenDevicePartnership.audits.defmt-parser]]
 who = "Felipe Balbi <felipe.balbi@microsoft.com>"
 criteria = "safe-to-deploy"
 version = "1.0.0"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/mcxa-pac/refs/heads/main/supply-chain/audits.toml"
-
-[[audits.OpenDevicePartnership.audits.device-driver]]
-who = "Felipe Balbi <febalbi@microsoft.com>"
-criteria = "safe-to-deploy"
-version = "1.0.9"
-aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/tps6699x/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.embedded-batteries]]
 who = "matteotullo <matteotullo@microsoft.com>"
@@ -64,35 +99,49 @@ aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/mcxa-
 who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-deploy"
 delta = "0.2.7 -> 1.0.0"
-notes = "Pure no_std trait crate. Complete API redesign for 1.0: removed nb-based traits, CAN module, all unsafe code. Only defines traits/enums/types for digital, I2C, SPI, PWM, delay. No build script, no proc macros, no powerful imports. Assisted-by: copilot-cli:claude-opus-4.6 cargo-vet"
+notes = "Pure no_std trait crate. Complete API redesign for 1.0: removed nb-based traits, CAN module, all unsafe code. Only defines traits/enums/types for digital, I2C, SPI, PWM, delay. No build script, no proc macros, no powerful imports. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.embedded-hal-async]]
 who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-deploy"
 version = "1.0.0"
-notes = "no_std async HAL trait definitions. No unsafe in library. Build script only runs rustc --version. Assisted-by: copilot-cli:claude-opus-4.6 cargo-vet"
+notes = "no_std async HAL trait definitions. No unsafe in library. Build script only runs rustc --version. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.embedded-hal-nb]]
 who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-deploy"
 version = "1.0.0"
-notes = "no_std trait-only crate. No unsafe, no build script, no proc macros, no powerful imports. Assisted-by: copilot-cli:claude-opus-4.6 cargo-vet"
+notes = "no_std trait-only crate. No unsafe, no build script, no proc macros, no powerful imports. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
+
+[[audits.OpenDevicePartnership.audits.embedded-io]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.6.1 -> 0.7.1"
+notes = "Add core::error::Error trait bound (MSRV 1.81). defmt 0.3->1.0. Implement ReadReady/WriteReady for slices and VecDeque. Add seek_relative(). Fix method forwardings. Trusted publisher (Dirbaio from Embedded WG)."
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embassy-imxrt/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.embedded-io-async]]
 who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-deploy"
 version = "0.6.1"
-notes = "No unsafe. Build script only detects nightly via rustc --version. Pure async trait definitions for embedded I/O. Assisted-by: copilot-cli:claude-opus-4.6 cargo-vet"
+notes = "No unsafe. Build script only detects nightly via rustc --version. Pure async trait definitions for embedded I/O. Assisted-by: copilot-cli:claude-opus-4.6"
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
+
+[[audits.OpenDevicePartnership.audits.embedded-io-async]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "0.6.1 -> 0.7.0"
+notes = "Delta 0.6.1->0.7.0: No unsafe. Build script removed (AFIT now stable). flush() made required, BufRead requires Read, new VecDeque impls. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.num-iter]]
 who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-deploy"
 delta = "0.1.43 -> 0.1.45"
-notes = "Delta audit: edition upgrade to 2018, MSRV 1.31, build.rs removed, i128 now unconditional, DoubleEndedIterator uses Integer::dec(). No unsafe, no powerful imports, no_std only. Assisted-by: copilot-cli:claude-opus-4.6 cargo-vet"
+notes = "Delta audit: edition upgrade to 2018, MSRV 1.31, build.rs removed, i128 now unconditional, DoubleEndedIterator uses Integer::dec(). No unsafe, no powerful imports, no_std only. Assisted-by: copilot-cli:claude-opus-4.6"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/embedded-services/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.proc-macro-error-attr2]]
@@ -108,10 +157,24 @@ version = "2.0.1"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/mcxa-pac/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.syn]]
-who = "Felipe Balbi <felipe.balbi@microsoft.com>"
+who = "Felipe Balbi <febalbi@microsoft.com>"
 criteria = "safe-to-deploy"
-version = "2.0.109"
+version = "2.0.110"
 aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/mcxa-pac/refs/heads/main/supply-chain/audits.toml"
+
+[[audits.OpenDevicePartnership.audits.syn]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.110 -> 2.0.117"
+notes = "Delta: no_std migration, receiver parsing fix. No new unsafe. Assisted-by: copilot-cli:claude-opus-4.6"
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/bq40z50/refs/heads/main/supply-chain/audits.toml"
+
+[[audits.OpenDevicePartnership.audits.syn]]
+who = "Jerry Xie <jerryxie@microsoft.com>"
+criteria = "safe-to-deploy"
+delta = "2.0.117 -> 2.0.118"
+notes = "Delta 2.0.117->2.0.118: no unsafe, no build.rs, no new ambient capabilities; src changes are doc comments, version bump, and a semantically-equivalent bool-literal parse refactor plus lint-allow additions; remaining changes tests/benches only. Assisted-by: copilot-cli:claude-opus-4.8 cargo-vet"
+aggregated-from = "https://raw.githubusercontent.com/OpenDevicePartnership/cga/refs/heads/main/supply-chain/audits.toml"
 
 [[audits.OpenDevicePartnership.audits.thiserror]]
 who = "Felipe Balbi <felipe.balbi@microsoft.com>"

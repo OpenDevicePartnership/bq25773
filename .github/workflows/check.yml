@@ -124,9 +124,15 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    name: ubuntu / stable / test
+    name: ubuntu / stable / test / ${{ matrix.features }}
     strategy:
       fail-fast: false
+      matrix:
+        include:
+          - features: default
+            args: ""
+          - features: all-features
+            args: "--all-features"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -134,11 +140,11 @@ jobs:
       - name: Install stable
         uses: dtolnay/rust-toolchain@stable
       - name: cargo test
-        run: cargo test
+        run: cargo test ${{ matrix.args }}
         # After ensuring tests pass, finally ensure the test code itself contains no clippy warnings
       - name: cargo clippy
         run: |
-          cargo clippy --tests -- -Dwarnings
+          cargo clippy --tests ${{ matrix.args }} -- -Dwarnings
 
   msrv:
     # check that we can build using the minimal rust version that is specified by this crate
@@ -148,27 +154,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        msrv: ["1.85"] # We're relying on namespaced-features, which
-                       # was released in 1.60
-                       #
-                       # We also depend on `fixed' which requires rust
-                       # 1.71
-                       #
-                       # Additionally, we depend on embedded-hal-async
-                       # which requires 1.75
-                       #
-                       # embassy-time requires 1.79 due to
-                       # collapse_debuginfo
-                       #
-                       # device-driver requires 1.85 for rust2024
+        msrv: ["1.94"] # Required by device-driver 2.1.
     name: ubuntu / ${{ matrix.msrv }}
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Install stable
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install MSRV
+        uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: stable
-      - name: cargo +stable check
+          toolchain: ${{ matrix.msrv }}
+      - name: cargo check
         run: cargo check
