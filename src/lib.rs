@@ -15,7 +15,7 @@
 use embedded_batteries_async::charger;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 /// BQ25773 errors
 pub enum BQ25773Error<I2cError> {
     Bus(I2cError),
@@ -39,15 +39,17 @@ pub struct DeviceInterface<I2c: embedded_hal_async::i2c::I2c> {
     pub i2c: I2c,
 }
 
-impl<I2c: embedded_hal_async::i2c::I2c> device_driver::AsyncRegisterInterface for DeviceInterface<I2c> {
+impl<I2c: embedded_hal_async::i2c::I2c> device_driver::RegisterInterfaceBase for DeviceInterface<I2c> {
     type Error = BQ25773Error<I2c::Error>;
     type AddressType = u8;
+}
 
+impl<I2c: embedded_hal_async::i2c::I2c> device_driver::AsyncRegisterInterface for DeviceInterface<I2c> {
     async fn write_register(
         &mut self,
         address: Self::AddressType,
-        _size_bits: u32,
-        data: &[u8],
+        data: &mut [u8],
+        _metadata: &device_driver::FieldsetMetadata,
     ) -> Result<(), Self::Error> {
         // Add one byte for register address
         let mut buf = [0u8; 1 + LARGEST_REG_SIZE_BYTES];
@@ -70,8 +72,8 @@ impl<I2c: embedded_hal_async::i2c::I2c> device_driver::AsyncRegisterInterface fo
     async fn read_register(
         &mut self,
         address: Self::AddressType,
-        _size_bits: u32,
         data: &mut [u8],
+        _metadata: &device_driver::FieldsetMetadata,
     ) -> Result<(), Self::Error> {
         self.i2c
             .write_read(BQ_ADDR, &[address], data)
@@ -109,17 +111,17 @@ impl<I2c: embedded_hal_async::i2c::I2c> charger::Charger for Bq25773<I2c> {
     async fn charging_current(&mut self, current: charger::MilliAmps) -> Result<charger::MilliAmps, Self::Error> {
         self.device
             .charge_current()
-            .write_async(|w| w.set_charge_current(current))
+            .write_async(|w| w.set_charge_current(current / 8))
             .await?;
-        Ok(self.device.charge_current().read_async().await?.charge_current())
+        Ok(self.device.charge_current().read_async().await?.charge_current() * 8)
     }
 
     async fn charging_voltage(&mut self, voltage: charger::MilliVolts) -> Result<charger::MilliVolts, Self::Error> {
         self.device
             .charge_voltage()
-            .write_async(|w| w.set_charge_voltage(voltage))
+            .write_async(|w| w.set_charge_voltage(voltage / 4))
             .await?;
-        Ok(self.device.charge_voltage().read_async().await?.charge_voltage())
+        Ok(self.device.charge_voltage().read_async().await?.charge_voltage() * 4)
     }
 }
 
@@ -128,13 +130,12 @@ mod tests {
     #![allow(clippy::unwrap_used)]
     use embedded_batteries_async::charger::Charger;
     use embedded_hal_mock::eh1::i2c::{Mock, Transaction};
-    use field_sets::{ChargeCurrent, ChargeOption2A, ManufactureId};
 
     use super::*;
 
     #[tokio::test]
     async fn read_chip_id() {
-        let reg = ManufactureId::new();
+        let reg = ManufactureId::from([0x40]);
         let raw_reg: [u8; 1] = reg.into();
         let expectations = vec![Transaction::write_read(BQ_ADDR, vec![0x2E], vec![raw_reg[0]])];
         let i2c = Mock::new(&expectations);
@@ -142,39 +143,33 @@ mod tests {
 
         bq.manufacture_id().read_async().await.unwrap();
 
-        bq.interface.i2c.done();
+        bq.free().i2c.done();
     }
 
     #[tokio::test]
     async fn disable_external_ilim_pin() {
-        let mut reg = ChargeOption2A::new();
-        let raw_reg: [u8; 1] = reg.into();
-        reg.set_en_extilim(false);
-        let raw_reg_ilim_disabled: [u8; 1] = reg.into();
         let expectations = vec![
-            Transaction::write_read(BQ_ADDR, vec![0x32], vec![raw_reg[0]]),
-            Transaction::write(BQ_ADDR, vec![0x32, raw_reg_ilim_disabled[0]]),
+            Transaction::write_read(BQ_ADDR, vec![0x32], vec![0xB7, 0xF3]),
+            Transaction::write(BQ_ADDR, vec![0x32, 0x37, 0xF3]),
         ];
         let i2c = Mock::new(&expectations);
         let mut bq = Device::new(DeviceInterface { i2c });
 
-        bq.charge_option_2_a()
+        bq.charge_option_2()
             .modify_async(|r| r.set_en_extilim(false))
             .await
             .unwrap();
 
-        bq.interface.i2c.done();
+        bq.free().i2c.done();
     }
 
     #[tokio::test]
     async fn charging_current_trait_test() {
-        let mut reg = ChargeCurrent::new();
         // Set charge current to 2000mA
-        reg.set_charge_current(2000);
-        let raw_reg_2a: [u8; 2] = reg.into();
+        let raw_reg: [u8; 2] = 2000u16.to_le_bytes();
         let expectations = vec![
-            Transaction::write(BQ_ADDR, vec![0x02, raw_reg_2a[0], raw_reg_2a[1]]),
-            Transaction::write_read(BQ_ADDR, vec![0x02], vec![raw_reg_2a[0], raw_reg_2a[1]]),
+            Transaction::write(BQ_ADDR, vec![0x02, raw_reg[0], raw_reg[1]]),
+            Transaction::write_read(BQ_ADDR, vec![0x02], vec![raw_reg[0], raw_reg[1]]),
         ];
         let i2c = Mock::new(&expectations);
         let mut bq = Bq25773::new(i2c);
@@ -184,6 +179,24 @@ mod tests {
         // Be sure we get 2000mA back
         assert_eq!(charge_current, 2000);
 
-        bq.device.interface.i2c.done();
+        bq.device.free().i2c.done();
+    }
+
+    #[tokio::test]
+    async fn charging_voltage_trait_test() {
+        // 3S battery at 4.2 V per cell.
+        let raw_reg = 12600u16.to_le_bytes();
+        let expectations = vec![
+            Transaction::write(BQ_ADDR, vec![0x04, raw_reg[0], raw_reg[1]]),
+            Transaction::write_read(BQ_ADDR, vec![0x04], vec![raw_reg[0], raw_reg[1]]),
+        ];
+        let i2c = Mock::new(&expectations);
+        let mut bq = Bq25773::new(i2c);
+
+        let charge_voltage = bq.charging_voltage(12600).await.unwrap();
+
+        assert_eq!(charge_voltage, 12600);
+
+        bq.device.free().i2c.done();
     }
 }

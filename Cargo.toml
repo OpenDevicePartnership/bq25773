@@ -1,6 +1,6 @@
 [package]
 name = "bq25773"
-version = "0.1.1"
+version = "0.2.0"
 repository = "https://github.com/OpenDevicePartnership/bq25773"
 license = "MIT"
 description = "Platform-agnostic Rust driver for the Texas Instruments BQ25773 battery charge controller."
@@ -8,12 +8,13 @@ readme = "README.md"
 keywords = ["battery", "charger", "i2c", "driver", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
 documentation = "https://docs.rs/bq25773"
-include = ["/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/device.yaml"]
+include = ["/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/device.ddsl"]
 edition = "2024"
+rust-version = "1.94"
 
 [dependencies]
-device-driver = { version = "1.0.9", default-features = false }
-defmt = { version = "0.3", optional = true }
+device-driver = { version = "2.1.1", default-features = false }
+defmt = { version = "1", optional = true }
 embedded-hal = "1.0.0"
 embedded-hal-async = "1.0.0"
 embedded-batteries-async = "0.3"
@@ -41,8 +42,8 @@ unreachable = "deny"
 unwrap_used = "deny"
 
 [features]
-defmt-03 = [
+defmt = [
 	"dep:defmt",
-	"device-driver/defmt-03",
+	"device-driver/defmt",
 	"embedded-batteries-async/defmt",
 ]
