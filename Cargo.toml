@@ -1,6 +1,6 @@
 [package]
 name = "bq25773"
-version = "0.1.2"
+version = "0.2.0"
 repository = "https://github.com/OpenDevicePartnership/bq25773"
 license = "MIT"
 description = "Platform-agnostic Rust driver for the Texas Instruments BQ25773 battery charge controller."
