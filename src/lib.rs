@@ -102,6 +102,38 @@ impl<I2c: embedded_hal_async::i2c::I2c> Bq25773<I2c> {
             device: Device::new(DeviceInterface { i2c }),
         }
     }
+
+    /// Read the programmed charging current in milliamps without modifying any registers.
+    ///
+    /// Each register step represents 8 mA with a 5 milliohm charge sense resistor,
+    /// or 20 mA with a 2 milliohm resistor, as configured by `RSNS_RSR`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`BQ25773Error::Bus`] if reading the sense resistor configuration or
+    /// the charging current register fails.
+    pub async fn get_charging_current(&mut self) -> Result<charger::MilliAmps, BQ25773Error<I2c::Error>> {
+        let scaling_factor = self.charge_current_scaling_factor().await?;
+        Ok(self.device.charge_current().read_async().await?.charge_current() * scaling_factor)
+    }
+
+    /// Read the programmed charging voltage in millivolts without modifying any registers.
+    ///
+    /// Each register step represents 4 mV.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`BQ25773Error::Bus`] if reading the charging voltage register fails.
+    pub async fn get_charging_voltage(&mut self) -> Result<charger::MilliVolts, BQ25773Error<I2c::Error>> {
+        Ok(self.device.charge_voltage().read_async().await?.charge_voltage() * CHARGE_VOLTAGE_SCALING)
+    }
+
+    async fn charge_current_scaling_factor(&mut self) -> Result<u16, BQ25773Error<I2c::Error>> {
+        Ok(match self.device.charge_option_1_b().read_async().await?.rsns_rsr() {
+            ChargeSenseResistorRsr::FiveMilliOhms => CHARGE_CURRENT_SCALING_5MOHM,
+            ChargeSenseResistorRsr::TwoMilliOhms => CHARGE_CURRENT_SCALING_2MOHM,
+        })
+    }
 }
 
 impl<I2c: embedded_hal_async::i2c::I2c> charger::ErrorType for Bq25773<I2c> {
@@ -110,10 +142,7 @@ impl<I2c: embedded_hal_async::i2c::I2c> charger::ErrorType for Bq25773<I2c> {
 
 impl<I2c: embedded_hal_async::i2c::I2c> charger::Charger for Bq25773<I2c> {
     async fn charging_current(&mut self, current: charger::MilliAmps) -> Result<charger::MilliAmps, Self::Error> {
-        let scaling_factor = match self.device.charge_option_1_b().read_async().await?.rsns_rsr() {
-            ChargeSenseResistorRsr::FiveMilliOhms => CHARGE_CURRENT_SCALING_5MOHM,
-            ChargeSenseResistorRsr::TwoMilliOhms => CHARGE_CURRENT_SCALING_2MOHM,
-        };
+        let scaling_factor = self.charge_current_scaling_factor().await?;
 
         self.device
             .charge_current()
@@ -127,7 +156,7 @@ impl<I2c: embedded_hal_async::i2c::I2c> charger::Charger for Bq25773<I2c> {
             .charge_voltage()
             .write_async(|w| w.set_charge_voltage(voltage / CHARGE_VOLTAGE_SCALING))
             .await?;
-        Ok(self.device.charge_voltage().read_async().await?.charge_voltage() * CHARGE_VOLTAGE_SCALING)
+        self.get_charging_voltage().await
     }
 }
 
@@ -135,6 +164,7 @@ impl<I2c: embedded_hal_async::i2c::I2c> charger::Charger for Bq25773<I2c> {
 mod tests {
     #![allow(clippy::unwrap_used)]
     use embedded_batteries_async::charger::Charger;
+    use embedded_hal::i2c::ErrorKind;
     use embedded_hal_mock::eh1::i2c::{Mock, Transaction};
     use field_sets::{ChargeOption1B, ChargeOption2A, ManufactureId};
 
@@ -239,6 +269,97 @@ mod tests {
         let charge_voltage = bq.charging_voltage(12600).await.unwrap();
 
         assert_eq!(charge_voltage, 12600);
+
+        bq.device.interface.i2c.done();
+    }
+
+    #[tokio::test]
+    async fn get_charging_current_resistor_values() {
+        for (resistor, raw_current_reg, expected_current) in [
+            (ChargeSenseResistorRsr::FiveMilliOhms, [0x00, 0x00], 0),
+            (ChargeSenseResistorRsr::TwoMilliOhms, [0x00, 0x00], 0),
+            (ChargeSenseResistorRsr::FiveMilliOhms, [0x08, 0x00], 8),
+            (ChargeSenseResistorRsr::TwoMilliOhms, [0x08, 0x00], 20),
+            (ChargeSenseResistorRsr::FiveMilliOhms, [0xD0, 0x07], 2000),
+            (ChargeSenseResistorRsr::TwoMilliOhms, [0x20, 0x03], 2000),
+            (ChargeSenseResistorRsr::FiveMilliOhms, [0xF8, 0x3F], 16376),
+            (ChargeSenseResistorRsr::TwoMilliOhms, [0xF8, 0x3F], 40940),
+            (ChargeSenseResistorRsr::FiveMilliOhms, [0xFF, 0xFF], 16376),
+            (ChargeSenseResistorRsr::TwoMilliOhms, [0xFF, 0xFF], 40940),
+        ] {
+            let mut reg = ChargeOption1B::new();
+            reg.set_rsns_rsr(resistor);
+            let raw_options_reg: [u8; 1] = reg.into();
+            let expectations = vec![
+                Transaction::write_read(BQ_ADDR, vec![0x31], raw_options_reg.to_vec()),
+                Transaction::write_read(BQ_ADDR, vec![0x02], raw_current_reg.to_vec()),
+            ];
+            let i2c = Mock::new(&expectations);
+            let mut bq = Bq25773::new(i2c);
+
+            let charge_current = bq.get_charging_current().await.unwrap();
+
+            assert_eq!(
+                charge_current, expected_current,
+                "{resistor:?}, raw register {raw_current_reg:?}"
+            );
+
+            bq.device.interface.i2c.done();
+        }
+    }
+
+    #[tokio::test]
+    async fn get_charging_voltage_values() {
+        for (raw_voltage_reg, expected_voltage) in [
+            ([0x00, 0x00], 0),
+            ([0x04, 0x00], 4),
+            ([0x38, 0x31], 12600),
+            ([0xFC, 0x7F], 32764),
+            ([0xFF, 0xFF], 32764),
+        ] {
+            let expectations = vec![Transaction::write_read(BQ_ADDR, vec![0x04], raw_voltage_reg.to_vec())];
+            let i2c = Mock::new(&expectations);
+            let mut bq = Bq25773::new(i2c);
+
+            let charge_voltage = bq.get_charging_voltage().await.unwrap();
+
+            assert_eq!(charge_voltage, expected_voltage, "raw register {raw_voltage_reg:?}");
+
+            bq.device.interface.i2c.done();
+        }
+    }
+
+    #[tokio::test]
+    async fn get_charging_current_propagates_read_errors() {
+        for expectations in [
+            vec![Transaction::write_read(BQ_ADDR, vec![0x31], vec![0]).with_error(ErrorKind::Other)],
+            vec![
+                Transaction::write_read(BQ_ADDR, vec![0x31], vec![0]),
+                Transaction::write_read(BQ_ADDR, vec![0x02], vec![0, 0]).with_error(ErrorKind::Other),
+            ],
+        ] {
+            let i2c = Mock::new(&expectations);
+            let mut bq = Bq25773::new(i2c);
+
+            assert_eq!(
+                bq.get_charging_current().await,
+                Err(BQ25773Error::Bus(ErrorKind::Other))
+            );
+
+            bq.device.interface.i2c.done();
+        }
+    }
+
+    #[tokio::test]
+    async fn get_charging_voltage_propagates_read_errors() {
+        let expectations = vec![Transaction::write_read(BQ_ADDR, vec![0x04], vec![0, 0]).with_error(ErrorKind::Other)];
+        let i2c = Mock::new(&expectations);
+        let mut bq = Bq25773::new(i2c);
+
+        assert_eq!(
+            bq.get_charging_voltage().await,
+            Err(BQ25773Error::Bus(ErrorKind::Other))
+        );
 
         bq.device.interface.i2c.done();
     }
