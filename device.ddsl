@@ -751,8 +751,41 @@ device Device {
                 Long: 2,
                 VeryLong: 3,
             },
-            /// ILIM2 Threshold.
-            field ILIM2_VTH 15:11,
+            /// ILIM2 Threshold, as a percentage of the input current limit. Both extremes of the field are documented as out of range.
+            field ILIM2_VTH 15:11 -> _ as enum Ilim2Vth {
+                OutOfRangeLow: 0,
+                OneHundredTenPercent: 1,
+                OneHundredFifteenPercent: 2,
+                OneHundredTwentyPercent: 3,
+                OneHundredTwentyFivePercent: 4,
+                OneHundredThirtyPercent: 5,
+                OneHundredThirtyFivePercent: 6,
+                OneHundredFortyPercent: 7,
+                OneHundredFortyFivePercent: 8,
+                OneHundredFiftyPercent: 9,
+                OneHundredFiftyFivePercent: 10,
+                OneHundredSixtyPercent: 11,
+                OneHundredSixtyFivePercent: 12,
+                OneHundredSeventyPercent: 13,
+                OneHundredSeventyFivePercent: 14,
+                OneHundredEightyPercent: 15,
+                OneHundredEightyFivePercent: 16,
+                OneHundredNinetyPercent: 17,
+                OneHundredNinetyFivePercent: 18,
+                TwoHundredPercent: 19,
+                TwoHundredFivePercent: 20,
+                TwoHundredTenPercent: 21,
+                TwoHundredFifteenPercent: 22,
+                TwoHundredTwentyPercent: 23,
+                TwoHundredTwentyFivePercent: 24,
+                TwoHundredThirtyPercent: 25,
+                TwoHundredFiftyPercent: 26,
+                ThreeHundredPercent: 27,
+                ThreeHundredFiftyPercent: 28,
+                FourHundredPercent: 29,
+                FourHundredFiftyPercent: 30,
+                OutOfRangeHigh: 31,
+            },
         },
     },
     /// PROCHOT option 1 at 0x38-0x39.
@@ -849,8 +882,17 @@ device Device {
             field STAT_IDCHG2 1 RO,
             /// Enable IDCHG_TH2 PROCHOT Profile.
             field PP_IDCHG2 2,
-            /// Battery discharge current limit2 based on percentage of IDCHG_TH1.
-            field IDCHG_TH2 5:3,
+            /// Battery discharge current limit2 based on percentage of IDCHG_TH1. Note an IDCHG_TH2 setting higher than 40A loses accuracy, derating between the target value and 40A.
+            field IDCHG_TH2 5:3 -> _ as enum IdchgTh2 {
+                OneHundredTwentyFivePercent: 0,
+                OneHundredFiftyPercent: 1,
+                OneHundredSeventyFivePercent: 2,
+                TwoHundredPercent: 3,
+                TwoHundredFiftyPercent: 4,
+                ThreeHundredPercent: 5,
+                ThreeHundredFiftyPercent: 6,
+                FourHundredPercent: 7,
+            },
             /// Battery discharge current limit 2 deglitch time.
             field IDCHG_DEG2 7:6 -> _ as enum IdchgDeglitchTime2 {
                 VeryShort: 0,
@@ -871,8 +913,17 @@ device Device {
                 TwoX: 2,
                 ThreeX: 3,
             },
-            /// VSYS Under Voltage Lock Out. After UVP is triggered the charger enters hiccup mode, and then the charger is latched off if the restart fails 7 times in 90s.
-            field VSYS_UVP 15:13,
+            /// VSYS Under Voltage Lock Out. After UVP is triggered the charger enters hiccup mode, and then the charger is latched off if the restart fails 7 times in 90s. The hiccup can be disabled with VSYS_UVP_NO_HICCUP.
+            field VSYS_UVP 15:13 -> _ as enum VsysUvp {
+                TwoPoint4Volts: 0,
+                ThreePoint2Volts: 1,
+                FourVolts: 2,
+                FourPoint8Volts: 3,
+                FivePoint6Volts: 4,
+                SixPoint4Volts: 5,
+                SevenPoint2Volts: 6,
+                EightVolts: 7,
+            },
         },
     },
     /// Vmin active protection settings at 0x3E-0x3F.

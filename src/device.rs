@@ -1483,14 +1483,14 @@ impl ChargeOption4 {
     }
     /// `5:3` - Read the `idchg_th_2` field.
     ///
-    /// Battery discharge current limit2 based on percentage of IDCHG_TH1.
+    /// Battery discharge current limit2 based on percentage of IDCHG_TH1. Note an IDCHG_TH2 setting higher than 40A loses accuracy, derating between the target value and 40A.
     #[doc(alias = "IDCHG_TH2")]
     #[must_use]
-    pub fn idchg_th_2(&self) -> u8 {
+    pub fn idchg_th_2(&self) -> IdchgTh2 {
         let start = 3;
         let end = 5;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
-        raw
+        unsafe { raw.try_into().unwrap_unchecked() }
     }
     /// `7:6` - Read the `idchg_deg_2` field.
     ///
@@ -1549,14 +1549,14 @@ impl ChargeOption4 {
     }
     /// `15:13` - Read the `vsys_uvp` field.
     ///
-    /// VSYS Under Voltage Lock Out. After UVP is triggered the charger enters hiccup mode, and then the charger is latched off if the restart fails 7 times in 90s.
+    /// VSYS Under Voltage Lock Out. After UVP is triggered the charger enters hiccup mode, and then the charger is latched off if the restart fails 7 times in 90s. The hiccup can be disabled with VSYS_UVP_NO_HICCUP.
     #[doc(alias = "VSYS_UVP")]
     #[must_use]
-    pub fn vsys_uvp(&self) -> u8 {
+    pub fn vsys_uvp(&self) -> VsysUvp {
         let start = 13;
         let end = 15;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
-        raw
+        unsafe { raw.try_into().unwrap_unchecked() }
     }
     /// `bit 2` - Set the `pp_idchg_2` field.
     ///
@@ -1570,12 +1570,12 @@ impl ChargeOption4 {
     }
     /// `5:3` - Set the `idchg_th_2` field.
     ///
-    /// Battery discharge current limit2 based on percentage of IDCHG_TH1.
+    /// Battery discharge current limit2 based on percentage of IDCHG_TH1. Note an IDCHG_TH2 setting higher than 40A loses accuracy, derating between the target value and 40A.
     #[doc(alias = "IDCHG_TH2")]
-    pub fn set_idchg_th_2(&mut self, value: u8) {
+    pub fn set_idchg_th_2(&mut self, value: IdchgTh2) {
         let start = 3;
         let end = 5;
-        let raw = value;
+        let raw = value.into();
         unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
     /// `7:6` - Set the `idchg_deg_2` field.
@@ -1620,12 +1620,12 @@ impl ChargeOption4 {
     }
     /// `15:13` - Set the `vsys_uvp` field.
     ///
-    /// VSYS Under Voltage Lock Out. After UVP is triggered the charger enters hiccup mode, and then the charger is latched off if the restart fails 7 times in 90s.
+    /// VSYS Under Voltage Lock Out. After UVP is triggered the charger enters hiccup mode, and then the charger is latched off if the restart fails 7 times in 90s. The hiccup can be disabled with VSYS_UVP_NO_HICCUP.
     #[doc(alias = "VSYS_UVP")]
-    pub fn set_vsys_uvp(&mut self, value: u8) {
+    pub fn set_vsys_uvp(&mut self, value: VsysUvp) {
         let start = 13;
         let end = 15;
-        let raw = value;
+        let raw = value.into();
         unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
 }
@@ -1667,13 +1667,13 @@ impl defmt::Format for ChargeOption4 {
         defmt::write!(f, "stat_ptm: {=bool}, ", &self.stat_ptm());
         defmt::write!(f, "stat_idchg_2: {=bool}, ", &self.stat_idchg_2());
         defmt::write!(f, "pp_idchg_2: {=bool}, ", &self.pp_idchg_2());
-        defmt::write!(f, "idchg_th_2: {=u8}, ", &self.idchg_th_2());
+        defmt::write!(f, "idchg_th_2: {}, ", &self.idchg_th_2());
         defmt::write!(f, "idchg_deg_2: {}, ", &self.idchg_deg_2());
         defmt::write!(f, "stat_vbus_vap: {=bool}, ", &self.stat_vbus_vap());
         defmt::write!(f, "pp_vbus_vap: {=bool}, ", &self.pp_vbus_vap());
         defmt::write!(f, "vsys_uvp_no_hiccup: {=bool}, ", &self.vsys_uvp_no_hiccup());
         defmt::write!(f, "en_dither: {}, ", &self.en_dither());
-        defmt::write!(f, "vsys_uvp: {=u8}, ", &self.vsys_uvp());
+        defmt::write!(f, "vsys_uvp: {}, ", &self.vsys_uvp());
         defmt::write!(f, "}}");
     }
 }
@@ -2493,14 +2493,14 @@ impl ProchotOption0 {
     }
     /// `15:11` - Read the `ilim_2_vth` field.
     ///
-    /// ILIM2 Threshold.
+    /// ILIM2 Threshold, as a percentage of the input current limit. Both extremes of the field are documented as out of range.
     #[doc(alias = "ILIM2_VTH")]
     #[must_use]
-    pub fn ilim_2_vth(&self) -> u8 {
+    pub fn ilim_2_vth(&self) -> Ilim2Vth {
         let start = 11;
         let end = 15;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
-        raw
+        unsafe { raw.try_into().unwrap_unchecked() }
     }
     /// `bit 0` - Set the `lower_prochot_vindpm` field.
     ///
@@ -2554,12 +2554,12 @@ impl ProchotOption0 {
     }
     /// `15:11` - Set the `ilim_2_vth` field.
     ///
-    /// ILIM2 Threshold.
+    /// ILIM2 Threshold, as a percentage of the input current limit. Both extremes of the field are documented as out of range.
     #[doc(alias = "ILIM2_VTH")]
-    pub fn set_ilim_2_vth(&mut self, value: u8) {
+    pub fn set_ilim_2_vth(&mut self, value: Ilim2Vth) {
         let start = 11;
         let end = 15;
-        let raw = value;
+        let raw = value.into();
         unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
 }
@@ -2599,7 +2599,7 @@ impl defmt::Format for ProchotOption0 {
         defmt::write!(f, "vsys_th_1: {=u8}, ", &self.vsys_th_1());
         defmt::write!(f, "prochot_vindpm_80_90: {}, ", &self.prochot_vindpm_80_90());
         defmt::write!(f, "icrit_deg: {}, ", &self.icrit_deg());
-        defmt::write!(f, "ilim_2_vth: {=u8}, ", &self.ilim_2_vth());
+        defmt::write!(f, "ilim_2_vth: {}, ", &self.ilim_2_vth());
         defmt::write!(f, "}}");
     }
 }
@@ -8128,6 +8128,60 @@ impl ::device_driver::EnumIndex for WdtmrAdj {
 #[repr(u8)]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
+pub enum VsysUvp {
+    TwoPoint4Volts = 0,
+    ThreePoint2Volts = 1,
+    FourVolts = 2,
+    FourPoint8Volts = 3,
+    FivePoint6Volts = 4,
+    SixPoint4Volts = 5,
+    SevenPoint2Volts = 6,
+    EightVolts = 7,
+}
+impl core::convert::TryFrom<u8> for VsysUvp {
+    type Error = ::device_driver::ConversionError<u8>;
+    fn try_from(val: u8) -> Result<Self, Self::Error> {
+        match val {
+            0 => Ok(Self::TwoPoint4Volts),
+            1 => Ok(Self::ThreePoint2Volts),
+            2 => Ok(Self::FourVolts),
+            3 => Ok(Self::FourPoint8Volts),
+            4 => Ok(Self::FivePoint6Volts),
+            5 => Ok(Self::SixPoint4Volts),
+            6 => Ok(Self::SevenPoint2Volts),
+            7 => Ok(Self::EightVolts),
+            val => Err(::device_driver::ConversionError {
+                source: val,
+                target: "VsysUvp",
+            }),
+        }
+    }
+}
+impl From<VsysUvp> for u8 {
+    fn from(val: VsysUvp) -> Self {
+        match val {
+            VsysUvp::TwoPoint4Volts => 0,
+            VsysUvp::ThreePoint2Volts => 1,
+            VsysUvp::FourVolts => 2,
+            VsysUvp::FourPoint8Volts => 3,
+            VsysUvp::FivePoint6Volts => 4,
+            VsysUvp::SixPoint4Volts => 5,
+            VsysUvp::SevenPoint2Volts => 6,
+            VsysUvp::EightVolts => 7,
+        }
+    }
+}
+#[doc(hidden)]
+impl ::device_driver::EnumIndex for VsysUvp {
+    #[track_caller]
+    fn index(&self) -> i32 {
+        let index = u8::from(*self);
+        index.try_into().unwrap()
+    }
+}
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum DitherConfig {
     Disable = 0,
     OneX = 1,
@@ -8203,6 +8257,60 @@ impl From<IdchgDeglitchTime2> for u8 {
 }
 #[doc(hidden)]
 impl ::device_driver::EnumIndex for IdchgDeglitchTime2 {
+    #[track_caller]
+    fn index(&self) -> i32 {
+        let index = u8::from(*self);
+        index.try_into().unwrap()
+    }
+}
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+pub enum IdchgTh2 {
+    OneHundredTwentyFivePercent = 0,
+    OneHundredFiftyPercent = 1,
+    OneHundredSeventyFivePercent = 2,
+    TwoHundredPercent = 3,
+    TwoHundredFiftyPercent = 4,
+    ThreeHundredPercent = 5,
+    ThreeHundredFiftyPercent = 6,
+    FourHundredPercent = 7,
+}
+impl core::convert::TryFrom<u8> for IdchgTh2 {
+    type Error = ::device_driver::ConversionError<u8>;
+    fn try_from(val: u8) -> Result<Self, Self::Error> {
+        match val {
+            0 => Ok(Self::OneHundredTwentyFivePercent),
+            1 => Ok(Self::OneHundredFiftyPercent),
+            2 => Ok(Self::OneHundredSeventyFivePercent),
+            3 => Ok(Self::TwoHundredPercent),
+            4 => Ok(Self::TwoHundredFiftyPercent),
+            5 => Ok(Self::ThreeHundredPercent),
+            6 => Ok(Self::ThreeHundredFiftyPercent),
+            7 => Ok(Self::FourHundredPercent),
+            val => Err(::device_driver::ConversionError {
+                source: val,
+                target: "IdchgTh2",
+            }),
+        }
+    }
+}
+impl From<IdchgTh2> for u8 {
+    fn from(val: IdchgTh2) -> Self {
+        match val {
+            IdchgTh2::OneHundredTwentyFivePercent => 0,
+            IdchgTh2::OneHundredFiftyPercent => 1,
+            IdchgTh2::OneHundredSeventyFivePercent => 2,
+            IdchgTh2::TwoHundredPercent => 3,
+            IdchgTh2::TwoHundredFiftyPercent => 4,
+            IdchgTh2::ThreeHundredPercent => 5,
+            IdchgTh2::ThreeHundredFiftyPercent => 6,
+            IdchgTh2::FourHundredPercent => 7,
+        }
+    }
+}
+#[doc(hidden)]
+impl ::device_driver::EnumIndex for IdchgTh2 {
     #[track_caller]
     fn index(&self) -> i32 {
         let index = u8::from(*self);
@@ -8395,6 +8503,132 @@ impl From<IdchgDeglitchTime> for u8 {
 }
 #[doc(hidden)]
 impl ::device_driver::EnumIndex for IdchgDeglitchTime {
+    #[track_caller]
+    fn index(&self) -> i32 {
+        let index = u8::from(*self);
+        index.try_into().unwrap()
+    }
+}
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+pub enum Ilim2Vth {
+    OutOfRangeLow = 0,
+    OneHundredTenPercent = 1,
+    OneHundredFifteenPercent = 2,
+    OneHundredTwentyPercent = 3,
+    OneHundredTwentyFivePercent = 4,
+    OneHundredThirtyPercent = 5,
+    OneHundredThirtyFivePercent = 6,
+    OneHundredFortyPercent = 7,
+    OneHundredFortyFivePercent = 8,
+    OneHundredFiftyPercent = 9,
+    OneHundredFiftyFivePercent = 10,
+    OneHundredSixtyPercent = 11,
+    OneHundredSixtyFivePercent = 12,
+    OneHundredSeventyPercent = 13,
+    OneHundredSeventyFivePercent = 14,
+    OneHundredEightyPercent = 15,
+    OneHundredEightyFivePercent = 16,
+    OneHundredNinetyPercent = 17,
+    OneHundredNinetyFivePercent = 18,
+    TwoHundredPercent = 19,
+    TwoHundredFivePercent = 20,
+    TwoHundredTenPercent = 21,
+    TwoHundredFifteenPercent = 22,
+    TwoHundredTwentyPercent = 23,
+    TwoHundredTwentyFivePercent = 24,
+    TwoHundredThirtyPercent = 25,
+    TwoHundredFiftyPercent = 26,
+    ThreeHundredPercent = 27,
+    ThreeHundredFiftyPercent = 28,
+    FourHundredPercent = 29,
+    FourHundredFiftyPercent = 30,
+    OutOfRangeHigh = 31,
+}
+impl core::convert::TryFrom<u8> for Ilim2Vth {
+    type Error = ::device_driver::ConversionError<u8>;
+    fn try_from(val: u8) -> Result<Self, Self::Error> {
+        match val {
+            0 => Ok(Self::OutOfRangeLow),
+            1 => Ok(Self::OneHundredTenPercent),
+            2 => Ok(Self::OneHundredFifteenPercent),
+            3 => Ok(Self::OneHundredTwentyPercent),
+            4 => Ok(Self::OneHundredTwentyFivePercent),
+            5 => Ok(Self::OneHundredThirtyPercent),
+            6 => Ok(Self::OneHundredThirtyFivePercent),
+            7 => Ok(Self::OneHundredFortyPercent),
+            8 => Ok(Self::OneHundredFortyFivePercent),
+            9 => Ok(Self::OneHundredFiftyPercent),
+            10 => Ok(Self::OneHundredFiftyFivePercent),
+            11 => Ok(Self::OneHundredSixtyPercent),
+            12 => Ok(Self::OneHundredSixtyFivePercent),
+            13 => Ok(Self::OneHundredSeventyPercent),
+            14 => Ok(Self::OneHundredSeventyFivePercent),
+            15 => Ok(Self::OneHundredEightyPercent),
+            16 => Ok(Self::OneHundredEightyFivePercent),
+            17 => Ok(Self::OneHundredNinetyPercent),
+            18 => Ok(Self::OneHundredNinetyFivePercent),
+            19 => Ok(Self::TwoHundredPercent),
+            20 => Ok(Self::TwoHundredFivePercent),
+            21 => Ok(Self::TwoHundredTenPercent),
+            22 => Ok(Self::TwoHundredFifteenPercent),
+            23 => Ok(Self::TwoHundredTwentyPercent),
+            24 => Ok(Self::TwoHundredTwentyFivePercent),
+            25 => Ok(Self::TwoHundredThirtyPercent),
+            26 => Ok(Self::TwoHundredFiftyPercent),
+            27 => Ok(Self::ThreeHundredPercent),
+            28 => Ok(Self::ThreeHundredFiftyPercent),
+            29 => Ok(Self::FourHundredPercent),
+            30 => Ok(Self::FourHundredFiftyPercent),
+            31 => Ok(Self::OutOfRangeHigh),
+            val => Err(::device_driver::ConversionError {
+                source: val,
+                target: "Ilim2Vth",
+            }),
+        }
+    }
+}
+impl From<Ilim2Vth> for u8 {
+    fn from(val: Ilim2Vth) -> Self {
+        match val {
+            Ilim2Vth::OutOfRangeLow => 0,
+            Ilim2Vth::OneHundredTenPercent => 1,
+            Ilim2Vth::OneHundredFifteenPercent => 2,
+            Ilim2Vth::OneHundredTwentyPercent => 3,
+            Ilim2Vth::OneHundredTwentyFivePercent => 4,
+            Ilim2Vth::OneHundredThirtyPercent => 5,
+            Ilim2Vth::OneHundredThirtyFivePercent => 6,
+            Ilim2Vth::OneHundredFortyPercent => 7,
+            Ilim2Vth::OneHundredFortyFivePercent => 8,
+            Ilim2Vth::OneHundredFiftyPercent => 9,
+            Ilim2Vth::OneHundredFiftyFivePercent => 10,
+            Ilim2Vth::OneHundredSixtyPercent => 11,
+            Ilim2Vth::OneHundredSixtyFivePercent => 12,
+            Ilim2Vth::OneHundredSeventyPercent => 13,
+            Ilim2Vth::OneHundredSeventyFivePercent => 14,
+            Ilim2Vth::OneHundredEightyPercent => 15,
+            Ilim2Vth::OneHundredEightyFivePercent => 16,
+            Ilim2Vth::OneHundredNinetyPercent => 17,
+            Ilim2Vth::OneHundredNinetyFivePercent => 18,
+            Ilim2Vth::TwoHundredPercent => 19,
+            Ilim2Vth::TwoHundredFivePercent => 20,
+            Ilim2Vth::TwoHundredTenPercent => 21,
+            Ilim2Vth::TwoHundredFifteenPercent => 22,
+            Ilim2Vth::TwoHundredTwentyPercent => 23,
+            Ilim2Vth::TwoHundredTwentyFivePercent => 24,
+            Ilim2Vth::TwoHundredThirtyPercent => 25,
+            Ilim2Vth::TwoHundredFiftyPercent => 26,
+            Ilim2Vth::ThreeHundredPercent => 27,
+            Ilim2Vth::ThreeHundredFiftyPercent => 28,
+            Ilim2Vth::FourHundredPercent => 29,
+            Ilim2Vth::FourHundredFiftyPercent => 30,
+            Ilim2Vth::OutOfRangeHigh => 31,
+        }
+    }
+}
+#[doc(hidden)]
+impl ::device_driver::EnumIndex for Ilim2Vth {
     #[track_caller]
     fn index(&self) -> i32 {
         let index = u8::from(*self);
