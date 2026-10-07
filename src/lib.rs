@@ -168,9 +168,16 @@ mod tests {
     use embedded_batteries_async::charger::Charger;
     use embedded_hal::i2c::ErrorKind;
     use embedded_hal_mock::eh1::i2c::{Mock, Transaction};
-    use field_sets::{ChargeOption1B, ChargeOption2A, ManufactureId};
 
     use super::*;
+
+    /// Build the two `CHARGE_OPTION_1` bytes the mock should return for a given
+    /// sense resistor selection.
+    fn charge_option_1_bytes(resistor: ChargeSenseResistorRsr) -> [u8; 2] {
+        let mut reg = ChargeOption1::default();
+        reg.set_rsns_rsr(resistor);
+        reg.into()
+    }
 
     #[tokio::test]
     async fn read_chip_id() {
@@ -204,11 +211,11 @@ mod tests {
 
     #[tokio::test]
     async fn charging_current_trait_test() {
-        let raw_options_reg: [u8; 1] = ChargeOption1B::new().into();
-        // Set charge current to 2000mA
-        let raw_reg: [u8; 2] = 2000u16.to_le_bytes();
+        let raw_options_reg = charge_option_1_bytes(ChargeSenseResistorRsr::FiveMilliOhms);
+        // Set charge current to 2000mA, i.e. field value 250 with an 8mA/LSB step.
+        let raw_reg: [u8; 2] = ((2000u16 / CHARGE_CURRENT_SCALING_5MOHM) << 3).to_le_bytes();
         let expectations = vec![
-            Transaction::write_read(BQ_ADDR, vec![0x31], vec![raw_options_reg[0]]),
+            Transaction::write_read(BQ_ADDR, vec![0x30], raw_options_reg.to_vec()),
             Transaction::write(BQ_ADDR, vec![0x02, raw_reg[0], raw_reg[1]]),
             Transaction::write_read(BQ_ADDR, vec![0x02], vec![raw_reg[0], raw_reg[1]]),
         ];
@@ -224,24 +231,6 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn charging_voltage_trait_test() {
-        // 3S battery at 4.2 V per cell.
-        let raw_reg = 12600u16.to_le_bytes();
-        let expectations = vec![
-            Transaction::write(BQ_ADDR, vec![0x04, raw_reg[0], raw_reg[1]]),
-            Transaction::write_read(BQ_ADDR, vec![0x04], vec![raw_reg[0], raw_reg[1]]),
-        ];
-        let i2c = Mock::new(&expectations);
-        let mut bq = Bq25773::new(i2c);
-
-        let charge_voltage = bq.charging_voltage(12600).await.unwrap();
-
-        assert_eq!(charge_voltage, 12600);
-
-        bq.device.free().i2c.done();
-    }
-
-    #[tokio::test]
     async fn charging_current_resistor_values() {
         for (resistor, requested_current, raw_current_reg, expected_current) in [
             (ChargeSenseResistorRsr::FiveMilliOhms, 2000, [0xD0, 0x07], 2000),
@@ -249,11 +238,9 @@ mod tests {
             (ChargeSenseResistorRsr::FiveMilliOhms, 2019, [0xE0, 0x07], 2016),
             (ChargeSenseResistorRsr::TwoMilliOhms, 2019, [0x20, 0x03], 2000),
         ] {
-            let mut reg = ChargeOption1B::new();
-            reg.set_rsns_rsr(resistor);
-            let raw_options_reg: [u8; 1] = reg.into();
+            let raw_options_reg = charge_option_1_bytes(resistor);
             let expectations = vec![
-                Transaction::write_read(BQ_ADDR, vec![0x31], vec![raw_options_reg[0]]),
+                Transaction::write_read(BQ_ADDR, vec![0x30], raw_options_reg.to_vec()),
                 Transaction::write(BQ_ADDR, vec![0x02, raw_current_reg[0], raw_current_reg[1]]),
                 Transaction::write_read(BQ_ADDR, vec![0x02], vec![raw_current_reg[0], raw_current_reg[1]]),
             ];
@@ -267,14 +254,14 @@ mod tests {
                 "{resistor:?}, requested {requested_current} mA"
             );
 
-            bq.device.interface.i2c.done();
+            bq.device.free().i2c.done();
         }
     }
 
     #[tokio::test]
     async fn charging_voltage_trait_test() {
         // 3S battery at 4.2 V per cell.
-        let raw_reg = 12600u16.to_le_bytes();
+        let raw_reg = ((12600u16 / CHARGE_VOLTAGE_SCALING) << 2).to_le_bytes();
         let expectations = vec![
             Transaction::write(BQ_ADDR, vec![0x04, raw_reg[0], raw_reg[1]]),
             Transaction::write_read(BQ_ADDR, vec![0x04], vec![raw_reg[0], raw_reg[1]]),
@@ -286,7 +273,7 @@ mod tests {
 
         assert_eq!(charge_voltage, 12600);
 
-        bq.device.interface.i2c.done();
+        bq.device.free().i2c.done();
     }
 
     #[tokio::test]
@@ -303,11 +290,9 @@ mod tests {
             (ChargeSenseResistorRsr::FiveMilliOhms, [0xFF, 0xFF], 16376),
             (ChargeSenseResistorRsr::TwoMilliOhms, [0xFF, 0xFF], 40940),
         ] {
-            let mut reg = ChargeOption1B::new();
-            reg.set_rsns_rsr(resistor);
-            let raw_options_reg: [u8; 1] = reg.into();
+            let raw_options_reg = charge_option_1_bytes(resistor);
             let expectations = vec![
-                Transaction::write_read(BQ_ADDR, vec![0x31], raw_options_reg.to_vec()),
+                Transaction::write_read(BQ_ADDR, vec![0x30], raw_options_reg.to_vec()),
                 Transaction::write_read(BQ_ADDR, vec![0x02], raw_current_reg.to_vec()),
             ];
             let i2c = Mock::new(&expectations);
@@ -320,7 +305,7 @@ mod tests {
                 "{resistor:?}, raw register {raw_current_reg:?}"
             );
 
-            bq.device.interface.i2c.done();
+            bq.device.free().i2c.done();
         }
     }
 
@@ -341,16 +326,16 @@ mod tests {
 
             assert_eq!(charge_voltage, expected_voltage, "raw register {raw_voltage_reg:?}");
 
-            bq.device.interface.i2c.done();
+            bq.device.free().i2c.done();
         }
     }
 
     #[tokio::test]
     async fn get_charging_current_propagates_read_errors() {
         for expectations in [
-            vec![Transaction::write_read(BQ_ADDR, vec![0x31], vec![0]).with_error(ErrorKind::Other)],
+            vec![Transaction::write_read(BQ_ADDR, vec![0x30], vec![0, 0]).with_error(ErrorKind::Other)],
             vec![
-                Transaction::write_read(BQ_ADDR, vec![0x31], vec![0]),
+                Transaction::write_read(BQ_ADDR, vec![0x30], vec![0, 0]),
                 Transaction::write_read(BQ_ADDR, vec![0x02], vec![0, 0]).with_error(ErrorKind::Other),
             ],
         ] {
@@ -362,7 +347,7 @@ mod tests {
                 Err(BQ25773Error::Bus(ErrorKind::Other))
             );
 
-            bq.device.interface.i2c.done();
+            bq.device.free().i2c.done();
         }
     }
 
@@ -377,6 +362,6 @@ mod tests {
             Err(BQ25773Error::Bus(ErrorKind::Other))
         );
 
-        bq.device.interface.i2c.done();
+        bq.device.free().i2c.done();
     }
 }
