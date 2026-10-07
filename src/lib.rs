@@ -153,6 +153,17 @@ impl<I2c: embedded_hal_async::i2c::I2c> charger::Charger for Bq25773<I2c> {
         Ok(self.device.charge_current().read_async().await?.charge_current() * scaling_factor)
     }
 
+    /// Set the charging voltage in millivolts.
+    ///
+    /// Passing `0` does **not** request 0 V. The BQ25773 treats a zero write to
+    /// `CHARGE_VOLTAGE()` as a command to leave the register unchanged and force
+    /// `CHARGE_CURRENT()` to zero, which disables charging; see Table 7-15 of the
+    /// datasheet. The value returned is therefore the voltage still programmed in
+    /// the register, not the zero that was requested. Use [`charger::Charger::charging_current`]
+    /// with `0` if disabling charge is what you mean.
+    ///
+    /// The device clamps non-zero requests outside 5000 mV to 23000 mV to the
+    /// nearest limit, so the returned value may also differ from the requested one.
     async fn charging_voltage(&mut self, voltage: charger::MilliVolts) -> Result<charger::MilliVolts, Self::Error> {
         self.device
             .charge_voltage()
@@ -270,6 +281,30 @@ mod tests {
         let mut bq = Bq25773::new(i2c);
 
         let charge_voltage = bq.charging_voltage(12600).await.unwrap();
+
+        assert_eq!(charge_voltage, 12600);
+
+        bq.device.free().i2c.done();
+    }
+
+    #[tokio::test]
+    async fn charging_voltage_zero_does_not_set_zero_volts() {
+        // Table 7-15: writing 0 leaves CHARGE_VOLTAGE() unchanged and forces
+        // CHARGE_CURRENT() to zero, so the read-back reports the previously
+        // programmed voltage rather than the 0 that was asked for.
+        let previously_programmed = ((12600u16 / CHARGE_VOLTAGE_SCALING) << 2).to_le_bytes();
+        let expectations = vec![
+            Transaction::write(BQ_ADDR, vec![0x04, 0x00, 0x00]),
+            Transaction::write_read(
+                BQ_ADDR,
+                vec![0x04],
+                vec![previously_programmed[0], previously_programmed[1]],
+            ),
+        ];
+        let i2c = Mock::new(&expectations);
+        let mut bq = Bq25773::new(i2c);
+
+        let charge_voltage = bq.charging_voltage(0).await.unwrap();
 
         assert_eq!(charge_voltage, 12600);
 

@@ -73,7 +73,7 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// Charge voltage setting, in 4mV/bit steps.
+            /// Charge voltage setting, in 4mV/bit steps over the range 5000mV-23000mV (4E2h-1676h). Writing a non-zero value beyond the clamp sets the register to the clamp. Writing 0 does NOT set 0V: it leaves this register unchanged and forces CHARGE_CURRENT() to zero, disabling charge.
             field CHARGE_VOLTAGE 14:2,
         },
     },

@@ -7426,7 +7426,7 @@ unsafe impl ::device_driver::Fieldset for ChargeVoltage {
 impl ChargeVoltage {
     /// `14:2` - Read the `charge_voltage` field.
     ///
-    /// Charge voltage setting, in 4mV/bit steps.
+    /// Charge voltage setting, in 4mV/bit steps over the range 5000mV-23000mV (4E2h-1676h). Writing a non-zero value beyond the clamp sets the register to the clamp. Writing 0 does NOT set 0V: it leaves this register unchanged and forces CHARGE_CURRENT() to zero, disabling charge.
     #[doc(alias = "CHARGE_VOLTAGE")]
     #[must_use]
     pub fn charge_voltage(&self) -> u16 {
@@ -7437,7 +7437,7 @@ impl ChargeVoltage {
     }
     /// `14:2` - Set the `charge_voltage` field.
     ///
-    /// Charge voltage setting, in 4mV/bit steps.
+    /// Charge voltage setting, in 4mV/bit steps over the range 5000mV-23000mV (4E2h-1676h). Writing a non-zero value beyond the clamp sets the register to the clamp. Writing 0 does NOT set 0V: it leaves this register unchanged and forces CHARGE_CURRENT() to zero, disabling charge.
     #[doc(alias = "CHARGE_VOLTAGE")]
     pub fn set_charge_voltage(&mut self, value: u16) {
         let start = 2;
