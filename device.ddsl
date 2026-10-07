@@ -299,7 +299,7 @@ device Device {
                 TwelveHrs: 2,
                 TwentyFourHrs: 3,
             },
-            /// Battery automatic recharge threshold below CHARGE_VOLTAGE().
+            /// Battery automatic recharge threshold below CHARGE_VOLTAGE(), in 50mV/bit steps with a 50mV offset, over the range 50mV-800mV (0h-Fh). A field value of 0 is 50mV, not 0mV.
             field VRECHG 13:10,
             /// Enable CHRG_OK pin for interrupt function.
             field CHRG_OK_INT 14,
@@ -737,7 +737,7 @@ device Device {
                 Short: 0,
                 Long: 1,
             },
-            /// VSYS threshold to trigger discharging VBUS in VAP mode.
+            /// VSYS threshold to trigger discharging VBUS in VAP mode, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
             field VSYS_TH1 7:2,
             /// Lower threshold of the PROCHOT_VINDPM comparator. When LOWER_PROCHOT_VINDPM=1, the threshold of PROCHOT_VINDPM is determined by this setting.
             field PROCHOT_VINDPM_80_90 8 -> _ as enum Threshold {
@@ -785,7 +785,7 @@ device Device {
                 Long: 2,
                 VeryLong: 3,
             },
-            /// IDCHG level 1 Threshold.
+            /// IDCHG level 1 Threshold, in 500mA/bit steps with a 1500mA offset, over the range 1500mA-33000mA (0h-3Fh). A field value of 0 is 1500mA, not 0mA, and programming 000000b makes PROCHOT trigger permanently.
             field IDCHG_TH1 15:10,
         },
     },
@@ -886,11 +886,11 @@ device Device {
             field EN_FRS 0,
             /// Enable internal VSYS_TH2 follow VSYS_TH1 setting neglecting register VSYS_TH2 setting.
             field EN_VSYSTH2_FOLLOW_VSYSTH1 1,
-            /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold.
+            /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
             field VSYS_TH2 7:2,
             /// Disable BATOVP 20mA discharge current through VSYS pin.
             field DIS_BATOVP_20MA 8,
-            /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold.
+            /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 3200mV offset, over the range 3200mV-15900mV (0h-7Fh). A field value of 0 is 3200mV, not 0mV.
             field VBUS_VAP_TH 15:9,
         },
     },

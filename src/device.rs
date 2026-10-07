@@ -1259,7 +1259,7 @@ impl VminActiveProtection {
     }
     /// `7:2` - Read the `vsys_th_2` field.
     ///
-    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold.
+    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
     #[doc(alias = "VSYS_TH2")]
     #[must_use]
     pub fn vsys_th_2(&self) -> u8 {
@@ -1281,7 +1281,7 @@ impl VminActiveProtection {
     }
     /// `15:9` - Read the `vbus_vap_th` field.
     ///
-    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold.
+    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 3200mV offset, over the range 3200mV-15900mV (0h-7Fh). A field value of 0 is 3200mV, not 0mV.
     #[doc(alias = "VBUS_VAP_TH")]
     #[must_use]
     pub fn vbus_vap_th(&self) -> u8 {
@@ -1312,7 +1312,7 @@ impl VminActiveProtection {
     }
     /// `7:2` - Set the `vsys_th_2` field.
     ///
-    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold.
+    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
     #[doc(alias = "VSYS_TH2")]
     pub fn set_vsys_th_2(&mut self, value: u8) {
         let start = 2;
@@ -1332,7 +1332,7 @@ impl VminActiveProtection {
     }
     /// `15:9` - Set the `vbus_vap_th` field.
     ///
-    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold.
+    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 3200mV offset, over the range 3200mV-15900mV (0h-7Fh). A field value of 0 is 3200mV, not 0mV.
     #[doc(alias = "VBUS_VAP_TH")]
     pub fn set_vbus_vap_th(&mut self, value: u8) {
         let start = 9;
@@ -2213,7 +2213,7 @@ impl ProchotOption1 {
     }
     /// `15:10` - Read the `idchg_th_1` field.
     ///
-    /// IDCHG level 1 Threshold.
+    /// IDCHG level 1 Threshold, in 500mA/bit steps with a 1500mA offset, over the range 1500mA-33000mA (0h-3Fh). A field value of 0 is 1500mA, not 0mA, and programming 000000b makes PROCHOT trigger permanently.
     #[doc(alias = "IDCHG_TH1")]
     #[must_use]
     pub fn idchg_th_1(&self) -> u8 {
@@ -2314,7 +2314,7 @@ impl ProchotOption1 {
     }
     /// `15:10` - Set the `idchg_th_1` field.
     ///
-    /// IDCHG level 1 Threshold.
+    /// IDCHG level 1 Threshold, in 500mA/bit steps with a 1500mA offset, over the range 1500mA-33000mA (0h-3Fh). A field value of 0 is 1500mA, not 0mA, and programming 000000b makes PROCHOT trigger permanently.
     #[doc(alias = "IDCHG_TH1")]
     pub fn set_idchg_th_1(&mut self, value: u8) {
         let start = 10;
@@ -2460,7 +2460,7 @@ impl ProchotOption0 {
     }
     /// `7:2` - Read the `vsys_th_1` field.
     ///
-    /// VSYS threshold to trigger discharging VBUS in VAP mode.
+    /// VSYS threshold to trigger discharging VBUS in VAP mode, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
     #[doc(alias = "VSYS_TH1")]
     #[must_use]
     pub fn vsys_th_1(&self) -> u8 {
@@ -2524,7 +2524,7 @@ impl ProchotOption0 {
     }
     /// `7:2` - Set the `vsys_th_1` field.
     ///
-    /// VSYS threshold to trigger discharging VBUS in VAP mode.
+    /// VSYS threshold to trigger discharging VBUS in VAP mode, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
     #[doc(alias = "VSYS_TH1")]
     pub fn set_vsys_th_1(&mut self, value: u8) {
         let start = 2;
@@ -5896,7 +5896,7 @@ impl AutoCharge {
     }
     /// `13:10` - Read the `vrechg` field.
     ///
-    /// Battery automatic recharge threshold below CHARGE_VOLTAGE().
+    /// Battery automatic recharge threshold below CHARGE_VOLTAGE(), in 50mV/bit steps with a 50mV offset, over the range 50mV-800mV (0h-Fh). A field value of 0 is 50mV, not 0mV.
     #[doc(alias = "VRECHG")]
     #[must_use]
     pub fn vrechg(&self) -> u8 {
@@ -5999,7 +5999,7 @@ impl AutoCharge {
     }
     /// `13:10` - Set the `vrechg` field.
     ///
-    /// Battery automatic recharge threshold below CHARGE_VOLTAGE().
+    /// Battery automatic recharge threshold below CHARGE_VOLTAGE(), in 50mV/bit steps with a 50mV offset, over the range 50mV-800mV (0h-Fh). A field value of 0 is 50mV, not 0mV.
     #[doc(alias = "VRECHG")]
     pub fn set_vrechg(&mut self, value: u8) {
         let start = 10;
