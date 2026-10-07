@@ -75,7 +75,15 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// Charge current setting with 5mΩ sense resistor, in 8mA/bit steps
+            /// Charge current setting. The step depends on the charge sense
+            /// resistor selected by RSNS_RSR in CHARGE_OPTION_1: 8mA/bit at
+            /// 5mΩ, giving a range of 0mA-16320mA (0h-7F8h), or 20mA/bit at
+            /// 2mΩ, where the value is clamped to 30A (5DCh). A non-zero
+            /// setting below 128mA is treated as 128mA, and a value beyond
+            /// the clamp is set to the clamp. The charger resets this field
+            /// to 0A on a BATCOC fault, a 0V write to CHARGE_VOLTAGE(),
+            /// battery removal, adapter removal, a watchdog event, autonomous
+            /// charge termination, or a safety timer trigger.
             field CHARGE_CURRENT 13:3,
         },
     },

@@ -7737,7 +7737,15 @@ unsafe impl ::device_driver::Fieldset for ChargeCurrent {
 impl ChargeCurrent {
     /// `13:3` - Read the `charge_current` field.
     ///
-    /// Charge current setting with 5mΩ sense resistor, in 8mA/bit steps
+    /// Charge current setting. The step depends on the charge sense
+    /// resistor selected by RSNS_RSR in CHARGE_OPTION_1: 8mA/bit at
+    /// 5mΩ, giving a range of 0mA-16320mA (0h-7F8h), or 20mA/bit at
+    /// 2mΩ, where the value is clamped to 30A (5DCh). A non-zero
+    /// setting below 128mA is treated as 128mA, and a value beyond
+    /// the clamp is set to the clamp. The charger resets this field
+    /// to 0A on a BATCOC fault, a 0V write to CHARGE_VOLTAGE(),
+    /// battery removal, adapter removal, a watchdog event, autonomous
+    /// charge termination, or a safety timer trigger.
     #[doc(alias = "CHARGE_CURRENT")]
     #[must_use]
     pub fn charge_current(&self) -> u16 {
@@ -7748,7 +7756,15 @@ impl ChargeCurrent {
     }
     /// `13:3` - Set the `charge_current` field.
     ///
-    /// Charge current setting with 5mΩ sense resistor, in 8mA/bit steps
+    /// Charge current setting. The step depends on the charge sense
+    /// resistor selected by RSNS_RSR in CHARGE_OPTION_1: 8mA/bit at
+    /// 5mΩ, giving a range of 0mA-16320mA (0h-7F8h), or 20mA/bit at
+    /// 2mΩ, where the value is clamped to 30A (5DCh). A non-zero
+    /// setting below 128mA is treated as 128mA, and a value beyond
+    /// the clamp is set to the clamp. The charger resets this field
+    /// to 0A on a BATCOC fault, a 0V write to CHARGE_VOLTAGE(),
+    /// battery removal, adapter removal, a watchdog event, autonomous
+    /// charge termination, or a safety timer trigger.
     #[doc(alias = "CHARGE_CURRENT")]
     pub fn set_charge_current(&mut self, value: u16) {
         let start = 3;
