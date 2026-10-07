@@ -42,6 +42,7 @@ Key facts:
 ├── device.ddsl                     # device-driver v2 register definitions (source of truth)
 ├── rustfmt.toml                    # nightly-only options (see "Formatting")
 ├── deny.toml                       # cargo-deny configuration
+├── release-plz.toml                # draft release PRs; publish only after their merge
 ├── CONTRIBUTING.md                 # contributor rules (commit style, PR etiquette)
 ├── CODE_OF_CONDUCT.md
 ├── SECURITY.md
@@ -63,7 +64,8 @@ Key facts:
         ├── cargo-vet-pr-comment.yml # reports cargo-vet results on PRs
         ├── check.yml               # fmt / clippy / semver / doc / hack / deny / test / msrv
         ├── device-driver.yml       # verifies src/device.rs matches device.ddsl
-        └── nostd.yml               # cross-check for thumbv8m.main-none-eabihf
+        ├── nostd.yml               # cross-check for thumbv8m.main-none-eabihf
+        └── release-plz.yml         # release PRs and crates.io Trusted Publishing
 ```
 
 ### `src/device.rs` is generated
@@ -187,6 +189,15 @@ behaviour beyond formatting/logging support. `cargo hack
 --feature-powerset check` verifies that feature combinations
 compile, not that runtime behaviour is unchanged. The `test` job
 runs unit tests and test Clippy with both default and all features.
+
+## Release automation
+
+The [Release-plz workflow](.github/workflows/release-plz.yml) runs only on
+upstream `main`. It uses crates.io Trusted Publishing and the built-in
+`GITHUB_TOKEN`. [release-plz.toml](release-plz.toml) keeps release PRs as
+drafts and requires a merged release PR before publishing. See
+[Releases in CONTRIBUTING.md](CONTRIBUTING.md#releases) for maintainer
+setup and the manual step needed to trigger CI on release PRs.
 
 ## Code conventions
 
