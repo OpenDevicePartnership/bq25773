@@ -321,16 +321,16 @@ device Device {
             field FAULT_OCP 5 RO,
             /// BATOVP fault detected.
             field FAULT_BATOVP 7 RO,
-            /// MODE pin program status.
+            /// MODE pin program status. Encodings 000b-011b are quasi dual phase; Table 7-30 lists the phase topology of 100b-111b as NA, and Table 7-1 does not make them reachable through MODE pin programming.
             field MODE_STAT 10:8 RO -> _ as enum ModePinProgStatus {
                 DualPhaseNormalComp600kHz: 0,
                 DualPhaseNormalComp800kHz: 1,
                 DualPhaseSlowComp600kHz: 2,
                 DualPhaseSlowComp800kHz: 3,
-                SinglePhaseNormalComp600kHz: 4,
-                SinglePhaseNormalComp800kHz: 5,
-                SinglePhaseSlowComp600kHz: 6,
-                SinglePhaseSlowComp800kHz: 7,
+                NaNormalComp600kHz: 4,
+                NaNormalComp800kHz: 5,
+                NaSlowComp600kHz: 6,
+                NaSlowComp800kHz: 7,
             },
             /// Temperature regulation status.
             field TREG_STAT 11 RO -> _ as enum TempRegulationStat {

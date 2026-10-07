@@ -5656,7 +5656,7 @@ impl ChargerStatus0 {
     }
     /// `10:8` - Read the `mode_stat` field.
     ///
-    /// MODE pin program status.
+    /// MODE pin program status. Encodings 000b-011b are quasi dual phase; Table 7-30 lists the phase topology of 100b-111b as NA, and Table 7-1 does not make them reachable through MODE pin programming.
     #[doc(alias = "MODE_STAT")]
     #[must_use]
     pub fn mode_stat(&self) -> ModePinProgStatus {
@@ -9386,14 +9386,14 @@ pub enum ModePinProgStatus {
     DualPhaseSlowComp600KHz = 2,
     #[doc(alias = "DualPhaseSlowComp800kHz")]
     DualPhaseSlowComp800KHz = 3,
-    #[doc(alias = "SinglePhaseNormalComp600kHz")]
-    SinglePhaseNormalComp600KHz = 4,
-    #[doc(alias = "SinglePhaseNormalComp800kHz")]
-    SinglePhaseNormalComp800KHz = 5,
-    #[doc(alias = "SinglePhaseSlowComp600kHz")]
-    SinglePhaseSlowComp600KHz = 6,
-    #[doc(alias = "SinglePhaseSlowComp800kHz")]
-    SinglePhaseSlowComp800KHz = 7,
+    #[doc(alias = "NaNormalComp600kHz")]
+    NaNormalComp600KHz = 4,
+    #[doc(alias = "NaNormalComp800kHz")]
+    NaNormalComp800KHz = 5,
+    #[doc(alias = "NaSlowComp600kHz")]
+    NaSlowComp600KHz = 6,
+    #[doc(alias = "NaSlowComp800kHz")]
+    NaSlowComp800KHz = 7,
 }
 impl core::convert::TryFrom<u8> for ModePinProgStatus {
     type Error = ::device_driver::ConversionError<u8>;
@@ -9403,10 +9403,10 @@ impl core::convert::TryFrom<u8> for ModePinProgStatus {
             1 => Ok(Self::DualPhaseNormalComp800KHz),
             2 => Ok(Self::DualPhaseSlowComp600KHz),
             3 => Ok(Self::DualPhaseSlowComp800KHz),
-            4 => Ok(Self::SinglePhaseNormalComp600KHz),
-            5 => Ok(Self::SinglePhaseNormalComp800KHz),
-            6 => Ok(Self::SinglePhaseSlowComp600KHz),
-            7 => Ok(Self::SinglePhaseSlowComp800KHz),
+            4 => Ok(Self::NaNormalComp600KHz),
+            5 => Ok(Self::NaNormalComp800KHz),
+            6 => Ok(Self::NaSlowComp600KHz),
+            7 => Ok(Self::NaSlowComp800KHz),
             val => Err(::device_driver::ConversionError {
                 source: val,
                 target: "ModePinProgStatus",
@@ -9421,10 +9421,10 @@ impl From<ModePinProgStatus> for u8 {
             ModePinProgStatus::DualPhaseNormalComp800KHz => 1,
             ModePinProgStatus::DualPhaseSlowComp600KHz => 2,
             ModePinProgStatus::DualPhaseSlowComp800KHz => 3,
-            ModePinProgStatus::SinglePhaseNormalComp600KHz => 4,
-            ModePinProgStatus::SinglePhaseNormalComp800KHz => 5,
-            ModePinProgStatus::SinglePhaseSlowComp600KHz => 6,
-            ModePinProgStatus::SinglePhaseSlowComp800KHz => 7,
+            ModePinProgStatus::NaNormalComp600KHz => 4,
+            ModePinProgStatus::NaNormalComp800KHz => 5,
+            ModePinProgStatus::NaSlowComp600KHz => 6,
+            ModePinProgStatus::NaSlowComp800KHz => 7,
         }
     }
 }
