@@ -11,18 +11,25 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// Charge Inhibit. When bit is 0 battery charging will start with valid values in the CHARGE_VOLTAGE() and CHARGE_CURRENT().
+            /// Charge Inhibit. When bit is 0 battery charging will start with
+            /// valid values in the CHARGE_VOLTAGE() and CHARGE_CURRENT().
             field CHRG_INHIBIT 0,
-            /// IIN_DPM Enable. Host writes this bit to enable IIN_DPM regulation loop. When the IIN_DPM is disabled by the charger (refer to IIN_DPM_AUTO_DISABLE), this bit goes LOW. Under OTG mode, this bit is also used to enable/disable IOTG regulation.
+            /// IIN_DPM Enable. Host writes this bit to enable IIN_DPM
+            /// regulation loop. When the IIN_DPM is disabled by the charger
+            /// (refer to IIN_DPM_AUTO_DISABLE), this bit goes LOW. Under OTG
+            /// mode, this bit is also used to enable/disable IOTG regulation.
             field EN_IIN_DPM 1,
-            /// LDO Mode Enable. When battery voltage is below VSYS_MIN(), the charger is in pre-charge with LDO mode enabled.
+            /// LDO Mode Enable. When battery voltage is below VSYS_MIN(), the
+            /// charger is in pre-charge with LDO mode enabled.
             field EN_LDO 2,
-            /// IBAT Amplifier Ratio. The ratio of voltage on IBAT and voltage across SRP and SRN.
+            /// IBAT Amplifier Ratio. The ratio of voltage on IBAT and voltage
+            /// across SRP and SRN.
             field IBAT_GAIN 3 -> _ as enum IbatGain {
                 EightX: 0,
                 SixtyFourX: 1,
             },
-            /// IADPT Amplifier Ratio. The ratio of voltage on IADPT and voltage across ACP and ACN.
+            /// IADPT Amplifier Ratio. The ratio of voltage on IADPT and voltage
+            /// across ACP and ACN.
             field IADPT_GAIN 4 -> _ as enum IadptGain {
                 TwentyX: 0,
                 FortyX: 1,
@@ -31,7 +38,11 @@ device Device {
             field EN_LEARN 5,
             /// Disable system under voltage protection.
             field VSYS_UVP_ENZ 6,
-            /// Enable Latch of Independent Comparator. Comparator output with effective low. If enabled in PROCHOT profile PP_CMP=1b, STAT_COMP bit keep 1b after triggered until read by host and clear. host can clear CMPOUT pin by toggling this EN_CMP_LATCH bit.
+            /// Enable Latch of Independent Comparator. Comparator output with
+            /// effective low. If enabled in PROCHOT profile PP_CMP=1b,
+            /// STAT_COMP bit keep 1b after triggered until read by host and
+            /// clear. host can clear CMPOUT pin by toggling this EN_CMP_LATCH
+            /// bit.
             field EN_CMP_LATCH 7,
             /// Enable BATOVP protection.
             field EN_BATOVP 8,
@@ -46,7 +57,8 @@ device Device {
             field OTG_ON_CHRGOK 11,
             /// IIN_DPM Auto Disable.
             field IIN_DPM_AUTO_DISABLE 12,
-            /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC host write of charge voltage or charge current command.
+            /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC
+            /// host write of charge voltage or charge current command.
             field WDTMR_ADJ 14:13 -> _ as enum MaxDelay {
                 Disable: 0,
                 FiveSeconds: 1,
@@ -73,7 +85,11 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// Charge voltage setting, in 4mV/bit steps over the range 5000mV-23000mV (4E2h-1676h). Writing a non-zero value beyond the clamp sets the register to the clamp. Writing 0 does NOT set 0V: it leaves this register unchanged and forces CHARGE_CURRENT() to zero, disabling charge.
+            /// Charge voltage setting, in 4mV/bit steps over the range
+            /// 5000mV-23000mV (4E2h-1676h). Writing a non-zero value beyond the
+            /// clamp sets the register to the clamp. Writing 0 does NOT set 0V:
+            /// it leaves this register unchanged and forces CHARGE_CURRENT() to
+            /// zero, disabling charge.
             field CHARGE_VOLTAGE 14:2,
         },
     },
@@ -136,7 +152,9 @@ device Device {
 
             /// Termination current setting with 5mΩ sense resistor.
             field ITERM 7:0,
-            /// Maximum precharge current clamp setting with 5mΩ sense resistor (The lower setting of CHARGE_CURRENT() and IPRECHG determine the practical precharge current when VBAT< VSYS_MIN()).
+            /// Maximum precharge current clamp setting with 5mΩ sense resistor
+            /// (The lower setting of CHARGE_CURRENT() and IPRECHG determine the
+            /// practical precharge current when VBAT< VSYS_MIN()).
             field IPRECHG 15:8,
         },
     },
@@ -147,9 +165,11 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// System regulation loop bandwidth slow down to reduce input current overshoot during load transient.
+            /// System regulation loop bandwidth slow down to reduce input
+            /// current overshoot during load transient.
             field VSYS_REG_SLOW 1,
-            /// Suggested LODRV2 LS MOSFET gate drive strength adjustment for both turn on and turn off.
+            /// Suggested LODRV2 LS MOSFET gate drive strength adjustment for
+            /// both turn on and turn off.
             field LODRV2_STAT 4:2 -> _ as enum LODRV2GateDriveStrengthAdjustment {
                 Scale0: 0,
                 Scale1: 1,
@@ -160,7 +180,8 @@ device Device {
                 Scale6: 6,
                 Scale7: 7,
             },
-            /// Suggested HIDRV2 HS MOSFET gate drive strength adjustment for both turn on and turn off.
+            /// Suggested HIDRV2 HS MOSFET gate drive strength adjustment for
+            /// both turn on and turn off.
             field HIDRV2_STAT 7:5 -> _ as enum HIDRV2GateDriveStrengthAdjustment {
                 Scale0: 0,
                 Scale1: 1,
@@ -171,9 +192,11 @@ device Device {
                 Scale6: 6,
                 Scale7: 7,
             },
-            /// Enable BATOVP for both charge enable and disable scenarios including AC+battery and battery only.
+            /// Enable BATOVP for both charge enable and disable scenarios
+            /// including AC+battery and battery only.
             field BATOVP_EXTEND 8,
-            /// Suggested LODRV1_A and LODRV1_B LS MOSFET gate drive strength adjustment for both turn on and turn off.
+            /// Suggested LODRV1_A and LODRV1_B LS MOSFET gate drive strength
+            /// adjustment for both turn on and turn off.
             field LODRV1_STAT 12:10 -> _ as enum LODRV1GateDriveStrengthAdjustment {
                 Scale0: 0,
                 Scale1: 1,
@@ -184,7 +207,8 @@ device Device {
                 Scale6: 6,
                 Scale7: 7,
             },
-            /// Suggested HIDRV1_A and HIDRV1_B HS MOSFET gate drive strength adjustment for both turn on and turn off.
+            /// Suggested HIDRV1_A and HIDRV1_B HS MOSFET gate drive strength
+            /// adjustment for both turn on and turn off.
             field HIDRV1_STAT 15:13 -> _ as enum HIDRV1GateDriveStrengthAdjustment {
                 Scale0: 0,
                 Scale1: 1,
@@ -204,23 +228,27 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// Adjust dual phase to single phase (phase dropping transition) deglitch time.
+            /// Adjust dual phase to single phase (phase dropping transition)
+            /// deglitch time.
             field PH_DROP_DEG 1:0 -> _ as enum PhaseDroppingTransitionDeglitchTime {
                 VeryShort: 0,
                 Short: 1,
                 Long: 2,
                 VeryLong: 3,
             },
-            /// Adjust single phase to dual phase (phase adding transition) deglitch time.
+            /// Adjust single phase to dual phase (phase adding transition)
+            /// deglitch time.
             field PH_ADD_DEG 3:2 -> _ as enum PhaseAddingTransitionDeglitchTime {
                 VeryShort: 0,
                 Short: 1,
                 Long: 2,
                 VeryLong: 3,
             },
-            /// Force single phase operation under buck mode when quasi dual phase is chosen through MODE pin programming.
+            /// Force single phase operation under buck mode when quasi dual
+            /// phase is chosen through MODE pin programming.
             field FORCE_SINGLE 4,
-            /// Buck mode single to dual phase transition threshold adjustment based on output load current.
+            /// Buck mode single to dual phase transition threshold adjustment
+            /// based on output load current.
             field SINGLE_DUAL_TRANS_TH 7:5 -> _ as enum SingleDualTransThreshold {
                 ForceDualPhase: 0,
                 ThreeAmps: 1,
@@ -238,13 +266,15 @@ device Device {
                 SeventyFiveMillivolts: 2,
                 OneHundredMillivolts: 3,
             },
-            /// Enable REGN with scale down current 5mA capability under battery only and low power mode.
+            /// Enable REGN with scale down current 5mA capability under battery
+            /// only and low power mode.
             field EN_REGN_LWPWR 11,
             /// Enable external 5V overdrive for REGN.
             field REGN_EXT 12,
             // One-bit enum selections such as CMPIN_TR_SELECT, WD_RST and
-            // EN_TMR2X must stay unsigned. A one-bit signed field sign-extends,
-            // so the 1 variant would load back as -1 and become unrepresentable.
+            // EN_TMR2X must stay unsigned. A one-bit signed field
+            // sign-extends, so the 1 variant would load back as -1 and
+            // become unrepresentable.
             /// CMPIN_TR pin function selection.
             field CMPIN_TR_SELECT 13 -> _ as enum CmpinFuncSelect {
                 Cmpmin: 0,
@@ -273,12 +303,14 @@ device Device {
                 ThirtyThreeVolts: 2,
                 FortyOneVolts: 3,
             },
-            /// Adjust TREG thermal deglitch time to trigger prochot profile pull down pulse.
+            /// Adjust TREG thermal deglitch time to trigger prochot profile
+            /// pull down pulse.
             field THERMAL_DEG 2 -> _ as enum ThermalDeglitchTime {
                 Long: 0,
                 Short: 1,
             },
-            /// PROCHOT profile status bit for TREG thermal overheat (CMPIN_TR< 1.1V). The status is latched until a read from host.
+            /// PROCHOT profile status bit for TREG thermal overheat (CMPIN_TR<
+            /// 1.1V). The status is latched until a read from host.
             field STAT_THERMAL 3 RO -> _ as enum ProchotStatusOverheat {
                 NotTriggered: 0,
                 Triggered: 1,
@@ -289,7 +321,9 @@ device Device {
             field EN_TREG 5,
             /// Enable charge safety timer.
             field EN_CHG_TMR 6,
-            /// Charge Safety Timer speed control (Note changing the state of EN_TMR2X only impacts the rate at which the counter is counting and has no effect on any existing accumulated count).
+            /// Charge Safety Timer speed control (Note changing the state of
+            /// EN_TMR2X only impacts the rate at which the counter is counting
+            /// and has no effect on any existing accumulated count).
             field EN_TMR2X 7 -> _ as enum ChgTmrSpeedCtrl {
                 Normal: 0,
                 HalfSpeed: 1,
@@ -301,11 +335,14 @@ device Device {
                 TwelveHrs: 2,
                 TwentyFourHrs: 3,
             },
-            /// Battery automatic recharge threshold below CHARGE_VOLTAGE(), in 50mV/bit steps with a 50mV offset, over the range 50mV-800mV (0h-Fh). A field value of 0 is 50mV, not 0mV.
+            /// Battery automatic recharge threshold below CHARGE_VOLTAGE(), in
+            /// 50mV/bit steps with a 50mV offset, over the range 50mV-800mV
+            /// (0h-Fh). A field value of 0 is 50mV, not 0mV.
             field VRECHG 13:10,
             /// Enable CHRG_OK pin for interrupt function.
             field CHRG_OK_INT 14,
-            /// Automatic charge control (recharge and terminate battery charging automatically).
+            /// Automatic charge control (recharge and terminate battery
+            /// charging automatically).
             field EN_AUTO_CHG 15,
         },
     },
@@ -323,7 +360,10 @@ device Device {
             field FAULT_OCP 5 RO,
             /// BATOVP fault detected.
             field FAULT_BATOVP 7 RO,
-            /// MODE pin program status. Encodings 000b-011b are quasi dual phase; Table 7-30 lists the phase topology of 100b-111b as NA, and Table 7-1 does not make them reachable through MODE pin programming.
+            /// MODE pin program status. Encodings 000b-011b are quasi dual
+            /// phase; Table 7-30 lists the phase topology of 100b-111b as NA,
+            /// and Table 7-1 does not make them reachable through MODE pin
+            /// programming.
             field MODE_STAT 10:8 RO -> _ as enum ModePinProgStatus {
                 DualPhaseNormalComp600kHz: 0,
                 DualPhaseNormalComp800kHz: 1,
@@ -401,11 +441,17 @@ device Device {
             field FAULT_OTG_UVP 0 RO,
             /// OTG_OVP fault detected.
             field FAULT_OTG_OVP 1 RO,
-            /// OTG_OVP fault detected. Force converter off when independent comparator is triggered low effective.
+            /// OTG_OVP fault detected. Force converter off when independent
+            /// comparator is triggered low effective.
             field FAULT_FRC_CONV_OFF 2 RO,
-            /// VSYS_UVP fault status and clear. It is latched until a clear from host by writing this bit to 0.
+            /// VSYS_UVP fault status and clear. It is latched until a clear
+            /// from host by writing this bit to 0.
             field FAULT_VSYS_UVP 3,
-            /// SYSOVP fault status and Clear. When the SYSOVP occurs, this bit is set HIGH. As long as this bit is high, the converter is disabled. After the SYSOVP is removed, the user must write a 0 to this bit or unplug the adapter to clear the SYSOVP condition to enable the converter again.
+            /// SYSOVP fault status and Clear. When the SYSOVP occurs, this bit
+            /// is set HIGH. As long as this bit is high, the converter is
+            /// disabled. After the SYSOVP is removed, the user must write a 0
+            /// to this bit or unplug the adapter to clear the SYSOVP condition
+            /// to enable the converter again.
             field FAULT_SYSOVP 4,
             /// ACOC fault detected.
             field FAULT_ACOC 5 RO,
@@ -427,7 +473,8 @@ device Device {
             field IN_VAP 13 RO,
             /// After the ICO routine is successfully executed, the bit goes 1.
             field ICO_DONE 14 RO,
-            /// Input source status, STAT_AC is active as long as valid VBUS source exist.
+            /// Input source status, STAT_AC is active as long as valid VBUS
+            /// source exist.
             field STAT_AC 15 RO -> _ as enum InputSrcStat {
                 NotPresent: 0,
                 Present: 1,
@@ -455,7 +502,9 @@ device Device {
             field STAT_ICRIT 5 RO,
             /// COMP status triggered?
             field STAT_COMP 6 RO,
-            /// PROCHOT Profile VINDPM status bit, once triggered 1b, PROCHOT pin is low until host writes this status bit to 0b when PP_VINDPM = 1b.
+            /// PROCHOT Profile VINDPM status bit, once triggered 1b, PROCHOT
+            /// pin is low until host writes this status bit to 0b when
+            /// PP_VINDPM = 1b.
             field STAT_VINDPM 7,
             /// PROCHOT_EXIT_VAP is active?
             field STAT_EXIT_VAP 8,
@@ -475,7 +524,9 @@ device Device {
                 SixMilliseconds: 2,
                 TwelveMilliseconds: 3,
             },
-            /// PROCHOT Pulse Extension Enable. When pulse extension is enabled, keep the PROCHOT pin voltage LOW until host writes PROCHOT_CLEAR= 0b.
+            /// PROCHOT Pulse Extension Enable. When pulse extension is enabled,
+            /// keep the PROCHOT pin voltage LOW until host writes
+            /// PROCHOT_CLEAR= 0b.
             field EN_PROCHOT_EXT 14,
         },
     },
@@ -486,7 +537,10 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// Resolved input current limit with 10mΩ sense resistor, in 25mA/bit steps over the range 400mA-8200mA (10h-148h). This is the read-back of the limit the charger settled on; IIN_HOST() at 0x06 is the writable host setting.
+            /// Resolved input current limit with 10mΩ sense resistor, in
+            /// 25mA/bit steps over the range 400mA-8200mA (10h-148h). This is
+            /// the read-back of the limit the charger settled on; IIN_HOST() at
+            /// 0x06 is the writable host setting.
             field IIN_DPM 10:2 RO,
         },
     },
@@ -497,7 +551,11 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// VBUS ADC reading, in 2mV/bit steps over the range 0mV-65534mV (0h-7FFFh). Note the neighbouring ADC_VBAT, ADC_PSYS and ADC_CMPIN_TR channels are 1mV/bit, this one is not. When VBUS is plugged in before the converter starts up, the VBUS ADC channel should be run once to capture the no-load VBUS voltage.
+            /// VBUS ADC reading, in 2mV/bit steps over the range 0mV-65534mV
+            /// (0h-7FFFh). Note the neighbouring ADC_VBAT, ADC_PSYS and
+            /// ADC_CMPIN_TR channels are 1mV/bit, this one is not. When VBUS is
+            /// plugged in before the converter starts up, the VBUS ADC channel
+            /// should be run once to capture the no-load VBUS voltage.
             field ADC_VBUS 15:0 RO,
         },
     },
@@ -508,7 +566,12 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// IBAT ADC reading with 5mΩ sense resistor, in 1mA/bit steps over the range -32768mA to 32767mA (8000h-7FFFh), two's complement. Note the charger only measures discharging current (negative voltage) under battery only or OTG modes, and only measure charging current(positive voltage) when valid adapter is plugged in.
+            /// IBAT ADC reading with 5mΩ sense resistor, in 1mA/bit steps over
+            /// the range -32768mA to 32767mA (8000h-7FFFh), two's complement.
+            /// Note the charger only measures discharging current (negative
+            /// voltage) under battery only or OTG modes, and only measure
+            /// charging current(positive voltage) when valid adapter is plugged
+            /// in.
             field ADC_IBAT 15:0 RO -> int,
         },
     },
@@ -519,7 +582,11 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// IIN ADC reading with 10mΩ sense resistor, in 0.5mA/bit steps over the range -16384mA to 16383.5mA (8000h-7FFFh), two's complement. Current flowing from the adapter to the converter (like in forward mode) is represented as positive and current flowing to the adapter (like in OTG mode) is negative.
+            /// IIN ADC reading with 10mΩ sense resistor, in 0.5mA/bit steps
+            /// over the range -16384mA to 16383.5mA (8000h-7FFFh), two's
+            /// complement. Current flowing from the adapter to the converter
+            /// (like in forward mode) is represented as positive and current
+            /// flowing to the adapter (like in OTG mode) is negative.
             field ADC_IIN 15:0 RO -> int,
         },
     },
@@ -530,7 +597,9 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// VSYS ADC reading, in 2mV/bit steps over the range 0mV-65534mV (0h-7FFFh), the same scaling as ADC_VBUS rather than the 1mV/bit of the other voltage channels.
+            /// VSYS ADC reading, in 2mV/bit steps over the range 0mV-65534mV
+            /// (0h-7FFFh), the same scaling as ADC_VBUS rather than the 1mV/bit
+            /// of the other voltage channels.
             field ADC_VSYS 15:0 RO,
         },
     },
@@ -565,13 +634,16 @@ device Device {
 
             /// SC_VBUSACP protection enable.
             field EN_SC_VBUSACP 0,
-            /// Discharge SRN for Shipping Mode. Used to discharge SRN pin capacitor voltage which is necessary for battery gauge device shipping mode.
+            /// Discharge SRN for Shipping Mode. Used to discharge SRN pin
+            /// capacitor voltage which is necessary for battery gauge device
+            /// shipping mode.
             field EN_SHIP_DCHG 1,
             /// PTM enable register bit, it will automatically reset to zero.
             field EN_PTM 2,
             /// Force Power Path Off.
             field FRC_CONV_OFF 3,
-            /// Independent comparator deglitch time, only applied to the falling edge of CMPOUT (HIGH to LOW).
+            /// Independent comparator deglitch time, only applied to the
+            /// falling edge of CMPOUT (HIGH to LOW).
             field CMP_DEG 5:4 -> _ as enum ComparatorDeglitchTime {
                 VeryShort: 0,
                 Short: 1,
@@ -580,26 +652,35 @@ device Device {
             },
             /// Independent Comparator output Polarity
             field CMP_POL 6,
-            /// Force SYSOVP protection threshold to 27V neglecting CELL_BATPRES pin configuration.
+            /// Force SYSOVP protection threshold to 27V neglecting CELL_BATPRES
+            /// pin configuration.
             field SYSOVP_MAX 7,
-            /// Enable OTG compensation for VBUS effective capacitance larger than 60uF.
+            /// Enable OTG compensation for VBUS effective capacitance larger
+            /// than 60uF.
             field EN_OTG_BIG_CAP 8,
-            /// PSYS Gain. Ratio of PSYS output current vs total input and battery power.
+            /// PSYS Gain. Ratio of PSYS output current vs total input and
+            /// battery power.
             field PSYS_RATIO 9 -> _ as enum PsysGain {
                 ZeroPoint25uAperW: 0,
                 OnePoint00uAperW: 1,
             },
-            /// Charge sense resistor RSR. Not recommend to change this value during ICHG/IPRECHG/BATFET_CLAMP1/ BATFET_CLAMP2/BAT_SHORT regulation.
+            /// Charge sense resistor RSR. Not recommend to change this value
+            /// during ICHG/IPRECHG/BATFET_CLAMP1/ BATFET_CLAMP2/BAT_SHORT
+            /// regulation.
             field RSNS_RSR 10 -> _ as enum ChargeSenseResistorRsr {
                 FiveMilliOhms: 0,
                 TwoMilliOhms: 1,
             },
-            /// Input sense resistor RAC. Not recommend to change this value during IINDPM/IOTG regulation.
+            /// Input sense resistor RAC. Not recommend to change this value
+            /// during IINDPM/IOTG regulation.
             field RSNS_RAC 11 -> _ as enum InputSenseResistorRAC {
                 TenMilliOhms: 0,
                 FiveMilliOhms: 1,
             },
-            /// PSYS Enable and Definition Register. Enable PSYS sensing circuit and output buffer (whole PSYS circuit). In low power mode (EN_LWPWR=1b), PSYS sensing and buffer are always disabled regardless of this bit value.
+            /// PSYS Enable and Definition Register. Enable PSYS sensing circuit
+            /// and output buffer (whole PSYS circuit). In low power mode
+            /// (EN_LWPWR=1b), PSYS sensing and buffer are always disabled
+            /// regardless of this bit value.
             field PSYS_CONFIG 13:12 -> _ as enum PsysEnable {
                 PbusAndPbat: 0,
                 Pbus: 1,
@@ -608,7 +689,8 @@ device Device {
             },
             /// Independent Comparator Enable.
             field EN_LWPWR_CMP 14,
-            /// IBAT Enable. In low power mode (EN_LWPWR=1b), IBAT buffer is always disabled regardless of this bit value.
+            /// IBAT Enable. In low power mode (EN_LWPWR=1b), IBAT buffer is
+            /// always disabled regardless of this bit value.
             field EN_IBAT 15,
         },
     },
@@ -619,21 +701,24 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// Set battery discharge overcurrent threshold as percentage of PROCHOT battery discharge current limit.
+            /// Set battery discharge overcurrent threshold as percentage of
+            /// PROCHOT battery discharge current limit.
             field BATDOC_VTH 0 -> _ as enum BatdocVth {
                 TwoPercent: 0,
                 ThreePercent: 1,
             },
             /// Battery discharge overcurrent (BATDOC) protection enable.
             field EN_BATDOC 1,
-            /// ACOC Limit. Set ACOC threshold as percentage of ILIM2_VTH with current sensed from RAC.
+            /// ACOC Limit. Set ACOC threshold as percentage of ILIM2_VTH with
+            /// current sensed from RAC.
             field ACOC_VTH 2 -> _ as enum AcocLimit {
                 OnePoint33Percent: 0,
                 TwoPercent: 1,
             },
             /// Input overcurrent (ACOC) protection enable.
             field EN_ACOC 3,
-            /// Over current protection threshold by sensing RAC resistor across voltage.
+            /// Over current protection threshold by sensing RAC resistor across
+            /// voltage.
             field OCP_SW1X_HIGH_RANGE 4 -> _ as enum OverCurrentThresholdRac {
                 ThreeHundredMillivolts: 0,
                 FourHundredFiftyMillivolts: 1,
@@ -643,7 +728,8 @@ device Device {
                 OneHundredFiftyMillivolts: 0,
                 TwoHundredSixtyMillivolts: 1,
             },
-            /// IBAT pin monitor selection for discharge current and charge current.
+            /// IBAT pin monitor selection for discharge current and charge
+            /// current.
             field EN_ICHG_IDCHG 6 -> _ as enum IBatPinSelect {
                 IBatPinAsDischarge: 0,
                 IBatPinAsCharge: 1,
@@ -702,9 +788,12 @@ device Device {
                 VapMode: 0,
                 OtgMode: 1,
             },
-            /// Turn off BATFET under battery only low power mode. When not in low power mode, like OTG or with AC plugged in, the bit configuration is neglected and not effective.
+            /// Turn off BATFET under battery only low power mode. When not in
+            /// low power mode, like OTG or with AC plugged in, the bit
+            /// configuration is neglected and not effective.
             field BATFET_ENZ 7,
-            /// VSYS_MIN soft slew rate control for VSYS_MIN step up transition. Note for step down doesn't need the soft transition.
+            /// VSYS_MIN soft slew rate control for VSYS_MIN step up transition.
+            /// Note for step down doesn't need the soft transition.
             field EN_VSYS_MIN_SOFT_SR 9:8 -> _ as enum VsysMinSoftSlewRate {
                 Disable: 0,
                 Fast: 1,
@@ -715,13 +804,17 @@ device Device {
             field EN_PORT_CTRL 10,
             /// Enable ICO Algorithm.
             field EN_ICO_MODE 11,
-            /// OTG Mode Enable. Enable device in OTG mode when EN_OTG pin is HIGH.
+            /// OTG Mode Enable. Enable device in OTG mode when EN_OTG pin is
+            /// HIGH.
             field EN_OTG 12,
-            /// Set VINDPM threshold based on VBUS measurement result minus 1.28V, Converter is disabled to measure VBUS.
+            /// Set VINDPM threshold based on VBUS measurement result minus
+            /// 1.28V, Converter is disabled to measure VBUS.
             field DETECT_VINDPM 13,
             /// Factory Reset Registers.
             field REG_RESET 14,
-            /// Device Hi-Z Mode Enable. When the charger is in Hi-Z mode, the device draws minimal quiescent current. With VBUS above UVLO. REGN LDO stays on, and system powers from battery.
+            /// Device Hi-Z Mode Enable. When the charger is in Hi-Z mode, the
+            /// device draws minimal quiescent current. With VBUS above UVLO.
+            /// REGN LDO stays on, and system powers from battery.
             field EN_HIZ 15,
         },
     },
@@ -739,9 +832,13 @@ device Device {
                 Short: 0,
                 Long: 1,
             },
-            /// VSYS threshold to trigger discharging VBUS in VAP mode, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
+            /// VSYS threshold to trigger discharging VBUS in VAP mode, in
+            /// 100mV/bit steps with a 5000mV offset, over the range
+            /// 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
             field VSYS_TH1 7:2,
-            /// Lower threshold of the PROCHOT_VINDPM comparator. When LOWER_PROCHOT_VINDPM=1, the threshold of PROCHOT_VINDPM is determined by this setting.
+            /// Lower threshold of the PROCHOT_VINDPM comparator. When
+            /// LOWER_PROCHOT_VINDPM=1, the threshold of PROCHOT_VINDPM is
+            /// determined by this setting.
             field PROCHOT_VINDPM_80_90 8 -> _ as enum Threshold {
                 EightyThreePercent: 0,
                 NinetyOnePercent: 1,
@@ -753,7 +850,8 @@ device Device {
                 Long: 2,
                 VeryLong: 3,
             },
-            /// ILIM2 Threshold, as a percentage of the input current limit. Both extremes of the field are documented as out of range.
+            /// ILIM2 Threshold, as a percentage of the input current limit.
+            /// Both extremes of the field are documented as out of range.
             field ILIM2_VTH 15:11 -> _ as enum Ilim2Vth {
                 OutOfRangeLow: 0,
                 OneHundredTenPercent: 1,
@@ -820,7 +918,10 @@ device Device {
                 Long: 2,
                 VeryLong: 3,
             },
-            /// IDCHG level 1 Threshold, in 500mA/bit steps with a 1500mA offset, over the range 1500mA-33000mA (0h-3Fh). A field value of 0 is 1500mA, not 0mA, and programming 000000b makes PROCHOT trigger permanently.
+            /// IDCHG level 1 Threshold, in 500mA/bit steps with a 1500mA
+            /// offset, over the range 1500mA-33000mA (0h-3Fh). A field value of
+            /// 0 is 1500mA, not 0mA, and programming 000000b makes PROCHOT
+            /// trigger permanently.
             field IDCHG_TH1 15:10,
         },
     },
@@ -855,7 +956,8 @@ device Device {
                 SingleValue: 0,
                 RunningAvg: 1,
             },
-            /// ADC sample resolution selection, each channel conversion time is also determined based on resolution.
+            /// ADC sample resolution selection, each channel conversion time is
+            /// also determined based on resolution.
             field ADC_SAMPLE 13:12 -> _ as enum AdcResolution {
                 FifteenBits: 0,
                 FourteenBits: 1,
@@ -864,7 +966,8 @@ device Device {
             },
             /// ADC conversion enable command.
             field ADC_EN 14,
-            /// ADC conversion type selection. Typical conversion time is determined by resolution accuracy.
+            /// ADC conversion type selection. Typical conversion time is
+            /// determined by resolution accuracy.
             field ADC_RATE 15 -> _ as enum AdcRateSelect {
                 Continuous: 0,
                 OneShot: 1,
@@ -878,13 +981,17 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// PTM operation status active. Read-only; the status is cleared by the read, not by writing this bit.
+            /// PTM operation status active. Read-only; the status is cleared by
+            /// the read, not by writing this bit.
             field STAT_PTM 0 RO,
-            /// IDCHG2 status triggered. Read-only; the status is latched until a read from host.
+            /// IDCHG2 status triggered. Read-only; the status is latched until
+            /// a read from host.
             field STAT_IDCHG2 1 RO,
             /// Enable IDCHG_TH2 PROCHOT Profile.
             field PP_IDCHG2 2,
-            /// Battery discharge current limit2 based on percentage of IDCHG_TH1. Note an IDCHG_TH2 setting higher than 40A loses accuracy, derating between the target value and 40A.
+            /// Battery discharge current limit2 based on percentage of
+            /// IDCHG_TH1. Note an IDCHG_TH2 setting higher than 40A loses
+            /// accuracy, derating between the target value and 40A.
             field IDCHG_TH2 5:3 -> _ as enum IdchgTh2 {
                 OneHundredTwentyFivePercent: 0,
                 OneHundredFiftyPercent: 1,
@@ -915,7 +1022,10 @@ device Device {
                 TwoX: 2,
                 ThreeX: 3,
             },
-            /// VSYS Under Voltage Lock Out. After UVP is triggered the charger enters hiccup mode, and then the charger is latched off if the restart fails 7 times in 90s. The hiccup can be disabled with VSYS_UVP_NO_HICCUP.
+            /// VSYS Under Voltage Lock Out. After UVP is triggered the charger
+            /// enters hiccup mode, and then the charger is latched off if the
+            /// restart fails 7 times in 90s. The hiccup can be disabled with
+            /// VSYS_UVP_NO_HICCUP.
             field VSYS_UVP 15:13 -> _ as enum VsysUvp {
                 TwoPoint4Volts: 0,
                 ThreePoint2Volts: 1,
@@ -937,17 +1047,23 @@ device Device {
 
             /// Fast Role Swap Feature Enable.
             field EN_FRS 0,
-            /// Enable internal VSYS_TH2 follow VSYS_TH1 setting neglecting register VSYS_TH2 setting.
+            /// Enable internal VSYS_TH2 follow VSYS_TH1 setting neglecting
+            /// register VSYS_TH2 setting.
             field EN_VSYSTH2_FOLLOW_VSYSTH1 1,
-            /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
+            /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit
+            /// steps with a 5000mV offset, over the range 5000mV-11300mV
+            /// (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
             field VSYS_TH2 7:2,
             /// Disable BATOVP 20mA discharge current through VSYS pin.
             field DIS_BATOVP_20MA 8,
-            /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 3200mV offset, over the range 3200mV-15900mV (0h-7Fh). A field value of 0 is 3200mV, not 0mV.
+            /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit
+            /// steps with a 3200mV offset, over the range 3200mV-15900mV
+            /// (0h-7Fh). A field value of 0 is 3200mV, not 0mV.
             field VBUS_VAP_TH 15:9,
         },
     },
-    /// Autotune readings at 0x60-0x61, with phase B in the low byte and phase A in the high byte.
+    /// Autotune readings at 0x60-0x61, with phase B in the low byte and phase A
+    /// in the high byte.
     register AUTOTUNE_READ {
         address: 96,
         reset: 0,
@@ -961,7 +1077,8 @@ device Device {
             field AUTOTUNE_A 15:8 RO,
         },
     },
-    /// Forced autotune values at 0x62-0x63, with phase B in the low byte and phase A in the high byte.
+    /// Forced autotune values at 0x62-0x63, with phase B in the low byte and
+    /// phase A in the high byte.
     register AUTOTUNE_FORCE {
         address: 98,
         reset: 0xC8C8,
@@ -981,13 +1098,15 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// Enable FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B effective for inductor DCR current sense.
+            /// Enable FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B effective for inductor
+            /// DCR current sense.
             field FORCE_AUTOTUNE_EN 0,
             /// Enable FORCE_GM_ADJUST effective for inductor DCR current sense.
             field FORCE_GM_ADJUST_EN 1,
             /// Force GM adjustment value for inductor DCR.
             field FORCE_GM_ADJUST 7:2,
-            /// Update FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B, FORCE_GM_ADJUST value to be effective for inductor DCR current sense.
+            /// Update FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B, FORCE_GM_ADJUST value
+            /// to be effective for inductor DCR current sense.
             field FORCE_UPDATE 9,
             /// Auto adaptive adjustment value for inductor DCR.
             field GM_ADJUST 15:10 RO,
@@ -1000,7 +1119,11 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC host write of charge voltage or charge current command. If device does not receive a write on the CHARGE_VOLTAGE() or the CHARGE_CURRENT() within the watchdog time period, the charger will be suspended by setting the CHARGE_CURRENT() to 0 mA.
+            /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC
+            /// host write of charge voltage or charge current command. If
+            /// device does not receive a write on the CHARGE_VOLTAGE() or the
+            /// CHARGE_CURRENT() within the watchdog time period, the charger
+            /// will be suspended by setting the CHARGE_CURRENT() to 0 mA.
             field WDTMR_ADJ 1:0 -> _ as enum WdtmrAdj {
                 Disable: 0,
                 FiveSecs: 1,
@@ -1015,7 +1138,8 @@ device Device {
             field REG_RESET 7,
             /// OTG Mode Enable.
             field EN_OTG 8,
-            /// Automatic charge control(recharge and terminate battery charging automatically).
+            /// Automatic charge control(recharge and terminate battery charging
+            /// automatically).
             field EN_AUTO_CHG 15,
         },
     },

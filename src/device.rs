@@ -459,7 +459,8 @@ impl<I> Device<I> {
         let address = self.base_address + 62;
         ::device_driver::RegisterOperation::new(self, address as u8, || VminActiveProtection::from([36, 0]))
     }
-    /// Autotune readings at 0x60-0x61, with phase B in the low byte and phase A in the high byte.
+    /// Autotune readings at 0x60-0x61, with phase B in the low byte and phase A
+    /// in the high byte.
     ///
     /// Register operation:
     /// - Address: `96`
@@ -474,7 +475,8 @@ impl<I> Device<I> {
         let address = self.base_address + 96;
         ::device_driver::RegisterOperation::new(self, address as u8, || AutotuneRead::from([0, 0]))
     }
-    /// Forced autotune values at 0x62-0x63, with phase B in the low byte and phase A in the high byte.
+    /// Forced autotune values at 0x62-0x63, with phase B in the low byte and
+    /// phase A in the high byte.
     ///
     /// Register operation:
     /// - Address: `98`
@@ -546,7 +548,11 @@ unsafe impl ::device_driver::Fieldset for VirtualControl {
 impl VirtualControl {
     /// `1:0` - Read the `wdtmr_adj` field.
     ///
-    /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC host write of charge voltage or charge current command. If device does not receive a write on the CHARGE_VOLTAGE() or the CHARGE_CURRENT() within the watchdog time period, the charger will be suspended by setting the CHARGE_CURRENT() to 0 mA.
+    /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC
+    /// host write of charge voltage or charge current command. If
+    /// device does not receive a write on the CHARGE_VOLTAGE() or the
+    /// CHARGE_CURRENT() within the watchdog time period, the charger
+    /// will be suspended by setting the CHARGE_CURRENT() to 0 mA.
     #[doc(alias = "WDTMR_ADJ")]
     #[must_use]
     pub fn wdtmr_adj(&self) -> WdtmrAdj {
@@ -601,7 +607,8 @@ impl VirtualControl {
     }
     /// `bit 15` - Read the `en_auto_chg` field.
     ///
-    /// Automatic charge control(recharge and terminate battery charging automatically).
+    /// Automatic charge control(recharge and terminate battery charging
+    /// automatically).
     #[doc(alias = "EN_AUTO_CHG")]
     #[must_use]
     pub fn en_auto_chg(&self) -> bool {
@@ -612,7 +619,11 @@ impl VirtualControl {
     }
     /// `1:0` - Set the `wdtmr_adj` field.
     ///
-    /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC host write of charge voltage or charge current command. If device does not receive a write on the CHARGE_VOLTAGE() or the CHARGE_CURRENT() within the watchdog time period, the charger will be suspended by setting the CHARGE_CURRENT() to 0 mA.
+    /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC
+    /// host write of charge voltage or charge current command. If
+    /// device does not receive a write on the CHARGE_VOLTAGE() or the
+    /// CHARGE_CURRENT() within the watchdog time period, the charger
+    /// will be suspended by setting the CHARGE_CURRENT() to 0 mA.
     #[doc(alias = "WDTMR_ADJ")]
     pub fn set_wdtmr_adj(&mut self, value: WdtmrAdj) {
         let start = 0;
@@ -662,7 +673,8 @@ impl VirtualControl {
     }
     /// `bit 15` - Set the `en_auto_chg` field.
     ///
-    /// Automatic charge control(recharge and terminate battery charging automatically).
+    /// Automatic charge control(recharge and terminate battery charging
+    /// automatically).
     #[doc(alias = "EN_AUTO_CHG")]
     pub fn set_en_auto_chg(&mut self, value: bool) {
         let start = 15;
@@ -778,7 +790,8 @@ unsafe impl ::device_driver::Fieldset for GmAdjustForce {
 impl GmAdjustForce {
     /// `bit 0` - Read the `force_autotune_en` field.
     ///
-    /// Enable FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B effective for inductor DCR current sense.
+    /// Enable FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B effective for inductor
+    /// DCR current sense.
     #[doc(alias = "FORCE_AUTOTUNE_EN")]
     #[must_use]
     pub fn force_autotune_en(&self) -> bool {
@@ -811,7 +824,8 @@ impl GmAdjustForce {
     }
     /// `bit 9` - Read the `force_update` field.
     ///
-    /// Update FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B, FORCE_GM_ADJUST value to be effective for inductor DCR current sense.
+    /// Update FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B, FORCE_GM_ADJUST value
+    /// to be effective for inductor DCR current sense.
     #[doc(alias = "FORCE_UPDATE")]
     #[must_use]
     pub fn force_update(&self) -> bool {
@@ -833,7 +847,8 @@ impl GmAdjustForce {
     }
     /// `bit 0` - Set the `force_autotune_en` field.
     ///
-    /// Enable FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B effective for inductor DCR current sense.
+    /// Enable FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B effective for inductor
+    /// DCR current sense.
     #[doc(alias = "FORCE_AUTOTUNE_EN")]
     pub fn set_force_autotune_en(&mut self, value: bool) {
         let start = 0;
@@ -863,7 +878,8 @@ impl GmAdjustForce {
     }
     /// `bit 9` - Set the `force_update` field.
     ///
-    /// Update FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B, FORCE_GM_ADJUST value to be effective for inductor DCR current sense.
+    /// Update FORCE_AUTOTUNE_A, FORCE_AUTOTUNE_B, FORCE_GM_ADJUST value
+    /// to be effective for inductor DCR current sense.
     #[doc(alias = "FORCE_UPDATE")]
     pub fn set_force_update(&mut self, value: bool) {
         let start = 9;
@@ -1248,7 +1264,8 @@ impl VminActiveProtection {
     }
     /// `bit 1` - Read the `en_vsysth_2_follow_vsysth_1` field.
     ///
-    /// Enable internal VSYS_TH2 follow VSYS_TH1 setting neglecting register VSYS_TH2 setting.
+    /// Enable internal VSYS_TH2 follow VSYS_TH1 setting neglecting
+    /// register VSYS_TH2 setting.
     #[doc(alias = "EN_VSYSTH2_FOLLOW_VSYSTH1")]
     #[must_use]
     pub fn en_vsysth_2_follow_vsysth_1(&self) -> bool {
@@ -1259,7 +1276,9 @@ impl VminActiveProtection {
     }
     /// `7:2` - Read the `vsys_th_2` field.
     ///
-    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
+    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit
+    /// steps with a 5000mV offset, over the range 5000mV-11300mV
+    /// (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
     #[doc(alias = "VSYS_TH2")]
     #[must_use]
     pub fn vsys_th_2(&self) -> u8 {
@@ -1281,7 +1300,9 @@ impl VminActiveProtection {
     }
     /// `15:9` - Read the `vbus_vap_th` field.
     ///
-    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 3200mV offset, over the range 3200mV-15900mV (0h-7Fh). A field value of 0 is 3200mV, not 0mV.
+    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit
+    /// steps with a 3200mV offset, over the range 3200mV-15900mV
+    /// (0h-7Fh). A field value of 0 is 3200mV, not 0mV.
     #[doc(alias = "VBUS_VAP_TH")]
     #[must_use]
     pub fn vbus_vap_th(&self) -> u8 {
@@ -1302,7 +1323,8 @@ impl VminActiveProtection {
     }
     /// `bit 1` - Set the `en_vsysth_2_follow_vsysth_1` field.
     ///
-    /// Enable internal VSYS_TH2 follow VSYS_TH1 setting neglecting register VSYS_TH2 setting.
+    /// Enable internal VSYS_TH2 follow VSYS_TH1 setting neglecting
+    /// register VSYS_TH2 setting.
     #[doc(alias = "EN_VSYSTH2_FOLLOW_VSYSTH1")]
     pub fn set_en_vsysth_2_follow_vsysth_1(&mut self, value: bool) {
         let start = 1;
@@ -1312,7 +1334,9 @@ impl VminActiveProtection {
     }
     /// `7:2` - Set the `vsys_th_2` field.
     ///
-    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
+    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit
+    /// steps with a 5000mV offset, over the range 5000mV-11300mV
+    /// (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
     #[doc(alias = "VSYS_TH2")]
     pub fn set_vsys_th_2(&mut self, value: u8) {
         let start = 2;
@@ -1332,7 +1356,9 @@ impl VminActiveProtection {
     }
     /// `15:9` - Set the `vbus_vap_th` field.
     ///
-    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit steps with a 3200mV offset, over the range 3200mV-15900mV (0h-7Fh). A field value of 0 is 3200mV, not 0mV.
+    /// VAP Mode2 VBUS /PROCHOT trigger voltage threshold, in 100mV/bit
+    /// steps with a 3200mV offset, over the range 3200mV-15900mV
+    /// (0h-7Fh). A field value of 0 is 3200mV, not 0mV.
     #[doc(alias = "VBUS_VAP_TH")]
     pub fn set_vbus_vap_th(&mut self, value: u8) {
         let start = 9;
@@ -1450,7 +1476,8 @@ unsafe impl ::device_driver::Fieldset for ChargeOption4 {
 impl ChargeOption4 {
     /// `bit 0` - Read the `stat_ptm` field.
     ///
-    /// PTM operation status active. Read-only; the status is cleared by the read, not by writing this bit.
+    /// PTM operation status active. Read-only; the status is cleared by
+    /// the read, not by writing this bit.
     #[doc(alias = "STAT_PTM")]
     #[must_use]
     pub fn stat_ptm(&self) -> bool {
@@ -1461,7 +1488,8 @@ impl ChargeOption4 {
     }
     /// `bit 1` - Read the `stat_idchg_2` field.
     ///
-    /// IDCHG2 status triggered. Read-only; the status is latched until a read from host.
+    /// IDCHG2 status triggered. Read-only; the status is latched until
+    /// a read from host.
     #[doc(alias = "STAT_IDCHG2")]
     #[must_use]
     pub fn stat_idchg_2(&self) -> bool {
@@ -1483,7 +1511,9 @@ impl ChargeOption4 {
     }
     /// `5:3` - Read the `idchg_th_2` field.
     ///
-    /// Battery discharge current limit2 based on percentage of IDCHG_TH1. Note an IDCHG_TH2 setting higher than 40A loses accuracy, derating between the target value and 40A.
+    /// Battery discharge current limit2 based on percentage of
+    /// IDCHG_TH1. Note an IDCHG_TH2 setting higher than 40A loses
+    /// accuracy, derating between the target value and 40A.
     #[doc(alias = "IDCHG_TH2")]
     #[must_use]
     pub fn idchg_th_2(&self) -> IdchgTh2 {
@@ -1549,7 +1579,10 @@ impl ChargeOption4 {
     }
     /// `15:13` - Read the `vsys_uvp` field.
     ///
-    /// VSYS Under Voltage Lock Out. After UVP is triggered the charger enters hiccup mode, and then the charger is latched off if the restart fails 7 times in 90s. The hiccup can be disabled with VSYS_UVP_NO_HICCUP.
+    /// VSYS Under Voltage Lock Out. After UVP is triggered the charger
+    /// enters hiccup mode, and then the charger is latched off if the
+    /// restart fails 7 times in 90s. The hiccup can be disabled with
+    /// VSYS_UVP_NO_HICCUP.
     #[doc(alias = "VSYS_UVP")]
     #[must_use]
     pub fn vsys_uvp(&self) -> VsysUvp {
@@ -1570,7 +1603,9 @@ impl ChargeOption4 {
     }
     /// `5:3` - Set the `idchg_th_2` field.
     ///
-    /// Battery discharge current limit2 based on percentage of IDCHG_TH1. Note an IDCHG_TH2 setting higher than 40A loses accuracy, derating between the target value and 40A.
+    /// Battery discharge current limit2 based on percentage of
+    /// IDCHG_TH1. Note an IDCHG_TH2 setting higher than 40A loses
+    /// accuracy, derating between the target value and 40A.
     #[doc(alias = "IDCHG_TH2")]
     pub fn set_idchg_th_2(&mut self, value: IdchgTh2) {
         let start = 3;
@@ -1620,7 +1655,10 @@ impl ChargeOption4 {
     }
     /// `15:13` - Set the `vsys_uvp` field.
     ///
-    /// VSYS Under Voltage Lock Out. After UVP is triggered the charger enters hiccup mode, and then the charger is latched off if the restart fails 7 times in 90s. The hiccup can be disabled with VSYS_UVP_NO_HICCUP.
+    /// VSYS Under Voltage Lock Out. After UVP is triggered the charger
+    /// enters hiccup mode, and then the charger is latched off if the
+    /// restart fails 7 times in 90s. The hiccup can be disabled with
+    /// VSYS_UVP_NO_HICCUP.
     #[doc(alias = "VSYS_UVP")]
     pub fn set_vsys_uvp(&mut self, value: VsysUvp) {
         let start = 13;
@@ -1843,7 +1881,8 @@ impl AdcOption {
     }
     /// `13:12` - Read the `adc_sample` field.
     ///
-    /// ADC sample resolution selection, each channel conversion time is also determined based on resolution.
+    /// ADC sample resolution selection, each channel conversion time is
+    /// also determined based on resolution.
     #[doc(alias = "ADC_SAMPLE")]
     #[must_use]
     pub fn adc_sample(&self) -> AdcResolution {
@@ -1865,7 +1904,8 @@ impl AdcOption {
     }
     /// `bit 15` - Read the `adc_rate` field.
     ///
-    /// ADC conversion type selection. Typical conversion time is determined by resolution accuracy.
+    /// ADC conversion type selection. Typical conversion time is
+    /// determined by resolution accuracy.
     #[doc(alias = "ADC_RATE")]
     #[must_use]
     pub fn adc_rate(&self) -> AdcRateSelect {
@@ -1966,7 +2006,8 @@ impl AdcOption {
     }
     /// `13:12` - Set the `adc_sample` field.
     ///
-    /// ADC sample resolution selection, each channel conversion time is also determined based on resolution.
+    /// ADC sample resolution selection, each channel conversion time is
+    /// also determined based on resolution.
     #[doc(alias = "ADC_SAMPLE")]
     pub fn set_adc_sample(&mut self, value: AdcResolution) {
         let start = 12;
@@ -1986,7 +2027,8 @@ impl AdcOption {
     }
     /// `bit 15` - Set the `adc_rate` field.
     ///
-    /// ADC conversion type selection. Typical conversion time is determined by resolution accuracy.
+    /// ADC conversion type selection. Typical conversion time is
+    /// determined by resolution accuracy.
     #[doc(alias = "ADC_RATE")]
     pub fn set_adc_rate(&mut self, value: AdcRateSelect) {
         let start = 15;
@@ -2213,7 +2255,10 @@ impl ProchotOption1 {
     }
     /// `15:10` - Read the `idchg_th_1` field.
     ///
-    /// IDCHG level 1 Threshold, in 500mA/bit steps with a 1500mA offset, over the range 1500mA-33000mA (0h-3Fh). A field value of 0 is 1500mA, not 0mA, and programming 000000b makes PROCHOT trigger permanently.
+    /// IDCHG level 1 Threshold, in 500mA/bit steps with a 1500mA
+    /// offset, over the range 1500mA-33000mA (0h-3Fh). A field value of
+    /// 0 is 1500mA, not 0mA, and programming 000000b makes PROCHOT
+    /// trigger permanently.
     #[doc(alias = "IDCHG_TH1")]
     #[must_use]
     pub fn idchg_th_1(&self) -> u8 {
@@ -2314,7 +2359,10 @@ impl ProchotOption1 {
     }
     /// `15:10` - Set the `idchg_th_1` field.
     ///
-    /// IDCHG level 1 Threshold, in 500mA/bit steps with a 1500mA offset, over the range 1500mA-33000mA (0h-3Fh). A field value of 0 is 1500mA, not 0mA, and programming 000000b makes PROCHOT trigger permanently.
+    /// IDCHG level 1 Threshold, in 500mA/bit steps with a 1500mA
+    /// offset, over the range 1500mA-33000mA (0h-3Fh). A field value of
+    /// 0 is 1500mA, not 0mA, and programming 000000b makes PROCHOT
+    /// trigger permanently.
     #[doc(alias = "IDCHG_TH1")]
     pub fn set_idchg_th_1(&mut self, value: u8) {
         let start = 10;
@@ -2460,7 +2508,9 @@ impl ProchotOption0 {
     }
     /// `7:2` - Read the `vsys_th_1` field.
     ///
-    /// VSYS threshold to trigger discharging VBUS in VAP mode, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
+    /// VSYS threshold to trigger discharging VBUS in VAP mode, in
+    /// 100mV/bit steps with a 5000mV offset, over the range
+    /// 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
     #[doc(alias = "VSYS_TH1")]
     #[must_use]
     pub fn vsys_th_1(&self) -> u8 {
@@ -2471,7 +2521,9 @@ impl ProchotOption0 {
     }
     /// `bit 8` - Read the `prochot_vindpm_80_90` field.
     ///
-    /// Lower threshold of the PROCHOT_VINDPM comparator. When LOWER_PROCHOT_VINDPM=1, the threshold of PROCHOT_VINDPM is determined by this setting.
+    /// Lower threshold of the PROCHOT_VINDPM comparator. When
+    /// LOWER_PROCHOT_VINDPM=1, the threshold of PROCHOT_VINDPM is
+    /// determined by this setting.
     #[doc(alias = "PROCHOT_VINDPM_80_90")]
     #[must_use]
     pub fn prochot_vindpm_80_90(&self) -> Threshold {
@@ -2493,7 +2545,8 @@ impl ProchotOption0 {
     }
     /// `15:11` - Read the `ilim_2_vth` field.
     ///
-    /// ILIM2 Threshold, as a percentage of the input current limit. Both extremes of the field are documented as out of range.
+    /// ILIM2 Threshold, as a percentage of the input current limit.
+    /// Both extremes of the field are documented as out of range.
     #[doc(alias = "ILIM2_VTH")]
     #[must_use]
     pub fn ilim_2_vth(&self) -> Ilim2Vth {
@@ -2524,7 +2577,9 @@ impl ProchotOption0 {
     }
     /// `7:2` - Set the `vsys_th_1` field.
     ///
-    /// VSYS threshold to trigger discharging VBUS in VAP mode, in 100mV/bit steps with a 5000mV offset, over the range 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
+    /// VSYS threshold to trigger discharging VBUS in VAP mode, in
+    /// 100mV/bit steps with a 5000mV offset, over the range
+    /// 5000mV-11300mV (0h-3Fh). A field value of 0 is 5000mV, not 0mV.
     #[doc(alias = "VSYS_TH1")]
     pub fn set_vsys_th_1(&mut self, value: u8) {
         let start = 2;
@@ -2534,7 +2589,9 @@ impl ProchotOption0 {
     }
     /// `bit 8` - Set the `prochot_vindpm_80_90` field.
     ///
-    /// Lower threshold of the PROCHOT_VINDPM comparator. When LOWER_PROCHOT_VINDPM=1, the threshold of PROCHOT_VINDPM is determined by this setting.
+    /// Lower threshold of the PROCHOT_VINDPM comparator. When
+    /// LOWER_PROCHOT_VINDPM=1, the threshold of PROCHOT_VINDPM is
+    /// determined by this setting.
     #[doc(alias = "PROCHOT_VINDPM_80_90")]
     pub fn set_prochot_vindpm_80_90(&mut self, value: Threshold) {
         let start = 8;
@@ -2554,7 +2611,8 @@ impl ProchotOption0 {
     }
     /// `15:11` - Set the `ilim_2_vth` field.
     ///
-    /// ILIM2 Threshold, as a percentage of the input current limit. Both extremes of the field are documented as out of range.
+    /// ILIM2 Threshold, as a percentage of the input current limit.
+    /// Both extremes of the field are documented as out of range.
     #[doc(alias = "ILIM2_VTH")]
     pub fn set_ilim_2_vth(&mut self, value: Ilim2Vth) {
         let start = 11;
@@ -2725,7 +2783,9 @@ impl ChargeOption3 {
     }
     /// `bit 7` - Read the `batfet_enz` field.
     ///
-    /// Turn off BATFET under battery only low power mode. When not in low power mode, like OTG or with AC plugged in, the bit configuration is neglected and not effective.
+    /// Turn off BATFET under battery only low power mode. When not in
+    /// low power mode, like OTG or with AC plugged in, the bit
+    /// configuration is neglected and not effective.
     #[doc(alias = "BATFET_ENZ")]
     #[must_use]
     pub fn batfet_enz(&self) -> bool {
@@ -2736,7 +2796,8 @@ impl ChargeOption3 {
     }
     /// `9:8` - Read the `en_vsys_min_soft_sr` field.
     ///
-    /// VSYS_MIN soft slew rate control for VSYS_MIN step up transition. Note for step down doesn't need the soft transition.
+    /// VSYS_MIN soft slew rate control for VSYS_MIN step up transition.
+    /// Note for step down doesn't need the soft transition.
     #[doc(alias = "EN_VSYS_MIN_SOFT_SR")]
     #[must_use]
     pub fn en_vsys_min_soft_sr(&self) -> VsysMinSoftSlewRate {
@@ -2769,7 +2830,8 @@ impl ChargeOption3 {
     }
     /// `bit 12` - Read the `en_otg` field.
     ///
-    /// OTG Mode Enable. Enable device in OTG mode when EN_OTG pin is HIGH.
+    /// OTG Mode Enable. Enable device in OTG mode when EN_OTG pin is
+    /// HIGH.
     #[doc(alias = "EN_OTG")]
     #[must_use]
     pub fn en_otg(&self) -> bool {
@@ -2780,7 +2842,8 @@ impl ChargeOption3 {
     }
     /// `bit 13` - Read the `detect_vindpm` field.
     ///
-    /// Set VINDPM threshold based on VBUS measurement result minus 1.28V, Converter is disabled to measure VBUS.
+    /// Set VINDPM threshold based on VBUS measurement result minus
+    /// 1.28V, Converter is disabled to measure VBUS.
     #[doc(alias = "DETECT_VINDPM")]
     #[must_use]
     pub fn detect_vindpm(&self) -> bool {
@@ -2802,7 +2865,9 @@ impl ChargeOption3 {
     }
     /// `bit 15` - Read the `en_hiz` field.
     ///
-    /// Device Hi-Z Mode Enable. When the charger is in Hi-Z mode, the device draws minimal quiescent current. With VBUS above UVLO. REGN LDO stays on, and system powers from battery.
+    /// Device Hi-Z Mode Enable. When the charger is in Hi-Z mode, the
+    /// device draws minimal quiescent current. With VBUS above UVLO.
+    /// REGN LDO stays on, and system powers from battery.
     #[doc(alias = "EN_HIZ")]
     #[must_use]
     pub fn en_hiz(&self) -> bool {
@@ -2863,7 +2928,9 @@ impl ChargeOption3 {
     }
     /// `bit 7` - Set the `batfet_enz` field.
     ///
-    /// Turn off BATFET under battery only low power mode. When not in low power mode, like OTG or with AC plugged in, the bit configuration is neglected and not effective.
+    /// Turn off BATFET under battery only low power mode. When not in
+    /// low power mode, like OTG or with AC plugged in, the bit
+    /// configuration is neglected and not effective.
     #[doc(alias = "BATFET_ENZ")]
     pub fn set_batfet_enz(&mut self, value: bool) {
         let start = 7;
@@ -2873,7 +2940,8 @@ impl ChargeOption3 {
     }
     /// `9:8` - Set the `en_vsys_min_soft_sr` field.
     ///
-    /// VSYS_MIN soft slew rate control for VSYS_MIN step up transition. Note for step down doesn't need the soft transition.
+    /// VSYS_MIN soft slew rate control for VSYS_MIN step up transition.
+    /// Note for step down doesn't need the soft transition.
     #[doc(alias = "EN_VSYS_MIN_SOFT_SR")]
     pub fn set_en_vsys_min_soft_sr(&mut self, value: VsysMinSoftSlewRate) {
         let start = 8;
@@ -2903,7 +2971,8 @@ impl ChargeOption3 {
     }
     /// `bit 12` - Set the `en_otg` field.
     ///
-    /// OTG Mode Enable. Enable device in OTG mode when EN_OTG pin is HIGH.
+    /// OTG Mode Enable. Enable device in OTG mode when EN_OTG pin is
+    /// HIGH.
     #[doc(alias = "EN_OTG")]
     pub fn set_en_otg(&mut self, value: bool) {
         let start = 12;
@@ -2913,7 +2982,8 @@ impl ChargeOption3 {
     }
     /// `bit 13` - Set the `detect_vindpm` field.
     ///
-    /// Set VINDPM threshold based on VBUS measurement result minus 1.28V, Converter is disabled to measure VBUS.
+    /// Set VINDPM threshold based on VBUS measurement result minus
+    /// 1.28V, Converter is disabled to measure VBUS.
     #[doc(alias = "DETECT_VINDPM")]
     pub fn set_detect_vindpm(&mut self, value: bool) {
         let start = 13;
@@ -2933,7 +3003,9 @@ impl ChargeOption3 {
     }
     /// `bit 15` - Set the `en_hiz` field.
     ///
-    /// Device Hi-Z Mode Enable. When the charger is in Hi-Z mode, the device draws minimal quiescent current. With VBUS above UVLO. REGN LDO stays on, and system powers from battery.
+    /// Device Hi-Z Mode Enable. When the charger is in Hi-Z mode, the
+    /// device draws minimal quiescent current. With VBUS above UVLO.
+    /// REGN LDO stays on, and system powers from battery.
     #[doc(alias = "EN_HIZ")]
     pub fn set_en_hiz(&mut self, value: bool) {
         let start = 15;
@@ -3063,7 +3135,8 @@ unsafe impl ::device_driver::Fieldset for ChargeOption2 {
 impl ChargeOption2 {
     /// `bit 0` - Read the `batdoc_vth` field.
     ///
-    /// Set battery discharge overcurrent threshold as percentage of PROCHOT battery discharge current limit.
+    /// Set battery discharge overcurrent threshold as percentage of
+    /// PROCHOT battery discharge current limit.
     #[doc(alias = "BATDOC_VTH")]
     #[must_use]
     pub fn batdoc_vth(&self) -> BatdocVth {
@@ -3085,7 +3158,8 @@ impl ChargeOption2 {
     }
     /// `bit 2` - Read the `acoc_vth` field.
     ///
-    /// ACOC Limit. Set ACOC threshold as percentage of ILIM2_VTH with current sensed from RAC.
+    /// ACOC Limit. Set ACOC threshold as percentage of ILIM2_VTH with
+    /// current sensed from RAC.
     #[doc(alias = "ACOC_VTH")]
     #[must_use]
     pub fn acoc_vth(&self) -> AcocLimit {
@@ -3107,7 +3181,8 @@ impl ChargeOption2 {
     }
     /// `bit 4` - Read the `ocp_sw_1_x_high_range` field.
     ///
-    /// Over current protection threshold by sensing RAC resistor across voltage.
+    /// Over current protection threshold by sensing RAC resistor across
+    /// voltage.
     #[doc(alias = "OCP_SW1X_HIGH_RANGE")]
     #[must_use]
     pub fn ocp_sw_1_x_high_range(&self) -> OverCurrentThresholdRac {
@@ -3129,7 +3204,8 @@ impl ChargeOption2 {
     }
     /// `bit 6` - Read the `en_ichg_idchg` field.
     ///
-    /// IBAT pin monitor selection for discharge current and charge current.
+    /// IBAT pin monitor selection for discharge current and charge
+    /// current.
     #[doc(alias = "EN_ICHG_IDCHG")]
     #[must_use]
     pub fn en_ichg_idchg(&self) -> IBatPinSelect {
@@ -3217,7 +3293,8 @@ impl ChargeOption2 {
     }
     /// `bit 0` - Set the `batdoc_vth` field.
     ///
-    /// Set battery discharge overcurrent threshold as percentage of PROCHOT battery discharge current limit.
+    /// Set battery discharge overcurrent threshold as percentage of
+    /// PROCHOT battery discharge current limit.
     #[doc(alias = "BATDOC_VTH")]
     pub fn set_batdoc_vth(&mut self, value: BatdocVth) {
         let start = 0;
@@ -3237,7 +3314,8 @@ impl ChargeOption2 {
     }
     /// `bit 2` - Set the `acoc_vth` field.
     ///
-    /// ACOC Limit. Set ACOC threshold as percentage of ILIM2_VTH with current sensed from RAC.
+    /// ACOC Limit. Set ACOC threshold as percentage of ILIM2_VTH with
+    /// current sensed from RAC.
     #[doc(alias = "ACOC_VTH")]
     pub fn set_acoc_vth(&mut self, value: AcocLimit) {
         let start = 2;
@@ -3257,7 +3335,8 @@ impl ChargeOption2 {
     }
     /// `bit 4` - Set the `ocp_sw_1_x_high_range` field.
     ///
-    /// Over current protection threshold by sensing RAC resistor across voltage.
+    /// Over current protection threshold by sensing RAC resistor across
+    /// voltage.
     #[doc(alias = "OCP_SW1X_HIGH_RANGE")]
     pub fn set_ocp_sw_1_x_high_range(&mut self, value: OverCurrentThresholdRac) {
         let start = 4;
@@ -3277,7 +3356,8 @@ impl ChargeOption2 {
     }
     /// `bit 6` - Set the `en_ichg_idchg` field.
     ///
-    /// IBAT pin monitor selection for discharge current and charge current.
+    /// IBAT pin monitor selection for discharge current and charge
+    /// current.
     #[doc(alias = "EN_ICHG_IDCHG")]
     pub fn set_en_ichg_idchg(&mut self, value: IBatPinSelect) {
         let start = 6;
@@ -3490,7 +3570,9 @@ impl ChargeOption1 {
     }
     /// `bit 1` - Read the `en_ship_dchg` field.
     ///
-    /// Discharge SRN for Shipping Mode. Used to discharge SRN pin capacitor voltage which is necessary for battery gauge device shipping mode.
+    /// Discharge SRN for Shipping Mode. Used to discharge SRN pin
+    /// capacitor voltage which is necessary for battery gauge device
+    /// shipping mode.
     #[doc(alias = "EN_SHIP_DCHG")]
     #[must_use]
     pub fn en_ship_dchg(&self) -> bool {
@@ -3523,7 +3605,8 @@ impl ChargeOption1 {
     }
     /// `5:4` - Read the `cmp_deg` field.
     ///
-    /// Independent comparator deglitch time, only applied to the falling edge of CMPOUT (HIGH to LOW).
+    /// Independent comparator deglitch time, only applied to the
+    /// falling edge of CMPOUT (HIGH to LOW).
     #[doc(alias = "CMP_DEG")]
     #[must_use]
     pub fn cmp_deg(&self) -> ComparatorDeglitchTime {
@@ -3545,7 +3628,8 @@ impl ChargeOption1 {
     }
     /// `bit 7` - Read the `sysovp_max` field.
     ///
-    /// Force SYSOVP protection threshold to 27V neglecting CELL_BATPRES pin configuration.
+    /// Force SYSOVP protection threshold to 27V neglecting CELL_BATPRES
+    /// pin configuration.
     #[doc(alias = "SYSOVP_MAX")]
     #[must_use]
     pub fn sysovp_max(&self) -> bool {
@@ -3556,7 +3640,8 @@ impl ChargeOption1 {
     }
     /// `bit 8` - Read the `en_otg_big_cap` field.
     ///
-    /// Enable OTG compensation for VBUS effective capacitance larger than 60uF.
+    /// Enable OTG compensation for VBUS effective capacitance larger
+    /// than 60uF.
     #[doc(alias = "EN_OTG_BIG_CAP")]
     #[must_use]
     pub fn en_otg_big_cap(&self) -> bool {
@@ -3567,7 +3652,8 @@ impl ChargeOption1 {
     }
     /// `bit 9` - Read the `psys_ratio` field.
     ///
-    /// PSYS Gain. Ratio of PSYS output current vs total input and battery power.
+    /// PSYS Gain. Ratio of PSYS output current vs total input and
+    /// battery power.
     #[doc(alias = "PSYS_RATIO")]
     #[must_use]
     pub fn psys_ratio(&self) -> PsysGain {
@@ -3578,7 +3664,9 @@ impl ChargeOption1 {
     }
     /// `bit 10` - Read the `rsns_rsr` field.
     ///
-    /// Charge sense resistor RSR. Not recommend to change this value during ICHG/IPRECHG/BATFET_CLAMP1/ BATFET_CLAMP2/BAT_SHORT regulation.
+    /// Charge sense resistor RSR. Not recommend to change this value
+    /// during ICHG/IPRECHG/BATFET_CLAMP1/ BATFET_CLAMP2/BAT_SHORT
+    /// regulation.
     #[doc(alias = "RSNS_RSR")]
     #[must_use]
     pub fn rsns_rsr(&self) -> ChargeSenseResistorRsr {
@@ -3589,7 +3677,8 @@ impl ChargeOption1 {
     }
     /// `bit 11` - Read the `rsns_rac` field.
     ///
-    /// Input sense resistor RAC. Not recommend to change this value during IINDPM/IOTG regulation.
+    /// Input sense resistor RAC. Not recommend to change this value
+    /// during IINDPM/IOTG regulation.
     #[doc(alias = "RSNS_RAC")]
     #[must_use]
     pub fn rsns_rac(&self) -> InputSenseResistorRac {
@@ -3600,7 +3689,10 @@ impl ChargeOption1 {
     }
     /// `13:12` - Read the `psys_config` field.
     ///
-    /// PSYS Enable and Definition Register. Enable PSYS sensing circuit and output buffer (whole PSYS circuit). In low power mode (EN_LWPWR=1b), PSYS sensing and buffer are always disabled regardless of this bit value.
+    /// PSYS Enable and Definition Register. Enable PSYS sensing circuit
+    /// and output buffer (whole PSYS circuit). In low power mode
+    /// (EN_LWPWR=1b), PSYS sensing and buffer are always disabled
+    /// regardless of this bit value.
     #[doc(alias = "PSYS_CONFIG")]
     #[must_use]
     pub fn psys_config(&self) -> PsysEnable {
@@ -3622,7 +3714,8 @@ impl ChargeOption1 {
     }
     /// `bit 15` - Read the `en_ibat` field.
     ///
-    /// IBAT Enable. In low power mode (EN_LWPWR=1b), IBAT buffer is always disabled regardless of this bit value.
+    /// IBAT Enable. In low power mode (EN_LWPWR=1b), IBAT buffer is
+    /// always disabled regardless of this bit value.
     #[doc(alias = "EN_IBAT")]
     #[must_use]
     pub fn en_ibat(&self) -> bool {
@@ -3643,7 +3736,9 @@ impl ChargeOption1 {
     }
     /// `bit 1` - Set the `en_ship_dchg` field.
     ///
-    /// Discharge SRN for Shipping Mode. Used to discharge SRN pin capacitor voltage which is necessary for battery gauge device shipping mode.
+    /// Discharge SRN for Shipping Mode. Used to discharge SRN pin
+    /// capacitor voltage which is necessary for battery gauge device
+    /// shipping mode.
     #[doc(alias = "EN_SHIP_DCHG")]
     pub fn set_en_ship_dchg(&mut self, value: bool) {
         let start = 1;
@@ -3673,7 +3768,8 @@ impl ChargeOption1 {
     }
     /// `5:4` - Set the `cmp_deg` field.
     ///
-    /// Independent comparator deglitch time, only applied to the falling edge of CMPOUT (HIGH to LOW).
+    /// Independent comparator deglitch time, only applied to the
+    /// falling edge of CMPOUT (HIGH to LOW).
     #[doc(alias = "CMP_DEG")]
     pub fn set_cmp_deg(&mut self, value: ComparatorDeglitchTime) {
         let start = 4;
@@ -3693,7 +3789,8 @@ impl ChargeOption1 {
     }
     /// `bit 7` - Set the `sysovp_max` field.
     ///
-    /// Force SYSOVP protection threshold to 27V neglecting CELL_BATPRES pin configuration.
+    /// Force SYSOVP protection threshold to 27V neglecting CELL_BATPRES
+    /// pin configuration.
     #[doc(alias = "SYSOVP_MAX")]
     pub fn set_sysovp_max(&mut self, value: bool) {
         let start = 7;
@@ -3703,7 +3800,8 @@ impl ChargeOption1 {
     }
     /// `bit 8` - Set the `en_otg_big_cap` field.
     ///
-    /// Enable OTG compensation for VBUS effective capacitance larger than 60uF.
+    /// Enable OTG compensation for VBUS effective capacitance larger
+    /// than 60uF.
     #[doc(alias = "EN_OTG_BIG_CAP")]
     pub fn set_en_otg_big_cap(&mut self, value: bool) {
         let start = 8;
@@ -3713,7 +3811,8 @@ impl ChargeOption1 {
     }
     /// `bit 9` - Set the `psys_ratio` field.
     ///
-    /// PSYS Gain. Ratio of PSYS output current vs total input and battery power.
+    /// PSYS Gain. Ratio of PSYS output current vs total input and
+    /// battery power.
     #[doc(alias = "PSYS_RATIO")]
     pub fn set_psys_ratio(&mut self, value: PsysGain) {
         let start = 9;
@@ -3723,7 +3822,9 @@ impl ChargeOption1 {
     }
     /// `bit 10` - Set the `rsns_rsr` field.
     ///
-    /// Charge sense resistor RSR. Not recommend to change this value during ICHG/IPRECHG/BATFET_CLAMP1/ BATFET_CLAMP2/BAT_SHORT regulation.
+    /// Charge sense resistor RSR. Not recommend to change this value
+    /// during ICHG/IPRECHG/BATFET_CLAMP1/ BATFET_CLAMP2/BAT_SHORT
+    /// regulation.
     #[doc(alias = "RSNS_RSR")]
     pub fn set_rsns_rsr(&mut self, value: ChargeSenseResistorRsr) {
         let start = 10;
@@ -3733,7 +3834,8 @@ impl ChargeOption1 {
     }
     /// `bit 11` - Set the `rsns_rac` field.
     ///
-    /// Input sense resistor RAC. Not recommend to change this value during IINDPM/IOTG regulation.
+    /// Input sense resistor RAC. Not recommend to change this value
+    /// during IINDPM/IOTG regulation.
     #[doc(alias = "RSNS_RAC")]
     pub fn set_rsns_rac(&mut self, value: InputSenseResistorRac) {
         let start = 11;
@@ -3743,7 +3845,10 @@ impl ChargeOption1 {
     }
     /// `13:12` - Set the `psys_config` field.
     ///
-    /// PSYS Enable and Definition Register. Enable PSYS sensing circuit and output buffer (whole PSYS circuit). In low power mode (EN_LWPWR=1b), PSYS sensing and buffer are always disabled regardless of this bit value.
+    /// PSYS Enable and Definition Register. Enable PSYS sensing circuit
+    /// and output buffer (whole PSYS circuit). In low power mode
+    /// (EN_LWPWR=1b), PSYS sensing and buffer are always disabled
+    /// regardless of this bit value.
     #[doc(alias = "PSYS_CONFIG")]
     pub fn set_psys_config(&mut self, value: PsysEnable) {
         let start = 12;
@@ -3763,7 +3868,8 @@ impl ChargeOption1 {
     }
     /// `bit 15` - Set the `en_ibat` field.
     ///
-    /// IBAT Enable. In low power mode (EN_LWPWR=1b), IBAT buffer is always disabled regardless of this bit value.
+    /// IBAT Enable. In low power mode (EN_LWPWR=1b), IBAT buffer is
+    /// always disabled regardless of this bit value.
     #[doc(alias = "EN_IBAT")]
     pub fn set_en_ibat(&mut self, value: bool) {
         let start = 15;
@@ -4109,7 +4215,9 @@ unsafe impl ::device_driver::Fieldset for AdcVsys {
 impl AdcVsys {
     /// `15:0` - Read the `adc_vsys` field.
     ///
-    /// VSYS ADC reading, in 2mV/bit steps over the range 0mV-65534mV (0h-7FFFh), the same scaling as ADC_VBUS rather than the 1mV/bit of the other voltage channels.
+    /// VSYS ADC reading, in 2mV/bit steps over the range 0mV-65534mV
+    /// (0h-7FFFh), the same scaling as ADC_VBUS rather than the 1mV/bit
+    /// of the other voltage channels.
     #[doc(alias = "ADC_VSYS")]
     #[must_use]
     pub fn adc_vsys(&self) -> u16 {
@@ -4216,7 +4324,11 @@ unsafe impl ::device_driver::Fieldset for AdcIin {
 impl AdcIin {
     /// `15:0` - Read the `adc_iin` field.
     ///
-    /// IIN ADC reading with 10mΩ sense resistor, in 0.5mA/bit steps over the range -16384mA to 16383.5mA (8000h-7FFFh), two's complement. Current flowing from the adapter to the converter (like in forward mode) is represented as positive and current flowing to the adapter (like in OTG mode) is negative.
+    /// IIN ADC reading with 10mΩ sense resistor, in 0.5mA/bit steps
+    /// over the range -16384mA to 16383.5mA (8000h-7FFFh), two's
+    /// complement. Current flowing from the adapter to the converter
+    /// (like in forward mode) is represented as positive and current
+    /// flowing to the adapter (like in OTG mode) is negative.
     #[doc(alias = "ADC_IIN")]
     #[must_use]
     pub fn adc_iin(&self) -> i16 {
@@ -4323,7 +4435,12 @@ unsafe impl ::device_driver::Fieldset for AdcIbat {
 impl AdcIbat {
     /// `15:0` - Read the `adc_ibat` field.
     ///
-    /// IBAT ADC reading with 5mΩ sense resistor, in 1mA/bit steps over the range -32768mA to 32767mA (8000h-7FFFh), two's complement. Note the charger only measures discharging current (negative voltage) under battery only or OTG modes, and only measure charging current(positive voltage) when valid adapter is plugged in.
+    /// IBAT ADC reading with 5mΩ sense resistor, in 1mA/bit steps over
+    /// the range -32768mA to 32767mA (8000h-7FFFh), two's complement.
+    /// Note the charger only measures discharging current (negative
+    /// voltage) under battery only or OTG modes, and only measure
+    /// charging current(positive voltage) when valid adapter is plugged
+    /// in.
     #[doc(alias = "ADC_IBAT")]
     #[must_use]
     pub fn adc_ibat(&self) -> i16 {
@@ -4430,7 +4547,11 @@ unsafe impl ::device_driver::Fieldset for AdcVbus {
 impl AdcVbus {
     /// `15:0` - Read the `adc_vbus` field.
     ///
-    /// VBUS ADC reading, in 2mV/bit steps over the range 0mV-65534mV (0h-7FFFh). Note the neighbouring ADC_VBAT, ADC_PSYS and ADC_CMPIN_TR channels are 1mV/bit, this one is not. When VBUS is plugged in before the converter starts up, the VBUS ADC channel should be run once to capture the no-load VBUS voltage.
+    /// VBUS ADC reading, in 2mV/bit steps over the range 0mV-65534mV
+    /// (0h-7FFFh). Note the neighbouring ADC_VBAT, ADC_PSYS and
+    /// ADC_CMPIN_TR channels are 1mV/bit, this one is not. When VBUS is
+    /// plugged in before the converter starts up, the VBUS ADC channel
+    /// should be run once to capture the no-load VBUS voltage.
     #[doc(alias = "ADC_VBUS")]
     #[must_use]
     pub fn adc_vbus(&self) -> u16 {
@@ -4537,7 +4658,10 @@ unsafe impl ::device_driver::Fieldset for IinDpm {
 impl IinDpm {
     /// `10:2` - Read the `iin_dpm` field.
     ///
-    /// Resolved input current limit with 10mΩ sense resistor, in 25mA/bit steps over the range 400mA-8200mA (10h-148h). This is the read-back of the limit the charger settled on; IIN_HOST() at 0x06 is the writable host setting.
+    /// Resolved input current limit with 10mΩ sense resistor, in
+    /// 25mA/bit steps over the range 400mA-8200mA (10h-148h). This is
+    /// the read-back of the limit the charger settled on; IIN_HOST() at
+    /// 0x06 is the writable host setting.
     #[doc(alias = "IIN_DPM")]
     #[must_use]
     pub fn iin_dpm(&self) -> u16 {
@@ -4721,7 +4845,9 @@ impl ProchotStatusReg {
     }
     /// `bit 7` - Read the `stat_vindpm` field.
     ///
-    /// PROCHOT Profile VINDPM status bit, once triggered 1b, PROCHOT pin is low until host writes this status bit to 0b when PP_VINDPM = 1b.
+    /// PROCHOT Profile VINDPM status bit, once triggered 1b, PROCHOT
+    /// pin is low until host writes this status bit to 0b when
+    /// PP_VINDPM = 1b.
     #[doc(alias = "STAT_VINDPM")]
     #[must_use]
     pub fn stat_vindpm(&self) -> bool {
@@ -4787,7 +4913,9 @@ impl ProchotStatusReg {
     }
     /// `bit 14` - Read the `en_prochot_ext` field.
     ///
-    /// PROCHOT Pulse Extension Enable. When pulse extension is enabled, keep the PROCHOT pin voltage LOW until host writes PROCHOT_CLEAR= 0b.
+    /// PROCHOT Pulse Extension Enable. When pulse extension is enabled,
+    /// keep the PROCHOT pin voltage LOW until host writes
+    /// PROCHOT_CLEAR= 0b.
     #[doc(alias = "EN_PROCHOT_EXT")]
     #[must_use]
     pub fn en_prochot_ext(&self) -> bool {
@@ -4798,7 +4926,9 @@ impl ProchotStatusReg {
     }
     /// `bit 7` - Set the `stat_vindpm` field.
     ///
-    /// PROCHOT Profile VINDPM status bit, once triggered 1b, PROCHOT pin is low until host writes this status bit to 0b when PP_VINDPM = 1b.
+    /// PROCHOT Profile VINDPM status bit, once triggered 1b, PROCHOT
+    /// pin is low until host writes this status bit to 0b when
+    /// PP_VINDPM = 1b.
     #[doc(alias = "STAT_VINDPM")]
     pub fn set_stat_vindpm(&mut self, value: bool) {
         let start = 7;
@@ -4848,7 +4978,9 @@ impl ProchotStatusReg {
     }
     /// `bit 14` - Set the `en_prochot_ext` field.
     ///
-    /// PROCHOT Pulse Extension Enable. When pulse extension is enabled, keep the PROCHOT pin voltage LOW until host writes PROCHOT_CLEAR= 0b.
+    /// PROCHOT Pulse Extension Enable. When pulse extension is enabled,
+    /// keep the PROCHOT pin voltage LOW until host writes
+    /// PROCHOT_CLEAR= 0b.
     #[doc(alias = "EN_PROCHOT_EXT")]
     pub fn set_en_prochot_ext(&mut self, value: bool) {
         let start = 14;
@@ -5002,7 +5134,8 @@ impl ChargerStatus1 {
     }
     /// `bit 2` - Read the `fault_frc_conv_off` field.
     ///
-    /// OTG_OVP fault detected. Force converter off when independent comparator is triggered low effective.
+    /// OTG_OVP fault detected. Force converter off when independent
+    /// comparator is triggered low effective.
     #[doc(alias = "FAULT_FRC_CONV_OFF")]
     #[must_use]
     pub fn fault_frc_conv_off(&self) -> bool {
@@ -5013,7 +5146,8 @@ impl ChargerStatus1 {
     }
     /// `bit 3` - Read the `fault_vsys_uvp` field.
     ///
-    /// VSYS_UVP fault status and clear. It is latched until a clear from host by writing this bit to 0.
+    /// VSYS_UVP fault status and clear. It is latched until a clear
+    /// from host by writing this bit to 0.
     #[doc(alias = "FAULT_VSYS_UVP")]
     #[must_use]
     pub fn fault_vsys_uvp(&self) -> bool {
@@ -5024,7 +5158,11 @@ impl ChargerStatus1 {
     }
     /// `bit 4` - Read the `fault_sysovp` field.
     ///
-    /// SYSOVP fault status and Clear. When the SYSOVP occurs, this bit is set HIGH. As long as this bit is high, the converter is disabled. After the SYSOVP is removed, the user must write a 0 to this bit or unplug the adapter to clear the SYSOVP condition to enable the converter again.
+    /// SYSOVP fault status and Clear. When the SYSOVP occurs, this bit
+    /// is set HIGH. As long as this bit is high, the converter is
+    /// disabled. After the SYSOVP is removed, the user must write a 0
+    /// to this bit or unplug the adapter to clear the SYSOVP condition
+    /// to enable the converter again.
     #[doc(alias = "FAULT_SYSOVP")]
     #[must_use]
     pub fn fault_sysovp(&self) -> bool {
@@ -5145,7 +5283,8 @@ impl ChargerStatus1 {
     }
     /// `bit 15` - Read the `stat_ac` field.
     ///
-    /// Input source status, STAT_AC is active as long as valid VBUS source exist.
+    /// Input source status, STAT_AC is active as long as valid VBUS
+    /// source exist.
     #[doc(alias = "STAT_AC")]
     #[must_use]
     pub fn stat_ac(&self) -> InputSrcStat {
@@ -5156,7 +5295,8 @@ impl ChargerStatus1 {
     }
     /// `bit 3` - Set the `fault_vsys_uvp` field.
     ///
-    /// VSYS_UVP fault status and clear. It is latched until a clear from host by writing this bit to 0.
+    /// VSYS_UVP fault status and clear. It is latched until a clear
+    /// from host by writing this bit to 0.
     #[doc(alias = "FAULT_VSYS_UVP")]
     pub fn set_fault_vsys_uvp(&mut self, value: bool) {
         let start = 3;
@@ -5166,7 +5306,11 @@ impl ChargerStatus1 {
     }
     /// `bit 4` - Set the `fault_sysovp` field.
     ///
-    /// SYSOVP fault status and Clear. When the SYSOVP occurs, this bit is set HIGH. As long as this bit is high, the converter is disabled. After the SYSOVP is removed, the user must write a 0 to this bit or unplug the adapter to clear the SYSOVP condition to enable the converter again.
+    /// SYSOVP fault status and Clear. When the SYSOVP occurs, this bit
+    /// is set HIGH. As long as this bit is high, the converter is
+    /// disabled. After the SYSOVP is removed, the user must write a 0
+    /// to this bit or unplug the adapter to clear the SYSOVP condition
+    /// to enable the converter again.
     #[doc(alias = "FAULT_SYSOVP")]
     pub fn set_fault_sysovp(&mut self, value: bool) {
         let start = 4;
@@ -5656,7 +5800,10 @@ impl ChargerStatus0 {
     }
     /// `10:8` - Read the `mode_stat` field.
     ///
-    /// MODE pin program status. Encodings 000b-011b are quasi dual phase; Table 7-30 lists the phase topology of 100b-111b as NA, and Table 7-1 does not make them reachable through MODE pin programming.
+    /// MODE pin program status. Encodings 000b-011b are quasi dual
+    /// phase; Table 7-30 lists the phase topology of 100b-111b as NA,
+    /// and Table 7-1 does not make them reachable through MODE pin
+    /// programming.
     #[doc(alias = "MODE_STAT")]
     #[must_use]
     pub fn mode_stat(&self) -> ModePinProgStatus {
@@ -5819,7 +5966,8 @@ impl AutoCharge {
     }
     /// `bit 2` - Read the `thermal_deg` field.
     ///
-    /// Adjust TREG thermal deglitch time to trigger prochot profile pull down pulse.
+    /// Adjust TREG thermal deglitch time to trigger prochot profile
+    /// pull down pulse.
     #[doc(alias = "THERMAL_DEG")]
     #[must_use]
     pub fn thermal_deg(&self) -> ThermalDeglitchTime {
@@ -5830,7 +5978,8 @@ impl AutoCharge {
     }
     /// `bit 3` - Read the `stat_thermal` field.
     ///
-    /// PROCHOT profile status bit for TREG thermal overheat (CMPIN_TR< 1.1V). The status is latched until a read from host.
+    /// PROCHOT profile status bit for TREG thermal overheat (CMPIN_TR<
+    /// 1.1V). The status is latched until a read from host.
     #[doc(alias = "STAT_THERMAL")]
     #[must_use]
     pub fn stat_thermal(&self) -> ProchotStatusOverheat {
@@ -5874,7 +6023,9 @@ impl AutoCharge {
     }
     /// `bit 7` - Read the `en_tmr_2_x` field.
     ///
-    /// Charge Safety Timer speed control (Note changing the state of EN_TMR2X only impacts the rate at which the counter is counting and has no effect on any existing accumulated count).
+    /// Charge Safety Timer speed control (Note changing the state of
+    /// EN_TMR2X only impacts the rate at which the counter is counting
+    /// and has no effect on any existing accumulated count).
     #[doc(alias = "EN_TMR2X")]
     #[must_use]
     pub fn en_tmr_2_x(&self) -> ChgTmrSpeedCtrl {
@@ -5896,7 +6047,9 @@ impl AutoCharge {
     }
     /// `13:10` - Read the `vrechg` field.
     ///
-    /// Battery automatic recharge threshold below CHARGE_VOLTAGE(), in 50mV/bit steps with a 50mV offset, over the range 50mV-800mV (0h-Fh). A field value of 0 is 50mV, not 0mV.
+    /// Battery automatic recharge threshold below CHARGE_VOLTAGE(), in
+    /// 50mV/bit steps with a 50mV offset, over the range 50mV-800mV
+    /// (0h-Fh). A field value of 0 is 50mV, not 0mV.
     #[doc(alias = "VRECHG")]
     #[must_use]
     pub fn vrechg(&self) -> u8 {
@@ -5918,7 +6071,8 @@ impl AutoCharge {
     }
     /// `bit 15` - Read the `en_auto_chg` field.
     ///
-    /// Automatic charge control (recharge and terminate battery charging automatically).
+    /// Automatic charge control (recharge and terminate battery
+    /// charging automatically).
     #[doc(alias = "EN_AUTO_CHG")]
     #[must_use]
     pub fn en_auto_chg(&self) -> bool {
@@ -5939,7 +6093,8 @@ impl AutoCharge {
     }
     /// `bit 2` - Set the `thermal_deg` field.
     ///
-    /// Adjust TREG thermal deglitch time to trigger prochot profile pull down pulse.
+    /// Adjust TREG thermal deglitch time to trigger prochot profile
+    /// pull down pulse.
     #[doc(alias = "THERMAL_DEG")]
     pub fn set_thermal_deg(&mut self, value: ThermalDeglitchTime) {
         let start = 2;
@@ -5979,7 +6134,9 @@ impl AutoCharge {
     }
     /// `bit 7` - Set the `en_tmr_2_x` field.
     ///
-    /// Charge Safety Timer speed control (Note changing the state of EN_TMR2X only impacts the rate at which the counter is counting and has no effect on any existing accumulated count).
+    /// Charge Safety Timer speed control (Note changing the state of
+    /// EN_TMR2X only impacts the rate at which the counter is counting
+    /// and has no effect on any existing accumulated count).
     #[doc(alias = "EN_TMR2X")]
     pub fn set_en_tmr_2_x(&mut self, value: ChgTmrSpeedCtrl) {
         let start = 7;
@@ -5999,7 +6156,9 @@ impl AutoCharge {
     }
     /// `13:10` - Set the `vrechg` field.
     ///
-    /// Battery automatic recharge threshold below CHARGE_VOLTAGE(), in 50mV/bit steps with a 50mV offset, over the range 50mV-800mV (0h-Fh). A field value of 0 is 50mV, not 0mV.
+    /// Battery automatic recharge threshold below CHARGE_VOLTAGE(), in
+    /// 50mV/bit steps with a 50mV offset, over the range 50mV-800mV
+    /// (0h-Fh). A field value of 0 is 50mV, not 0mV.
     #[doc(alias = "VRECHG")]
     pub fn set_vrechg(&mut self, value: u8) {
         let start = 10;
@@ -6019,7 +6178,8 @@ impl AutoCharge {
     }
     /// `bit 15` - Set the `en_auto_chg` field.
     ///
-    /// Automatic charge control (recharge and terminate battery charging automatically).
+    /// Automatic charge control (recharge and terminate battery
+    /// charging automatically).
     #[doc(alias = "EN_AUTO_CHG")]
     pub fn set_en_auto_chg(&mut self, value: bool) {
         let start = 15;
@@ -6145,7 +6305,8 @@ unsafe impl ::device_driver::Fieldset for ChargeOption5 {
 impl ChargeOption5 {
     /// `1:0` - Read the `ph_drop_deg` field.
     ///
-    /// Adjust dual phase to single phase (phase dropping transition) deglitch time.
+    /// Adjust dual phase to single phase (phase dropping transition)
+    /// deglitch time.
     #[doc(alias = "PH_DROP_DEG")]
     #[must_use]
     pub fn ph_drop_deg(&self) -> PhaseDroppingTransitionDeglitchTime {
@@ -6156,7 +6317,8 @@ impl ChargeOption5 {
     }
     /// `3:2` - Read the `ph_add_deg` field.
     ///
-    /// Adjust single phase to dual phase (phase adding transition) deglitch time.
+    /// Adjust single phase to dual phase (phase adding transition)
+    /// deglitch time.
     #[doc(alias = "PH_ADD_DEG")]
     #[must_use]
     pub fn ph_add_deg(&self) -> PhaseAddingTransitionDeglitchTime {
@@ -6167,7 +6329,8 @@ impl ChargeOption5 {
     }
     /// `bit 4` - Read the `force_single` field.
     ///
-    /// Force single phase operation under buck mode when quasi dual phase is chosen through MODE pin programming.
+    /// Force single phase operation under buck mode when quasi dual
+    /// phase is chosen through MODE pin programming.
     #[doc(alias = "FORCE_SINGLE")]
     #[must_use]
     pub fn force_single(&self) -> bool {
@@ -6178,7 +6341,8 @@ impl ChargeOption5 {
     }
     /// `7:5` - Read the `single_dual_trans_th` field.
     ///
-    /// Buck mode single to dual phase transition threshold adjustment based on output load current.
+    /// Buck mode single to dual phase transition threshold adjustment
+    /// based on output load current.
     #[doc(alias = "SINGLE_DUAL_TRANS_TH")]
     #[must_use]
     pub fn single_dual_trans_th(&self) -> SingleDualTransThreshold {
@@ -6200,7 +6364,8 @@ impl ChargeOption5 {
     }
     /// `bit 11` - Read the `en_regn_lwpwr` field.
     ///
-    /// Enable REGN with scale down current 5mA capability under battery only and low power mode.
+    /// Enable REGN with scale down current 5mA capability under battery
+    /// only and low power mode.
     #[doc(alias = "EN_REGN_LWPWR")]
     #[must_use]
     pub fn en_regn_lwpwr(&self) -> bool {
@@ -6255,7 +6420,8 @@ impl ChargeOption5 {
     }
     /// `1:0` - Set the `ph_drop_deg` field.
     ///
-    /// Adjust dual phase to single phase (phase dropping transition) deglitch time.
+    /// Adjust dual phase to single phase (phase dropping transition)
+    /// deglitch time.
     #[doc(alias = "PH_DROP_DEG")]
     pub fn set_ph_drop_deg(&mut self, value: PhaseDroppingTransitionDeglitchTime) {
         let start = 0;
@@ -6265,7 +6431,8 @@ impl ChargeOption5 {
     }
     /// `3:2` - Set the `ph_add_deg` field.
     ///
-    /// Adjust single phase to dual phase (phase adding transition) deglitch time.
+    /// Adjust single phase to dual phase (phase adding transition)
+    /// deglitch time.
     #[doc(alias = "PH_ADD_DEG")]
     pub fn set_ph_add_deg(&mut self, value: PhaseAddingTransitionDeglitchTime) {
         let start = 2;
@@ -6275,7 +6442,8 @@ impl ChargeOption5 {
     }
     /// `bit 4` - Set the `force_single` field.
     ///
-    /// Force single phase operation under buck mode when quasi dual phase is chosen through MODE pin programming.
+    /// Force single phase operation under buck mode when quasi dual
+    /// phase is chosen through MODE pin programming.
     #[doc(alias = "FORCE_SINGLE")]
     pub fn set_force_single(&mut self, value: bool) {
         let start = 4;
@@ -6285,7 +6453,8 @@ impl ChargeOption5 {
     }
     /// `7:5` - Set the `single_dual_trans_th` field.
     ///
-    /// Buck mode single to dual phase transition threshold adjustment based on output load current.
+    /// Buck mode single to dual phase transition threshold adjustment
+    /// based on output load current.
     #[doc(alias = "SINGLE_DUAL_TRANS_TH")]
     pub fn set_single_dual_trans_th(&mut self, value: SingleDualTransThreshold) {
         let start = 5;
@@ -6305,7 +6474,8 @@ impl ChargeOption5 {
     }
     /// `bit 11` - Set the `en_regn_lwpwr` field.
     ///
-    /// Enable REGN with scale down current 5mA capability under battery only and low power mode.
+    /// Enable REGN with scale down current 5mA capability under battery
+    /// only and low power mode.
     #[doc(alias = "EN_REGN_LWPWR")]
     pub fn set_en_regn_lwpwr(&mut self, value: bool) {
         let start = 11;
@@ -6469,7 +6639,8 @@ unsafe impl ::device_driver::Fieldset for GateDrive {
 impl GateDrive {
     /// `bit 1` - Read the `vsys_reg_slow` field.
     ///
-    /// System regulation loop bandwidth slow down to reduce input current overshoot during load transient.
+    /// System regulation loop bandwidth slow down to reduce input
+    /// current overshoot during load transient.
     #[doc(alias = "VSYS_REG_SLOW")]
     #[must_use]
     pub fn vsys_reg_slow(&self) -> bool {
@@ -6480,7 +6651,8 @@ impl GateDrive {
     }
     /// `4:2` - Read the `lodrv_2_stat` field.
     ///
-    /// Suggested LODRV2 LS MOSFET gate drive strength adjustment for both turn on and turn off.
+    /// Suggested LODRV2 LS MOSFET gate drive strength adjustment for
+    /// both turn on and turn off.
     #[doc(alias = "LODRV2_STAT")]
     #[must_use]
     pub fn lodrv_2_stat(&self) -> Lodrv2GateDriveStrengthAdjustment {
@@ -6491,7 +6663,8 @@ impl GateDrive {
     }
     /// `7:5` - Read the `hidrv_2_stat` field.
     ///
-    /// Suggested HIDRV2 HS MOSFET gate drive strength adjustment for both turn on and turn off.
+    /// Suggested HIDRV2 HS MOSFET gate drive strength adjustment for
+    /// both turn on and turn off.
     #[doc(alias = "HIDRV2_STAT")]
     #[must_use]
     pub fn hidrv_2_stat(&self) -> Hidrv2GateDriveStrengthAdjustment {
@@ -6502,7 +6675,8 @@ impl GateDrive {
     }
     /// `bit 8` - Read the `batovp_extend` field.
     ///
-    /// Enable BATOVP for both charge enable and disable scenarios including AC+battery and battery only.
+    /// Enable BATOVP for both charge enable and disable scenarios
+    /// including AC+battery and battery only.
     #[doc(alias = "BATOVP_EXTEND")]
     #[must_use]
     pub fn batovp_extend(&self) -> bool {
@@ -6513,7 +6687,8 @@ impl GateDrive {
     }
     /// `12:10` - Read the `lodrv_1_stat` field.
     ///
-    /// Suggested LODRV1_A and LODRV1_B LS MOSFET gate drive strength adjustment for both turn on and turn off.
+    /// Suggested LODRV1_A and LODRV1_B LS MOSFET gate drive strength
+    /// adjustment for both turn on and turn off.
     #[doc(alias = "LODRV1_STAT")]
     #[must_use]
     pub fn lodrv_1_stat(&self) -> Lodrv1GateDriveStrengthAdjustment {
@@ -6524,7 +6699,8 @@ impl GateDrive {
     }
     /// `15:13` - Read the `hidrv_1_stat` field.
     ///
-    /// Suggested HIDRV1_A and HIDRV1_B HS MOSFET gate drive strength adjustment for both turn on and turn off.
+    /// Suggested HIDRV1_A and HIDRV1_B HS MOSFET gate drive strength
+    /// adjustment for both turn on and turn off.
     #[doc(alias = "HIDRV1_STAT")]
     #[must_use]
     pub fn hidrv_1_stat(&self) -> Hidrv1GateDriveStrengthAdjustment {
@@ -6535,7 +6711,8 @@ impl GateDrive {
     }
     /// `bit 1` - Set the `vsys_reg_slow` field.
     ///
-    /// System regulation loop bandwidth slow down to reduce input current overshoot during load transient.
+    /// System regulation loop bandwidth slow down to reduce input
+    /// current overshoot during load transient.
     #[doc(alias = "VSYS_REG_SLOW")]
     pub fn set_vsys_reg_slow(&mut self, value: bool) {
         let start = 1;
@@ -6545,7 +6722,8 @@ impl GateDrive {
     }
     /// `4:2` - Set the `lodrv_2_stat` field.
     ///
-    /// Suggested LODRV2 LS MOSFET gate drive strength adjustment for both turn on and turn off.
+    /// Suggested LODRV2 LS MOSFET gate drive strength adjustment for
+    /// both turn on and turn off.
     #[doc(alias = "LODRV2_STAT")]
     pub fn set_lodrv_2_stat(&mut self, value: Lodrv2GateDriveStrengthAdjustment) {
         let start = 2;
@@ -6555,7 +6733,8 @@ impl GateDrive {
     }
     /// `7:5` - Set the `hidrv_2_stat` field.
     ///
-    /// Suggested HIDRV2 HS MOSFET gate drive strength adjustment for both turn on and turn off.
+    /// Suggested HIDRV2 HS MOSFET gate drive strength adjustment for
+    /// both turn on and turn off.
     #[doc(alias = "HIDRV2_STAT")]
     pub fn set_hidrv_2_stat(&mut self, value: Hidrv2GateDriveStrengthAdjustment) {
         let start = 5;
@@ -6565,7 +6744,8 @@ impl GateDrive {
     }
     /// `bit 8` - Set the `batovp_extend` field.
     ///
-    /// Enable BATOVP for both charge enable and disable scenarios including AC+battery and battery only.
+    /// Enable BATOVP for both charge enable and disable scenarios
+    /// including AC+battery and battery only.
     #[doc(alias = "BATOVP_EXTEND")]
     pub fn set_batovp_extend(&mut self, value: bool) {
         let start = 8;
@@ -6575,7 +6755,8 @@ impl GateDrive {
     }
     /// `12:10` - Set the `lodrv_1_stat` field.
     ///
-    /// Suggested LODRV1_A and LODRV1_B LS MOSFET gate drive strength adjustment for both turn on and turn off.
+    /// Suggested LODRV1_A and LODRV1_B LS MOSFET gate drive strength
+    /// adjustment for both turn on and turn off.
     #[doc(alias = "LODRV1_STAT")]
     pub fn set_lodrv_1_stat(&mut self, value: Lodrv1GateDriveStrengthAdjustment) {
         let start = 10;
@@ -6585,7 +6766,8 @@ impl GateDrive {
     }
     /// `15:13` - Set the `hidrv_1_stat` field.
     ///
-    /// Suggested HIDRV1_A and HIDRV1_B HS MOSFET gate drive strength adjustment for both turn on and turn off.
+    /// Suggested HIDRV1_A and HIDRV1_B HS MOSFET gate drive strength
+    /// adjustment for both turn on and turn off.
     #[doc(alias = "HIDRV1_STAT")]
     pub fn set_hidrv_1_stat(&mut self, value: Hidrv1GateDriveStrengthAdjustment) {
         let start = 13;
@@ -6712,7 +6894,9 @@ impl ChargeProfile {
     }
     /// `15:8` - Read the `iprechg` field.
     ///
-    /// Maximum precharge current clamp setting with 5mΩ sense resistor (The lower setting of CHARGE_CURRENT() and IPRECHG determine the practical precharge current when VBAT< VSYS_MIN()).
+    /// Maximum precharge current clamp setting with 5mΩ sense resistor
+    /// (The lower setting of CHARGE_CURRENT() and IPRECHG determine the
+    /// practical precharge current when VBAT< VSYS_MIN()).
     #[doc(alias = "IPRECHG")]
     #[must_use]
     pub fn iprechg(&self) -> u8 {
@@ -6733,7 +6917,9 @@ impl ChargeProfile {
     }
     /// `15:8` - Set the `iprechg` field.
     ///
-    /// Maximum precharge current clamp setting with 5mΩ sense resistor (The lower setting of CHARGE_CURRENT() and IPRECHG determine the practical precharge current when VBAT< VSYS_MIN()).
+    /// Maximum precharge current clamp setting with 5mΩ sense resistor
+    /// (The lower setting of CHARGE_CURRENT() and IPRECHG determine the
+    /// practical precharge current when VBAT< VSYS_MIN()).
     #[doc(alias = "IPRECHG")]
     pub fn set_iprechg(&mut self, value: u8) {
         let start = 8;
@@ -7426,7 +7612,11 @@ unsafe impl ::device_driver::Fieldset for ChargeVoltage {
 impl ChargeVoltage {
     /// `14:2` - Read the `charge_voltage` field.
     ///
-    /// Charge voltage setting, in 4mV/bit steps over the range 5000mV-23000mV (4E2h-1676h). Writing a non-zero value beyond the clamp sets the register to the clamp. Writing 0 does NOT set 0V: it leaves this register unchanged and forces CHARGE_CURRENT() to zero, disabling charge.
+    /// Charge voltage setting, in 4mV/bit steps over the range
+    /// 5000mV-23000mV (4E2h-1676h). Writing a non-zero value beyond the
+    /// clamp sets the register to the clamp. Writing 0 does NOT set 0V:
+    /// it leaves this register unchanged and forces CHARGE_CURRENT() to
+    /// zero, disabling charge.
     #[doc(alias = "CHARGE_VOLTAGE")]
     #[must_use]
     pub fn charge_voltage(&self) -> u16 {
@@ -7437,7 +7627,11 @@ impl ChargeVoltage {
     }
     /// `14:2` - Set the `charge_voltage` field.
     ///
-    /// Charge voltage setting, in 4mV/bit steps over the range 5000mV-23000mV (4E2h-1676h). Writing a non-zero value beyond the clamp sets the register to the clamp. Writing 0 does NOT set 0V: it leaves this register unchanged and forces CHARGE_CURRENT() to zero, disabling charge.
+    /// Charge voltage setting, in 4mV/bit steps over the range
+    /// 5000mV-23000mV (4E2h-1676h). Writing a non-zero value beyond the
+    /// clamp sets the register to the clamp. Writing 0 does NOT set 0V:
+    /// it leaves this register unchanged and forces CHARGE_CURRENT() to
+    /// zero, disabling charge.
     #[doc(alias = "CHARGE_VOLTAGE")]
     pub fn set_charge_voltage(&mut self, value: u16) {
         let start = 2;
@@ -7660,7 +7854,8 @@ unsafe impl ::device_driver::Fieldset for ChargeOption0 {
 impl ChargeOption0 {
     /// `bit 0` - Read the `chrg_inhibit` field.
     ///
-    /// Charge Inhibit. When bit is 0 battery charging will start with valid values in the CHARGE_VOLTAGE() and CHARGE_CURRENT().
+    /// Charge Inhibit. When bit is 0 battery charging will start with
+    /// valid values in the CHARGE_VOLTAGE() and CHARGE_CURRENT().
     #[doc(alias = "CHRG_INHIBIT")]
     #[must_use]
     pub fn chrg_inhibit(&self) -> bool {
@@ -7671,7 +7866,10 @@ impl ChargeOption0 {
     }
     /// `bit 1` - Read the `en_iin_dpm` field.
     ///
-    /// IIN_DPM Enable. Host writes this bit to enable IIN_DPM regulation loop. When the IIN_DPM is disabled by the charger (refer to IIN_DPM_AUTO_DISABLE), this bit goes LOW. Under OTG mode, this bit is also used to enable/disable IOTG regulation.
+    /// IIN_DPM Enable. Host writes this bit to enable IIN_DPM
+    /// regulation loop. When the IIN_DPM is disabled by the charger
+    /// (refer to IIN_DPM_AUTO_DISABLE), this bit goes LOW. Under OTG
+    /// mode, this bit is also used to enable/disable IOTG regulation.
     #[doc(alias = "EN_IIN_DPM")]
     #[must_use]
     pub fn en_iin_dpm(&self) -> bool {
@@ -7682,7 +7880,8 @@ impl ChargeOption0 {
     }
     /// `bit 2` - Read the `en_ldo` field.
     ///
-    /// LDO Mode Enable. When battery voltage is below VSYS_MIN(), the charger is in pre-charge with LDO mode enabled.
+    /// LDO Mode Enable. When battery voltage is below VSYS_MIN(), the
+    /// charger is in pre-charge with LDO mode enabled.
     #[doc(alias = "EN_LDO")]
     #[must_use]
     pub fn en_ldo(&self) -> bool {
@@ -7693,7 +7892,8 @@ impl ChargeOption0 {
     }
     /// `bit 3` - Read the `ibat_gain` field.
     ///
-    /// IBAT Amplifier Ratio. The ratio of voltage on IBAT and voltage across SRP and SRN.
+    /// IBAT Amplifier Ratio. The ratio of voltage on IBAT and voltage
+    /// across SRP and SRN.
     #[doc(alias = "IBAT_GAIN")]
     #[must_use]
     pub fn ibat_gain(&self) -> IbatGain {
@@ -7704,7 +7904,8 @@ impl ChargeOption0 {
     }
     /// `bit 4` - Read the `iadpt_gain` field.
     ///
-    /// IADPT Amplifier Ratio. The ratio of voltage on IADPT and voltage across ACP and ACN.
+    /// IADPT Amplifier Ratio. The ratio of voltage on IADPT and voltage
+    /// across ACP and ACN.
     #[doc(alias = "IADPT_GAIN")]
     #[must_use]
     pub fn iadpt_gain(&self) -> IadptGain {
@@ -7737,7 +7938,11 @@ impl ChargeOption0 {
     }
     /// `bit 7` - Read the `en_cmp_latch` field.
     ///
-    /// Enable Latch of Independent Comparator. Comparator output with effective low. If enabled in PROCHOT profile PP_CMP=1b, STAT_COMP bit keep 1b after triggered until read by host and clear. host can clear CMPOUT pin by toggling this EN_CMP_LATCH bit.
+    /// Enable Latch of Independent Comparator. Comparator output with
+    /// effective low. If enabled in PROCHOT profile PP_CMP=1b,
+    /// STAT_COMP bit keep 1b after triggered until read by host and
+    /// clear. host can clear CMPOUT pin by toggling this EN_CMP_LATCH
+    /// bit.
     #[doc(alias = "EN_CMP_LATCH")]
     #[must_use]
     pub fn en_cmp_latch(&self) -> bool {
@@ -7803,7 +8008,8 @@ impl ChargeOption0 {
     }
     /// `14:13` - Read the `wdtmr_adj` field.
     ///
-    /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC host write of charge voltage or charge current command.
+    /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC
+    /// host write of charge voltage or charge current command.
     #[doc(alias = "WDTMR_ADJ")]
     #[must_use]
     pub fn wdtmr_adj(&self) -> MaxDelay {
@@ -7825,7 +8031,8 @@ impl ChargeOption0 {
     }
     /// `bit 0` - Set the `chrg_inhibit` field.
     ///
-    /// Charge Inhibit. When bit is 0 battery charging will start with valid values in the CHARGE_VOLTAGE() and CHARGE_CURRENT().
+    /// Charge Inhibit. When bit is 0 battery charging will start with
+    /// valid values in the CHARGE_VOLTAGE() and CHARGE_CURRENT().
     #[doc(alias = "CHRG_INHIBIT")]
     pub fn set_chrg_inhibit(&mut self, value: bool) {
         let start = 0;
@@ -7835,7 +8042,10 @@ impl ChargeOption0 {
     }
     /// `bit 1` - Set the `en_iin_dpm` field.
     ///
-    /// IIN_DPM Enable. Host writes this bit to enable IIN_DPM regulation loop. When the IIN_DPM is disabled by the charger (refer to IIN_DPM_AUTO_DISABLE), this bit goes LOW. Under OTG mode, this bit is also used to enable/disable IOTG regulation.
+    /// IIN_DPM Enable. Host writes this bit to enable IIN_DPM
+    /// regulation loop. When the IIN_DPM is disabled by the charger
+    /// (refer to IIN_DPM_AUTO_DISABLE), this bit goes LOW. Under OTG
+    /// mode, this bit is also used to enable/disable IOTG regulation.
     #[doc(alias = "EN_IIN_DPM")]
     pub fn set_en_iin_dpm(&mut self, value: bool) {
         let start = 1;
@@ -7845,7 +8055,8 @@ impl ChargeOption0 {
     }
     /// `bit 2` - Set the `en_ldo` field.
     ///
-    /// LDO Mode Enable. When battery voltage is below VSYS_MIN(), the charger is in pre-charge with LDO mode enabled.
+    /// LDO Mode Enable. When battery voltage is below VSYS_MIN(), the
+    /// charger is in pre-charge with LDO mode enabled.
     #[doc(alias = "EN_LDO")]
     pub fn set_en_ldo(&mut self, value: bool) {
         let start = 2;
@@ -7855,7 +8066,8 @@ impl ChargeOption0 {
     }
     /// `bit 3` - Set the `ibat_gain` field.
     ///
-    /// IBAT Amplifier Ratio. The ratio of voltage on IBAT and voltage across SRP and SRN.
+    /// IBAT Amplifier Ratio. The ratio of voltage on IBAT and voltage
+    /// across SRP and SRN.
     #[doc(alias = "IBAT_GAIN")]
     pub fn set_ibat_gain(&mut self, value: IbatGain) {
         let start = 3;
@@ -7865,7 +8077,8 @@ impl ChargeOption0 {
     }
     /// `bit 4` - Set the `iadpt_gain` field.
     ///
-    /// IADPT Amplifier Ratio. The ratio of voltage on IADPT and voltage across ACP and ACN.
+    /// IADPT Amplifier Ratio. The ratio of voltage on IADPT and voltage
+    /// across ACP and ACN.
     #[doc(alias = "IADPT_GAIN")]
     pub fn set_iadpt_gain(&mut self, value: IadptGain) {
         let start = 4;
@@ -7895,7 +8108,11 @@ impl ChargeOption0 {
     }
     /// `bit 7` - Set the `en_cmp_latch` field.
     ///
-    /// Enable Latch of Independent Comparator. Comparator output with effective low. If enabled in PROCHOT profile PP_CMP=1b, STAT_COMP bit keep 1b after triggered until read by host and clear. host can clear CMPOUT pin by toggling this EN_CMP_LATCH bit.
+    /// Enable Latch of Independent Comparator. Comparator output with
+    /// effective low. If enabled in PROCHOT profile PP_CMP=1b,
+    /// STAT_COMP bit keep 1b after triggered until read by host and
+    /// clear. host can clear CMPOUT pin by toggling this EN_CMP_LATCH
+    /// bit.
     #[doc(alias = "EN_CMP_LATCH")]
     pub fn set_en_cmp_latch(&mut self, value: bool) {
         let start = 7;
@@ -7955,7 +8172,8 @@ impl ChargeOption0 {
     }
     /// `14:13` - Set the `wdtmr_adj` field.
     ///
-    /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC host write of charge voltage or charge current command.
+    /// WATCHDOG Timer Adjust. Set maximum delay between consecutive EC
+    /// host write of charge voltage or charge current command.
     #[doc(alias = "WDTMR_ADJ")]
     pub fn set_wdtmr_adj(&mut self, value: MaxDelay) {
         let start = 13;
