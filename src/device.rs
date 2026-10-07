@@ -4109,7 +4109,7 @@ unsafe impl ::device_driver::Fieldset for AdcVsys {
 impl AdcVsys {
     /// `15:0` - Read the `adc_vsys` field.
     ///
-    /// VSYS ADC reading.
+    /// VSYS ADC reading, in 2mV/bit steps over the range 0mV-65534mV (0h-7FFFh), the same scaling as ADC_VBUS rather than the 1mV/bit of the other voltage channels.
     #[doc(alias = "ADC_VSYS")]
     #[must_use]
     pub fn adc_vsys(&self) -> u16 {
@@ -4430,7 +4430,7 @@ unsafe impl ::device_driver::Fieldset for AdcVbus {
 impl AdcVbus {
     /// `15:0` - Read the `adc_vbus` field.
     ///
-    /// VBUS ADC reading.
+    /// VBUS ADC reading, in 2mV/bit steps over the range 0mV-65534mV (0h-7FFFh). Note the neighbouring ADC_VBAT, ADC_PSYS and ADC_CMPIN_TR channels are 1mV/bit, this one is not. When VBUS is plugged in before the converter starts up, the VBUS ADC channel should be run once to capture the no-load VBUS voltage.
     #[doc(alias = "ADC_VBUS")]
     #[must_use]
     pub fn adc_vbus(&self) -> u16 {
