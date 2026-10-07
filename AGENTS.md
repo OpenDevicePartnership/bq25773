@@ -20,14 +20,15 @@ Key facts:
 
 - Crate name / version: `bq25773` (see `Cargo.toml`).
 - Edition: **2024**.
-- MSRV: **Rust 1.85** (see `Cargo.toml` and the `msrv` job in
+- MSRV: **Rust 1.94** (required by device-driver 2.1; see `Cargo.toml` and the `msrv` job in
   `.github/workflows/check.yml`).
 - License: **MIT** (`LICENSE`).
 - I2C device address: `0x6B` (`BQ_ADDR` in `src/lib.rs`).
-- `no_std` always; `std` is only enabled under `cfg(test)`
-  (`#![cfg_attr(not(test), no_std)]` in `src/lib.rs`).
-- Single optional feature: `defmt-03` — enables `defmt` 0.3 logging
-  through `device-driver` and `embedded-batteries-async`.
+- Library builds are `no_std`; unit-test builds enable `std` via
+  `#![cfg_attr(not(test), no_std)]` in `src/lib.rs`.
+- Single optional feature: `defmt` — enables `defmt` 1 formatting
+  support and the `defmt` features of `device-driver` and
+  `embedded-batteries-async`.
 - Datasheet: <https://www.ti.com/lit/ds/symlink/bq25773.pdf>.
 
 ## Repository layout
@@ -36,9 +37,9 @@ Key facts:
 .
 ├── AGENTS.md                       # ← this file
 ├── Cargo.toml                      # crate manifest, lints, features
-├── Cargo.lock                      # checked in (library + binary policy)
-├── build.rs                        # rerun-if-changed for device.yaml
-├── device.yaml                     # device-driver register manifest (source of truth)
+├── Cargo.lock                      # checked in; update with dependency changes
+├── build.rs                        # rerun-if-changed for device.ddsl
+├── device.ddsl                     # device-driver v2 register definitions (source of truth)
 ├── rustfmt.toml                    # nightly-only options (see "Formatting")
 ├── deny.toml                       # cargo-deny configuration
 ├── CONTRIBUTING.md                 # contributor rules (commit style, PR etiquette)
@@ -49,65 +50,97 @@ Key facts:
 ├── LICENSE                         # MIT
 ├── src/
 │   ├── lib.rs                      # public API: Bq25773, DeviceInterface, error type, tests
-│   └── device.rs                   # GENERATED from device.yaml; do not edit by hand
+│   └── device.rs                   # GENERATED from device.ddsl; do not edit by hand
+├── supply-chain/
+│   ├── README.md                   # dependency-vetting process
+│   ├── audits.toml                 # local cargo-vet audits
+│   ├── config.toml                 # cargo-vet policy and trusted imports
+│   └── imports.lock                # imported audit records
 └── .github/
     ├── copilot-instructions.md     # AI commit-message rules (folded in below)
     └── workflows/
+        ├── cargo-vet.yml           # checks dependency audit coverage
+        ├── cargo-vet-pr-comment.yml # reports cargo-vet results on PRs
         ├── check.yml               # fmt / clippy / semver / doc / hack / deny / test / msrv
-        ├── device-driver.yml       # verifies src/device.rs matches device.yaml
+        ├── device-driver.yml       # verifies src/device.rs matches device.ddsl
         └── nostd.yml               # cross-check for thumbv8m.main-none-eabihf
 ```
 
 ### `src/device.rs` is generated
 
-`src/device.rs` is produced from `device.yaml` by `device-driver-cli`
-and **must be regenerated** rather than hand-edited. The
-`device-driver-pregen-check` workflow
-(`.github/workflows/device-driver.yml`) fails the build if the
-committed file does not match a freshly generated one.
+`src/device.rs` is produced from `device.ddsl` by `device-driver-cli`
+(`ddc`) and **must be regenerated** rather than hand-edited. The
+committed file's header records generator version **2.1.1**.
+`build.rs` only emits `rerun-if-changed`; ordinary Cargo builds use
+the committed file and do not regenerate it.
+
+The `device-driver-pregen-check` workflow
+(`.github/workflows/device-driver.yml`) delegates to
+[`tullom/device-driver-pregen-check@v1.1.0`](https://github.com/tullom/device-driver-pregen-check/blob/v1.1.0/action.yml).
+Without overrides, that action installs the newest compatible CLI
+matching `^2.1.1` and uses **Rust 1.94.0** with its stable `rustfmt`.
+It fails if the regenerated, formatted file differs from the
+committed one. Check the workflow and action defaults when updating
+the generator.
 
 To regenerate locally:
 
-```powershell
-cargo install device-driver-cli                                  # once
-device-driver-cli --manifest device.yaml --device-name Device -o src/device.rs
-rustup run nightly rustfmt --edition 2024 src/device.rs
+```sh
+rustup toolchain install 1.94.0 --profile minimal --component rustfmt
+cargo +1.94.0 install device-driver-cli --version '^2.1.1' --locked
+ddc build --source device.ddsl --output src/device.rs rust --rust-defmt-feature=defmt
+rustup run 1.94.0 rustfmt --edition 2024 --config newline_style=Unix src/device.rs
 ```
 
-The CI job formats the regenerated file with **nightly** `rustfmt`
-before diffing, because `rustfmt.toml` contains unstable options. Use
-the same nightly run locally or the diff will perpetually fail.
+The pregeneration check uses **stable 1.94.0**, not nightly, and
+forces Unix line endings. This is separate from the repository-wide
+**nightly** format check below; changes must satisfy both checks.
 
 ## Building and testing
 
-All commands below mirror `.github/workflows/check.yml`,
-`device-driver.yml`, and `nostd.yml`. They have been verified on a
-Windows + stable-toolchain checkout of this repo.
+Commands below correspond to `.github/workflows/check.yml`,
+`device-driver.yml`, `nostd.yml`, and `cargo-vet.yml`. CI runs on
+Ubuntu with stable Rust unless otherwise noted. Shell environment
+assignments below use POSIX syntax.
 
-| Purpose                | Command                                                                  | CI job                |
-|------------------------|--------------------------------------------------------------------------|-----------------------|
-| Format check (nightly) | `cargo +nightly fmt --check`                                             | `fmt`                 |
-| Clippy (lib)           | `cargo clippy -- -Dwarnings`                                             | `clippy`              |
-| Clippy (tests)         | `cargo clippy --tests -- -Dwarnings`                                     | `test` (second step)  |
-| Unit tests             | `cargo test`                                                             | `test`                |
-| Docs                   | `$env:RUSTDOCFLAGS="--cfg docsrs"; cargo doc --no-deps --all-features`   | `doc`                 |
-| MSRV build             | `cargo check`            (under Rust 1.85)                               | `msrv`                |
-| `no_std` cross build   | `cargo check --target thumbv8m.main-none-eabihf --no-default-features`   | `nostd`               |
-| Feature powerset       | `cargo hack --feature-powerset check`  (requires `cargo install cargo-hack`) | `hack`            |
-| License/advisory scan  | `cargo deny --all-features check`      (requires `cargo install cargo-deny`) | `deny`            |
-| Semver check           | `cargo semver-checks`                  (requires `cargo install cargo-semver-checks`) | `semver` |
-| Device manifest check  | see "Regenerating `src/device.rs`" above                                 | `device-driver-pregen-check` |
+| Purpose | Command | CI job |
+|---------|---------|--------|
+| Format check (nightly) | `cargo +nightly fmt --check` | `fmt` |
+| Clippy (lib) | `cargo clippy -- -Dwarnings` | `clippy` |
+| Clippy (tests, default features) | `cargo clippy --tests -- -Dwarnings` | `test` |
+| Clippy (tests, all features) | `cargo clippy --tests --all-features -- -Dwarnings` | `test` |
+| Unit tests (default features) | `cargo test` | `test` |
+| Unit tests (all features) | `cargo test --all-features` | `test` |
+| Docs | `RUSTDOCFLAGS="--cfg docsrs" cargo doc --no-deps --all-features` | `doc` |
+| MSRV build | `cargo +1.94 check` | `msrv` |
+| `no_std` cross build | `cargo check --target thumbv8m.main-none-eabihf --no-default-features` | `nostd` |
+| Feature powerset | `cargo hack --feature-powerset check` | `hack` |
+| License/advisory scan | `cargo deny --all-features check` | `deny` |
+| Semver check | `cargo semver-checks` | `semver` |
+| Dependency audit coverage | `cargo vet --locked` | `vet` in `cargo-vet.yml` |
+| Device manifest check | regenerate as above, then `git diff --exit-code -- src/device.rs` | `device-driver-pregen-check` |
+
+Install `cargo-hack`, `cargo-deny`, and `cargo-semver-checks` with
+`cargo install` if needed. The vet workflow uses `cargo-vet` **0.10.2**
+(`cargo install cargo-vet --version 0.10.2`). Follow
+[supply-chain/README.md](supply-chain/README.md) when dependency
+changes require new audits or updated imports.
+
+The cross build requires
+`rustup target add thumbv8m.main-none-eabihf`. The format check
+requires nightly with the `rustfmt` component.
+For PowerShell, the docs command is
+`$env:RUSTDOCFLAGS="--cfg docsrs"; cargo doc --no-deps --all-features`.
 
 ### Formatting (`rustfmt.toml`)
 
-`rustfmt.toml` enables unstable options (`group_imports =
-"StdExternalCrate"`, `imports_granularity = "Module"`,
-`max_width = 120`). These work only on the **nightly** channel; on
-stable, `cargo fmt --check` will print warnings like
-`Warning: can't set `imports_granularity = Module`, unstable features
-are only available in nightly channel` and silently ignore those
-options. The `fmt` job uses `dtolnay/rust-toolchain@nightly`. Always
-use nightly for fmt to match CI.
+`rustfmt.toml` sets `group_imports = "StdExternalCrate"` and
+`imports_granularity = "Module"`, which require **nightly**.
+`max_width = 120` also applies on stable. Stable `rustfmt` warns
+about and ignores the two unstable import-formatting options.
+The `fmt` job uses `dtolnay/rust-toolchain@nightly`, so use nightly
+for the repository-wide format check. Use the stable formatter
+specified above when regenerating `src/device.rs`.
 
 ### Clippy policy
 
@@ -123,7 +156,7 @@ Practical consequences:
 
 - No `unsafe` blocks in hand-written code. The generated `src/device.rs`
   has its own `#[allow(unsafe_code)]` scoped to that module
-  (`mod device { … }` in `src/lib.rs`).
+  (`mod device;` in `src/lib.rs`).
 - No `.unwrap()`, `.expect()`-into-panic, `panic!`, `todo!`,
   `unimplemented!`, or `unreachable!` outside `#[cfg(test)]`. Tests opt
   in with `#![allow(clippy::unwrap_used)]` (see
@@ -142,21 +175,23 @@ Practical consequences:
 Only one feature exists:
 
 ```toml
-defmt-03 = [
+defmt = [
     "dep:defmt",
-    "device-driver/defmt-03",
+    "device-driver/defmt",
     "embedded-batteries-async/defmt",
 ]
 ```
 
-Features must remain **additive**; enabling `defmt-03` must not change
-behaviour beyond logging. CI enforces this through `cargo hack
---feature-powerset check`.
+Features must remain **additive**; enabling `defmt` must not change
+behaviour beyond formatting/logging support. `cargo hack
+--feature-powerset check` verifies that feature combinations
+compile, not that runtime behaviour is unchanged. The `test` job
+runs unit tests and test Clippy with both default and all features.
 
 ## Code conventions
 
-- **Edition 2024**, MSRV 1.85. Do not use language features newer than
-  what 1.85 understands; the `msrv` CI job runs `cargo check` on
+- **Edition 2024**, MSRV 1.94. Do not use language features newer than
+  what 1.94 understands; the `msrv` CI job runs `cargo check` on
   exactly that version.
 - **Async-only I2C**. The driver targets `embedded-hal-async`. Do not
   add blocking-only paths unless you also keep an async path; the
@@ -174,40 +209,51 @@ behaviour beyond logging. CI enforces this through `cargo hack
   `#[allow(unsafe_code)]` on `mod device`.
 - **Register access** must go through the generated `device-driver`
   API (`self.device.<register>().read_async()/write_async()/modify_async()`).
-  Do not hand-roll I2C transactions in new code — extend `device.yaml`
+  Do not hand-roll I2C transactions in new code — extend `device.ddsl`
   and regenerate instead.
 
 ## Driver-specific notes
 
 - I2C address `0x6B` is fixed (`BQ_ADDR` in `src/lib.rs`).
-- The BQ25773 mixes 1-byte and 2-byte registers. The
-  `AsyncRegisterInterface::write_register` impl in `src/lib.rs`
-  intentionally slices the outgoing buffer to `..=data.len()` so a
-  1-byte write never spills into the next register. Preserve this
-  invariant.
+- Control, status, ADC, and tuning registers in `device.ddsl` use
+  **2-byte little-endian fieldsets**. Previously split low/high-byte
+  registers are combined, for example `CHARGE_OPTION_0` at `0x00`,
+  `CHARGE_PROFILE` at `0x10`, and `CHARGE_OPTION_2` at `0x32`.
+  Access the full fieldset through the generated register API; do
+  not reintroduce separate low/high-byte accessors.
+- The current exceptions are `MANUFACTURE_ID` (`0x2E`) and
+  `DEVICE_ID` (`0x2F`), which remain **1-byte fieldsets**.
+  `read_chip_id` tests a one-byte manufacturer-ID read. Do not
+  describe the current map as exclusively two-byte accesses.
+- `AsyncRegisterInterface::write_register` sends one address byte
+  followed by exactly `data.len()` payload bytes. Keep its
+  bounds-checked buffer slicing; transfer lengths must follow the
+  DDSL fieldset sizes, not a hard-coded assumption about all
+  registers having the same width.
 - `LARGEST_REG_SIZE_BYTES = 2`; the on-stack buffer in
   `write_register` is sized `1 + LARGEST_REG_SIZE_BYTES`. If you add a
-  wider register to `device.yaml`, bump this constant or the bounds
+  wider register to `device.ddsl`, bump this constant or the bounds
   check will start returning `RegisterSizeError`.
-- The `device.yaml` config block pins `register_address_type: u8`,
-  `default_byte_order: LE`, `default_bit_order: LSB0`, and
-  `defmt_feature: defmt-03`. New registers should inherit these
-  defaults; deviate only with a clear datasheet reference.
+- The `device.ddsl` device block pins `register-address-type: u8`
+  and `default-byte-order: LE`; v2 bit numbering is always LSB0.
+  Code generation uses `--rust-defmt-feature=defmt`. New registers
+  should inherit these defaults; deviate only with a clear datasheet reference.
 - Tests use `embedded-hal-mock`'s `eh1::i2c::{Mock, Transaction}` and
   the `tokio` runtime (`#[tokio::test]`). Always call
   `i2c.done()` at the end of a test to assert all expected
-  transactions ran. See the three tests in `src/lib.rs::tests` for the
-  pattern.
+  transactions ran. See `src/lib.rs::tests` for the pattern.
+  `disable_external_ilim_pin` demonstrates a two-byte
+  read/modify/write that preserves the other fields.
+- Preserve bus encodings when changing field types or combining
+  registers. One-bit enum selections with values 0/1 must remain
+  unsigned; a one-bit signed field cannot represent 1.
 
 ## Commit and PR conventions
 
-From `.github/copilot-instructions.md` and `CONTRIBUTING.md`, verified
-against `git log --pretty=%s` on `main`:
+From `.github/copilot-instructions.md` and `CONTRIBUTING.md`:
 
 - **Subject line**: capitalized, ≤ 50 characters, imperative mood
-  (e.g. `Fix bug`, not `Fixed bug`). Existing history confirms this
-  (`Bump device-driver to 1.0.9`, `Pregenerate device-driver manifest
-  file`, `Remove panic path in write_register(), …`).
+  (e.g. `Fix bug`, not `Fixed bug`).
 - Blank line between subject and body; wrap body at 72 columns;
   explain *what* and *why*, not *how*.
 - **Clean history**: squash-merging is disabled (`CONTRIBUTING.md`).
@@ -230,7 +276,7 @@ against `git log --pretty=%s` on `main`:
 
 ## What not to do
 
-- Do not hand-edit `src/device.rs`. Regenerate from `device.yaml` (see
+- Do not hand-edit `src/device.rs`. Regenerate from `device.ddsl` (see
   above) or `device-driver-pregen-check` will fail.
 - Do not add `unsafe` to `src/lib.rs` (the crate denies `unsafe_code`).
 - Do not introduce `.unwrap()`, `.expect("…")`-as-panic, `panic!`,
@@ -241,17 +287,19 @@ against `git log --pretty=%s` on `main`:
 - Do not bump MSRV without updating both `Cargo.toml` reasoning and
   the `msrv` matrix in `.github/workflows/check.yml`, and without
   justifying the bump in the commit body.
-- Do not break feature additivity: enabling `defmt-03` must not change
-  observable behaviour beyond logging. `cargo hack --feature-powerset
-  check` enforces this.
+- Do not break feature additivity: enabling `defmt` must not change
+  observable behaviour beyond formatting/logging support.
+  Feature-powerset compilation alone does not prove this.
 - Do not add `std`-only dependencies to `[dependencies]`. Anything
   std-flavoured belongs in `[dev-dependencies]` (today: `tokio`,
   `embedded-hal-mock`).
 - Do not add `Signed-off-by` from an AI session.
 - Do not force-push shared branches; do not rewrite history on `main`.
-- Do not commit secrets, vendor-confidential datasheets, or any file
-  outside the `include = […]` list in `Cargo.toml` without updating
-  that list intentionally.
+- Do not commit secrets or vendor-confidential datasheets.
+- Do not treat `include = […]` in `Cargo.toml` as a Git allowlist.
+  It controls crate packaging; update it intentionally when adding
+  files needed by the published crate. Repository-only documentation,
+  workflows, and supply-chain audit files need not be packaged.
 
 ## How to find more context
 
@@ -262,17 +310,17 @@ against `git log --pretty=%s` on `main`:
 - `embedded-batteries-async`: <https://docs.rs/embedded-batteries-async>.
 - `embedded-hal-mock` (used in tests): <https://docs.rs/embedded-hal-mock>.
 - Sibling driver crates under
-  <https://github.com/OpenDevicePartnership> use the same `device.yaml`
-  + `device-driver-cli` pattern and the same CI scaffolding; consult
-  them for conventions not covered here.
-- Issue tracker and PRs:
+  <https://github.com/OpenDevicePartnership> use pregenerated drivers
+  and similar CI scaffolding; older crates may still use v1 YAML.
+  Consult them for conventions not covered here, but use v2 DDSL in this crate.
+- Upstream issue tracker and PRs:
   <https://github.com/OpenDevicePartnership/bq25773>.
 
 ## Incorporated from `.github/copilot-instructions.md`
 
-The following is the full content of
-`.github/copilot-instructions.md` at the time this file was authored.
-This `AGENTS.md` is a strict superset of that file; if the two ever
+The commit-message and AI-attribution rules from
+`.github/copilot-instructions.md` are reproduced below. That file
+points here for general project guidance. If the shared rules ever
 disagree, `AGENTS.md` wins and `copilot-instructions.md` should be
 updated to match.
 

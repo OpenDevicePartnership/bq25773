@@ -108,3 +108,9 @@ who = "Jerry Xie <jerryxie@microsoft.com>"
 criteria = "safe-to-run"
 delta = "1.51.1 -> 1.52.1"
 notes = "Delta: io-uring File read, eager driver handoff, trace_with API. All new unsafe is sound. No new deps. Assisted-by: copilot-cli:claude-opus-4.6"
+
+[[trusted.device-driver]]
+criteria = "safe-to-deploy"
+user-id = 85562 # Dion Dokter (diondokter)
+start = "2020-09-28"
+end = "2027-09-23"
