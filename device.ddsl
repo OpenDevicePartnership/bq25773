@@ -516,8 +516,8 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// IIN ADC reading with 10mΩ sense resistor. Current flowing from the adapter to the converter (like in forward mode) is represented as positive and current flowing to the adapter (like in OTG mode) is negative.
-            field ADC_IIN 15:0 RO,
+            /// IIN ADC reading with 10mΩ sense resistor, in 0.5mA/bit steps over the range -16384mA to 16383.5mA (8000h-7FFFh), two's complement. Current flowing from the adapter to the converter (like in forward mode) is represented as positive and current flowing to the adapter (like in OTG mode) is negative.
+            field ADC_IIN 15:0 RO -> int,
         },
     },
     register ADC_VSYS {

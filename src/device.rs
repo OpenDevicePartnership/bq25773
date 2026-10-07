@@ -4266,13 +4266,13 @@ unsafe impl ::device_driver::Fieldset for AdcIin {
 impl AdcIin {
     /// `15:0` - Read the `adc_iin` field.
     ///
-    /// IIN ADC reading with 10mΩ sense resistor. Current flowing from the adapter to the converter (like in forward mode) is represented as positive and current flowing to the adapter (like in OTG mode) is negative.
+    /// IIN ADC reading with 10mΩ sense resistor, in 0.5mA/bit steps over the range -16384mA to 16383.5mA (8000h-7FFFh), two's complement. Current flowing from the adapter to the converter (like in forward mode) is represented as positive and current flowing to the adapter (like in OTG mode) is negative.
     #[doc(alias = "ADC_IIN")]
     #[must_use]
-    pub fn adc_iin(&self) -> u16 {
+    pub fn adc_iin(&self) -> i16 {
         let start = 0;
         let end = 15;
-        let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
+        let raw = unsafe { ::device_driver::ops::load::<i16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
 }
@@ -4302,7 +4302,7 @@ impl core::fmt::Debug for AdcIin {
 impl defmt::Format for AdcIin {
     fn format(&self, f: defmt::Formatter) {
         defmt::write!(f, "AdcIin {{ ");
-        defmt::write!(f, "adc_iin: {=u16}, ", &self.adc_iin());
+        defmt::write!(f, "adc_iin: {=i16}, ", &self.adc_iin());
         defmt::write!(f, "}}");
     }
 }
