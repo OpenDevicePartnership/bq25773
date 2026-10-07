@@ -323,7 +323,7 @@ impl<I> Device<I> {
     #[doc(alias = "MANUFACTURE_ID")]
     pub fn manufacture_id(
         &mut self,
-    ) -> ::device_driver::RegisterOperation<'_, Self, ManufactureId, u8, ::device_driver::RW, ()>
+    ) -> ::device_driver::RegisterOperation<'_, Self, ManufactureId, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {
@@ -334,7 +334,7 @@ impl<I> Device<I> {
     /// - Address: `47`
     /// - Reset value: `9`
     #[doc(alias = "DEVICE_ID")]
-    pub fn device_id(&mut self) -> ::device_driver::RegisterOperation<'_, Self, DeviceId, u8, ::device_driver::RW, ()>
+    pub fn device_id(&mut self) -> ::device_driver::RegisterOperation<'_, Self, DeviceId, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {
@@ -3925,7 +3925,7 @@ unsafe impl ::device_driver::Fieldset for DeviceId {
 impl DeviceId {
     /// `7:0` - Read the `device_id` field.
     ///
-    /// Device ID.
+    /// Device ID. BQ25773 reports 00 001 001b (09h).
     #[doc(alias = "DEVICE_ID")]
     #[must_use]
     pub fn device_id(&self) -> u8 {
@@ -3933,16 +3933,6 @@ impl DeviceId {
         let end = 7;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
-    }
-    /// `7:0` - Set the `device_id` field.
-    ///
-    /// Device ID.
-    #[doc(alias = "DEVICE_ID")]
-    pub fn set_device_id(&mut self, value: u8) {
-        let start = 0;
-        let end = 7;
-        let raw = value;
-        unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
 }
 impl Default for DeviceId {
@@ -4042,7 +4032,7 @@ unsafe impl ::device_driver::Fieldset for ManufactureId {
 impl ManufactureId {
     /// `7:0` - Read the `manufacture_id` field.
     ///
-    /// Manufacture ID.
+    /// Manufacture ID: 40h.
     #[doc(alias = "MANUFACTURE_ID")]
     #[must_use]
     pub fn manufacture_id(&self) -> u8 {
@@ -4050,16 +4040,6 @@ impl ManufactureId {
         let end = 7;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
-    }
-    /// `7:0` - Set the `manufacture_id` field.
-    ///
-    /// Manufacture ID.
-    #[doc(alias = "MANUFACTURE_ID")]
-    pub fn set_manufacture_id(&mut self, value: u8) {
-        let start = 0;
-        let end = 7;
-        let raw = value;
-        unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
 }
 impl Default for ManufactureId {

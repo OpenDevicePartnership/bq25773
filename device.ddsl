@@ -535,21 +535,23 @@ device Device {
     register MANUFACTURE_ID {
         address: 46,
         reset: 64,
+        access: RO,
         fields: fieldset _ {
             size-bytes: 1,
 
-            /// Manufacture ID.
-            field MANUFACTURE_ID 7:0,
+            /// Manufacture ID: 40h.
+            field MANUFACTURE_ID 7:0 RO,
         },
     },
     register DEVICE_ID {
         address: 47,
         reset: 9,
+        access: RO,
         fields: fieldset _ {
             size-bytes: 1,
 
-            /// Device ID.
-            field DEVICE_ID 7:0,
+            /// Device ID. BQ25773 reports 00 001 001b (09h).
+            field DEVICE_ID 7:0 RO,
         },
     },
     /// Charge option 1 at 0x30-0x31.
