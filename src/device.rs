@@ -266,7 +266,7 @@ impl<I> Device<I> {
     /// - Address: `36`
     /// - Reset value: `800`
     #[doc(alias = "IIN_DPM")]
-    pub fn iin_dpm(&mut self) -> ::device_driver::RegisterOperation<'_, Self, IinDpm, u8, ::device_driver::RW, ()>
+    pub fn iin_dpm(&mut self) -> ::device_driver::RegisterOperation<'_, Self, IinDpm, u8, ::device_driver::RO, ()>
     where
         I: ::device_driver::RegisterInterfaceBase<AddressType = u8>,
     {
@@ -4595,16 +4595,6 @@ impl IinDpm {
         let end = 10;
         let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
-    }
-    /// `10:2` - Set the `iin_dpm` field.
-    ///
-    /// Resolved input current limit with 10mΩ sense resistor, in 25mA/bit steps over the range 400mA-8200mA (10h-148h). This is the read-back of the limit the charger settled on; IIN_HOST() at 0x06 is the writable host setting.
-    #[doc(alias = "IIN_DPM")]
-    pub fn set_iin_dpm(&mut self, value: u16) {
-        let start = 2;
-        let end = 10;
-        let raw = value;
-        unsafe { ::device_driver::ops::store::<u16, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
 }
 impl Default for IinDpm {
