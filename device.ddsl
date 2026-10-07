@@ -419,7 +419,7 @@ device Device {
             field FAULT_SC_VBUSACP 10 RO,
             /// In IIN_DPM or current regulation during OTG mode?
             field IN_IIN_DPM 11 RO,
-            /// In VINDPM or boltage regulation during OTG mode?
+            /// In VINDPM or voltage regulation during OTG mode?
             field IN_VINDPM 12 RO,
             /// VAP (Vmin Active Protection) enabled?
             field IN_VAP 13 RO,

@@ -5112,7 +5112,7 @@ impl ChargerStatus1 {
     }
     /// `bit 12` - Read the `in_vindpm` field.
     ///
-    /// In VINDPM or boltage regulation during OTG mode?
+    /// In VINDPM or voltage regulation during OTG mode?
     #[doc(alias = "IN_VINDPM")]
     #[must_use]
     pub fn in_vindpm(&self) -> bool {
