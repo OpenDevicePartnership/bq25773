@@ -505,8 +505,8 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// IBAT ADC reading with 5mΩ sense resistor. Note the charger only measures discharging current (negative voltage) under battery only or OTG modes, and only measure charging current(positive voltage) when valid adapter is plugged in.
-            field ADC_IBAT 15:0 RO,
+            /// IBAT ADC reading with 5mΩ sense resistor, in 1mA/bit steps over the range -32768mA to 32767mA (8000h-7FFFh), two's complement. Note the charger only measures discharging current (negative voltage) under battery only or OTG modes, and only measure charging current(positive voltage) when valid adapter is plugged in.
+            field ADC_IBAT 15:0 RO -> int,
         },
     },
     register ADC_IIN {

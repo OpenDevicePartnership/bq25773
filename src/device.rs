@@ -4373,13 +4373,13 @@ unsafe impl ::device_driver::Fieldset for AdcIbat {
 impl AdcIbat {
     /// `15:0` - Read the `adc_ibat` field.
     ///
-    /// IBAT ADC reading with 5mΩ sense resistor. Note the charger only measures discharging current (negative voltage) under battery only or OTG modes, and only measure charging current(positive voltage) when valid adapter is plugged in.
+    /// IBAT ADC reading with 5mΩ sense resistor, in 1mA/bit steps over the range -32768mA to 32767mA (8000h-7FFFh), two's complement. Note the charger only measures discharging current (negative voltage) under battery only or OTG modes, and only measure charging current(positive voltage) when valid adapter is plugged in.
     #[doc(alias = "ADC_IBAT")]
     #[must_use]
-    pub fn adc_ibat(&self) -> u16 {
+    pub fn adc_ibat(&self) -> i16 {
         let start = 0;
         let end = 15;
-        let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
+        let raw = unsafe { ::device_driver::ops::load::<i16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
 }
@@ -4409,7 +4409,7 @@ impl core::fmt::Debug for AdcIbat {
 impl defmt::Format for AdcIbat {
     fn format(&self, f: defmt::Formatter) {
         defmt::write!(f, "AdcIbat {{ ");
-        defmt::write!(f, "adc_ibat: {=u16}, ", &self.adc_ibat());
+        defmt::write!(f, "adc_ibat: {=i16}, ", &self.adc_ibat());
         defmt::write!(f, "}}");
     }
 }
