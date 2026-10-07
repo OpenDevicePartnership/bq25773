@@ -4585,22 +4585,22 @@ unsafe impl ::device_driver::Fieldset for IinDpm {
     const ZERO: Self = Self { bits: [0; 2] };
 }
 impl IinDpm {
-    /// `10:2` - Read the `iin_host` field.
+    /// `10:2` - Read the `iin_dpm` field.
     ///
-    /// Input current setting with 10mΩ sense resistor.
-    #[doc(alias = "IIN_HOST")]
+    /// Resolved input current limit with 10mΩ sense resistor, in 25mA/bit steps over the range 400mA-8200mA (10h-148h). This is the read-back of the limit the charger settled on; IIN_HOST() at 0x06 is the writable host setting.
+    #[doc(alias = "IIN_DPM")]
     #[must_use]
-    pub fn iin_host(&self) -> u16 {
+    pub fn iin_dpm(&self) -> u16 {
         let start = 2;
         let end = 10;
         let raw = unsafe { ::device_driver::ops::load::<u16, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
-    /// `10:2` - Set the `iin_host` field.
+    /// `10:2` - Set the `iin_dpm` field.
     ///
-    /// Input current setting with 10mΩ sense resistor.
-    #[doc(alias = "IIN_HOST")]
-    pub fn set_iin_host(&mut self, value: u16) {
+    /// Resolved input current limit with 10mΩ sense resistor, in 25mA/bit steps over the range 400mA-8200mA (10h-148h). This is the read-back of the limit the charger settled on; IIN_HOST() at 0x06 is the writable host setting.
+    #[doc(alias = "IIN_DPM")]
+    pub fn set_iin_dpm(&mut self, value: u16) {
         let start = 2;
         let end = 10;
         let raw = value;
@@ -4625,7 +4625,7 @@ impl From<IinDpm> for [u8; 2] {
 impl core::fmt::Debug for IinDpm {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
         let mut d = f.debug_struct("IinDpm");
-        d.field("iin_host", &self.iin_host());
+        d.field("iin_dpm", &self.iin_dpm());
         d.finish()
     }
 }
@@ -4633,7 +4633,7 @@ impl core::fmt::Debug for IinDpm {
 impl defmt::Format for IinDpm {
     fn format(&self, f: defmt::Formatter) {
         defmt::write!(f, "IinDpm {{ ");
-        defmt::write!(f, "iin_host: {=u16}, ", &self.iin_host());
+        defmt::write!(f, "iin_dpm: {=u16}, ", &self.iin_dpm());
         defmt::write!(f, "}}");
     }
 }

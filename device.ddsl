@@ -483,8 +483,8 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// Input current setting with 10mΩ sense resistor.
-            field IIN_HOST 10:2,
+            /// Resolved input current limit with 10mΩ sense resistor, in 25mA/bit steps over the range 400mA-8200mA (10h-148h). This is the read-back of the limit the charger settled on; IIN_HOST() at 0x06 is the writable host setting.
+            field IIN_DPM 10:2,
         },
     },
     register ADC_VBUS {
