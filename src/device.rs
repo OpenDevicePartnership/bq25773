@@ -2723,12 +2723,12 @@ impl ChargeOption3 {
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         unsafe { raw.try_into().unwrap_unchecked() }
     }
-    /// `bit 7` - Read the `pkpwr_tovld_deg` field.
+    /// `bit 7` - Read the `batfet_enz` field.
     ///
-    /// Force turn off BATFET under battery only low power mode.
-    #[doc(alias = "PKPWR_TOVLD_DEG")]
+    /// Turn off BATFET under battery only low power mode. When not in low power mode, like OTG or with AC plugged in, the bit configuration is neglected and not effective.
+    #[doc(alias = "BATFET_ENZ")]
     #[must_use]
-    pub fn pkpwr_tovld_deg(&self) -> bool {
+    pub fn batfet_enz(&self) -> bool {
         let start = 7;
         let end = 7;
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
@@ -2861,11 +2861,11 @@ impl ChargeOption3 {
         let raw = value.into();
         unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
-    /// `bit 7` - Set the `pkpwr_tovld_deg` field.
+    /// `bit 7` - Set the `batfet_enz` field.
     ///
-    /// Force turn off BATFET under battery only low power mode.
-    #[doc(alias = "PKPWR_TOVLD_DEG")]
-    pub fn set_pkpwr_tovld_deg(&mut self, value: bool) {
+    /// Turn off BATFET under battery only low power mode. When not in low power mode, like OTG or with AC plugged in, the bit configuration is neglected and not effective.
+    #[doc(alias = "BATFET_ENZ")]
+    pub fn set_batfet_enz(&mut self, value: bool) {
         let start = 7;
         let end = 7;
         let raw = value as _;
@@ -2965,7 +2965,7 @@ impl core::fmt::Debug for ChargeOption3 {
         d.field("cmp_en", &self.cmp_en());
         d.field("il_avg", &self.il_avg());
         d.field("otg_vap_mode", &self.otg_vap_mode());
-        d.field("pkpwr_tovld_deg", &self.pkpwr_tovld_deg());
+        d.field("batfet_enz", &self.batfet_enz());
         d.field("en_vsys_min_soft_sr", &self.en_vsys_min_soft_sr());
         d.field("en_port_ctrl", &self.en_port_ctrl());
         d.field("en_ico_mode", &self.en_ico_mode());
@@ -2985,7 +2985,7 @@ impl defmt::Format for ChargeOption3 {
         defmt::write!(f, "cmp_en: {=bool}, ", &self.cmp_en());
         defmt::write!(f, "il_avg: {}, ", &self.il_avg());
         defmt::write!(f, "otg_vap_mode: {}, ", &self.otg_vap_mode());
-        defmt::write!(f, "pkpwr_tovld_deg: {=bool}, ", &self.pkpwr_tovld_deg());
+        defmt::write!(f, "batfet_enz: {=bool}, ", &self.batfet_enz());
         defmt::write!(f, "en_vsys_min_soft_sr: {}, ", &self.en_vsys_min_soft_sr());
         defmt::write!(f, "en_port_ctrl: {=bool}, ", &self.en_port_ctrl());
         defmt::write!(f, "en_ico_mode: {=bool}, ", &self.en_ico_mode());

@@ -700,8 +700,8 @@ device Device {
                 VapMode: 0,
                 OtgMode: 1,
             },
-            /// Force turn off BATFET under battery only low power mode.
-            field PKPWR_TOVLD_DEG 7,
+            /// Turn off BATFET under battery only low power mode. When not in low power mode, like OTG or with AC plugged in, the bit configuration is neglected and not effective.
+            field BATFET_ENZ 7,
             /// VSYS_MIN soft slew rate control for VSYS_MIN step up transition. Note for step down doesn't need the soft transition.
             field EN_VSYS_MIN_SOFT_SR 9:8 -> _ as enum VsysMinSoftSlewRate {
                 Disable: 0,
