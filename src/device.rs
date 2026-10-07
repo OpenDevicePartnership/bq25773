@@ -1450,7 +1450,7 @@ unsafe impl ::device_driver::Fieldset for ChargeOption4 {
 impl ChargeOption4 {
     /// `bit 0` - Read the `stat_ptm` field.
     ///
-    /// PTM operation status active.
+    /// PTM operation status active. Read-only; the status is cleared by the read, not by writing this bit.
     #[doc(alias = "STAT_PTM")]
     #[must_use]
     pub fn stat_ptm(&self) -> bool {
@@ -1461,7 +1461,7 @@ impl ChargeOption4 {
     }
     /// `bit 1` - Read the `stat_idchg_2` field.
     ///
-    /// IDCHG2 status triggered.
+    /// IDCHG2 status triggered. Read-only; the status is latched until a read from host.
     #[doc(alias = "STAT_IDCHG2")]
     #[must_use]
     pub fn stat_idchg_2(&self) -> bool {
@@ -1505,7 +1505,7 @@ impl ChargeOption4 {
     }
     /// `bit 8` - Read the `stat_vbus_vap` field.
     ///
-    /// VBUS_VAP status triggered.
+    /// VBUS_VAP status triggered. Read-only.
     #[doc(alias = "STAT_VBUS_VAP")]
     #[must_use]
     pub fn stat_vbus_vap(&self) -> bool {
@@ -1558,26 +1558,6 @@ impl ChargeOption4 {
         let raw = unsafe { ::device_driver::ops::load::<u8, ::device_driver::ops::LE>(&self.bits, start, end) };
         raw
     }
-    /// `bit 0` - Set the `stat_ptm` field.
-    ///
-    /// PTM operation status active.
-    #[doc(alias = "STAT_PTM")]
-    pub fn set_stat_ptm(&mut self, value: bool) {
-        let start = 0;
-        let end = 0;
-        let raw = value as _;
-        unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
-    }
-    /// `bit 1` - Set the `stat_idchg_2` field.
-    ///
-    /// IDCHG2 status triggered.
-    #[doc(alias = "STAT_IDCHG2")]
-    pub fn set_stat_idchg_2(&mut self, value: bool) {
-        let start = 1;
-        let end = 1;
-        let raw = value as _;
-        unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
-    }
     /// `bit 2` - Set the `pp_idchg_2` field.
     ///
     /// Enable IDCHG_TH2 PROCHOT Profile.
@@ -1606,16 +1586,6 @@ impl ChargeOption4 {
         let start = 6;
         let end = 7;
         let raw = value.into();
-        unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
-    }
-    /// `bit 8` - Set the `stat_vbus_vap` field.
-    ///
-    /// VBUS_VAP status triggered.
-    #[doc(alias = "STAT_VBUS_VAP")]
-    pub fn set_stat_vbus_vap(&mut self, value: bool) {
-        let start = 8;
-        let end = 8;
-        let raw = value as _;
         unsafe { ::device_driver::ops::store::<u8, ::device_driver::ops::LE>(raw, start, end, &mut self.bits) };
     }
     /// `bit 9` - Set the `pp_vbus_vap` field.

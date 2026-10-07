@@ -843,10 +843,10 @@ device Device {
         fields: fieldset _ {
             size-bytes: 2,
 
-            /// PTM operation status active.
-            field STAT_PTM 0,
-            /// IDCHG2 status triggered.
-            field STAT_IDCHG2 1,
+            /// PTM operation status active. Read-only; the status is cleared by the read, not by writing this bit.
+            field STAT_PTM 0 RO,
+            /// IDCHG2 status triggered. Read-only; the status is latched until a read from host.
+            field STAT_IDCHG2 1 RO,
             /// Enable IDCHG_TH2 PROCHOT Profile.
             field PP_IDCHG2 2,
             /// Battery discharge current limit2 based on percentage of IDCHG_TH1.
@@ -858,8 +858,8 @@ device Device {
                 Long: 2,
                 VeryLong: 3,
             },
-            /// VBUS_VAP status triggered.
-            field STAT_VBUS_VAP 8,
+            /// VBUS_VAP status triggered. Read-only.
+            field STAT_VBUS_VAP 8 RO,
             /// Enable VBUS_VAP PROCHOT Profile.
             field PP_VBUS_VAP 9,
             /// Disable VSYS_UVP Hiccup mode operation.
