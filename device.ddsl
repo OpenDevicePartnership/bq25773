@@ -242,8 +242,10 @@ device Device {
             field EN_REGN_LWPWR 11,
             /// Enable external 5V overdrive for REGN.
             field REGN_EXT 12,
+            // One-bit enum selections such as CMPIN_TR_SELECT, WD_RST and
+            // EN_TMR2X must stay unsigned. A one-bit signed field sign-extends,
+            // so the 1 variant would load back as -1 and become unrepresentable.
             /// CMPIN_TR pin function selection.
-            // These 0/1 selections are unsigned; sign-extending one bit cannot represent 1.
             field CMPIN_TR_SELECT 13 -> _ as enum CmpinFuncSelect {
                 Cmpmin: 0,
                 Treg: 1,
