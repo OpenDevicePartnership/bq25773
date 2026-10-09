@@ -3135,8 +3135,8 @@ unsafe impl ::device_driver::Fieldset for ChargeOption2 {
 impl ChargeOption2 {
     /// `bit 0` - Read the `batdoc_vth` field.
     ///
-    /// Set battery discharge overcurrent threshold as percentage of
-    /// PROCHOT battery discharge current limit.
+    /// Select 200% or 300% of IDCHG_TH2 (PROCHOT discharge current limit),
+    /// with 50–180mV SRN-SRP clamps.
     #[doc(alias = "BATDOC_VTH")]
     #[must_use]
     pub fn batdoc_vth(&self) -> BatdocVth {
@@ -3158,8 +3158,7 @@ impl ChargeOption2 {
     }
     /// `bit 2` - Read the `acoc_vth` field.
     ///
-    /// ACOC Limit. Set ACOC threshold as percentage of ILIM2_VTH with
-    /// current sensed from RAC.
+    /// Select nominal 133% (1.33×) or 200% (2×) of ILIM2_VTH, sensed from RAC.
     #[doc(alias = "ACOC_VTH")]
     #[must_use]
     pub fn acoc_vth(&self) -> AcocLimit {
@@ -3293,8 +3292,8 @@ impl ChargeOption2 {
     }
     /// `bit 0` - Set the `batdoc_vth` field.
     ///
-    /// Set battery discharge overcurrent threshold as percentage of
-    /// PROCHOT battery discharge current limit.
+    /// Select 200% or 300% of IDCHG_TH2 (PROCHOT discharge current limit),
+    /// with 50–180mV SRN-SRP clamps.
     #[doc(alias = "BATDOC_VTH")]
     pub fn set_batdoc_vth(&mut self, value: BatdocVth) {
         let start = 0;
@@ -3314,8 +3313,7 @@ impl ChargeOption2 {
     }
     /// `bit 2` - Set the `acoc_vth` field.
     ///
-    /// ACOC Limit. Set ACOC threshold as percentage of ILIM2_VTH with
-    /// current sensed from RAC.
+    /// Select nominal 133% (1.33×) or 200% (2×) of ILIM2_VTH, sensed from RAC.
     #[doc(alias = "ACOC_VTH")]
     pub fn set_acoc_vth(&mut self, value: AcocLimit) {
         let start = 2;
@@ -7740,9 +7738,9 @@ impl ChargeCurrent {
     /// Charge current setting. The step depends on the charge sense
     /// resistor selected by RSNS_RSR in CHARGE_OPTION_1: 8mA/bit at
     /// 5mΩ, giving a range of 0mA-16320mA (0h-7F8h), or 20mA/bit at
-    /// 2mΩ, where the value is clamped to 30A (5DCh). A non-zero
-    /// setting below 128mA is treated as 128mA, and a value beyond
-    /// the clamp is set to the clamp. The charger resets this field
+    /// 2mΩ, where the value is clamped to 30A (5DCh). With a 5mΩ
+    /// resistor, a non-zero setting below 128mA is treated as 128mA.
+    /// Values outside the applicable clamps are clamped. This field resets
     /// to 0A on a BATCOC fault, a 0V write to CHARGE_VOLTAGE(),
     /// battery removal, adapter removal, a watchdog event, autonomous
     /// charge termination, or a safety timer trigger.
@@ -7759,9 +7757,9 @@ impl ChargeCurrent {
     /// Charge current setting. The step depends on the charge sense
     /// resistor selected by RSNS_RSR in CHARGE_OPTION_1: 8mA/bit at
     /// 5mΩ, giving a range of 0mA-16320mA (0h-7F8h), or 20mA/bit at
-    /// 2mΩ, where the value is clamped to 30A (5DCh). A non-zero
-    /// setting below 128mA is treated as 128mA, and a value beyond
-    /// the clamp is set to the clamp. The charger resets this field
+    /// 2mΩ, where the value is clamped to 30A (5DCh). With a 5mΩ
+    /// resistor, a non-zero setting below 128mA is treated as 128mA.
+    /// Values outside the applicable clamps are clamped. This field resets
     /// to 0A on a BATCOC fault, a 0V write to CHARGE_VOLTAGE(),
     /// battery removal, adapter removal, a watchdog event, autonomous
     /// charge termination, or a safety timer trigger.
@@ -9337,15 +9335,17 @@ impl ::device_driver::EnumIndex for OverCurrentThresholdRac {
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum AcocLimit {
-    OnePoint33Percent = 0,
-    TwoPercent = 1,
+    /// Nominal 133% of ILIM2_VTH (1.33×).
+    OneHundredThirtyThreePercent = 0,
+    /// 200% of ILIM2_VTH (2×).
+    TwoHundredPercent = 1,
 }
 impl core::convert::TryFrom<u8> for AcocLimit {
     type Error = ::device_driver::ConversionError<u8>;
     fn try_from(val: u8) -> Result<Self, Self::Error> {
         match val {
-            0 => Ok(Self::OnePoint33Percent),
-            1 => Ok(Self::TwoPercent),
+            0 => Ok(Self::OneHundredThirtyThreePercent),
+            1 => Ok(Self::TwoHundredPercent),
             val => Err(::device_driver::ConversionError {
                 source: val,
                 target: "AcocLimit",
@@ -9356,8 +9356,8 @@ impl core::convert::TryFrom<u8> for AcocLimit {
 impl From<AcocLimit> for u8 {
     fn from(val: AcocLimit) -> Self {
         match val {
-            AcocLimit::OnePoint33Percent => 0,
-            AcocLimit::TwoPercent => 1,
+            AcocLimit::OneHundredThirtyThreePercent => 0,
+            AcocLimit::TwoHundredPercent => 1,
         }
     }
 }
@@ -9373,15 +9373,17 @@ impl ::device_driver::EnumIndex for AcocLimit {
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum BatdocVth {
-    TwoPercent = 0,
-    ThreePercent = 1,
+    /// 200% of IDCHG_TH2 (2×).
+    TwoHundredPercent = 0,
+    /// 300% of IDCHG_TH2 (3×).
+    ThreeHundredPercent = 1,
 }
 impl core::convert::TryFrom<u8> for BatdocVth {
     type Error = ::device_driver::ConversionError<u8>;
     fn try_from(val: u8) -> Result<Self, Self::Error> {
         match val {
-            0 => Ok(Self::TwoPercent),
-            1 => Ok(Self::ThreePercent),
+            0 => Ok(Self::TwoHundredPercent),
+            1 => Ok(Self::ThreeHundredPercent),
             val => Err(::device_driver::ConversionError {
                 source: val,
                 target: "BatdocVth",
@@ -9392,8 +9394,8 @@ impl core::convert::TryFrom<u8> for BatdocVth {
 impl From<BatdocVth> for u8 {
     fn from(val: BatdocVth) -> Self {
         match val {
-            BatdocVth::TwoPercent => 0,
-            BatdocVth::ThreePercent => 1,
+            BatdocVth::TwoHundredPercent => 0,
+            BatdocVth::ThreeHundredPercent => 1,
         }
     }
 }
