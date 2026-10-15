@@ -62,7 +62,7 @@ Key facts:
     └── workflows/
         ├── cargo-vet.yml           # checks dependency audit coverage
         ├── cargo-vet-pr-comment.yml # reports cargo-vet results on PRs
-        ├── check.yml               # fmt / clippy / semver / doc / hack / deny / test / msrv
+        ├── check.yml               # fmt / clippy / doc / hack / deny / test / msrv
         ├── device-driver.yml       # verifies src/device.rs matches device.ddsl
         ├── nostd.yml               # cross-check for thumbv8m.main-none-eabihf
         └── release-plz.yml         # release PRs and crates.io Trusted Publishing
@@ -118,11 +118,10 @@ assignments below use POSIX syntax.
 | `no_std` cross build | `cargo check --target thumbv8m.main-none-eabihf --no-default-features` | `nostd` |
 | Feature powerset | `cargo hack --feature-powerset check` | `hack` |
 | License/advisory scan | `cargo deny --all-features check` | `deny` |
-| Semver check | `cargo semver-checks` | `semver` |
 | Dependency audit coverage | `cargo vet --locked` | `vet` in `cargo-vet.yml` |
 | Device manifest check | regenerate as above, then `git diff --exit-code -- src/device.rs` | `device-driver-pregen-check` |
 
-Install `cargo-hack`, `cargo-deny`, and `cargo-semver-checks` with
+Install `cargo-hack` and `cargo-deny` with
 `cargo install` if needed. The vet workflow uses `cargo-vet` **0.10.2**
 (`cargo install cargo-vet --version 0.10.2`). Follow
 [supply-chain/README.md](supply-chain/README.md) when dependency
@@ -198,6 +197,9 @@ upstream `main`. It uses crates.io Trusted Publishing and the built-in
 drafts and requires a merged release PR before publishing. See
 [Releases in CONTRIBUTING.md](CONTRIBUTING.md#releases) for maintainer
 setup and the manual step needed to trigger CI on release PRs.
+
+Release-plz retains its default semver analysis and prepares version bumps.
+There is no standalone semver PR gate; feature PRs do not bump the version.
 
 ## Code conventions
 
