@@ -1,0 +1,257 @@
+www.ti.com                                                                                                                                                           Table of Contents
+
+Application Note
+Minimizing Charger EMI with DRSS: Practical Benefits
+and Lab Validation Techniques
+
+
+
+Christian Moyer
+                                                                                   ABSTRACT
+This application note explains the concept and benefits of Dual Random Spread Spectrum (DRSS) in minimizing
+charger EMI, with a focus on BQ25773 operation and configuration. Practical guidance is provided for evaluating
+EMI performance in the lab, including recommended test setups, and comparison of EMI spectra with DRSS
+enabled versus disabled. Results demonstrate how enabling DRSS can reduce the effects of EMI to meet
+IEC-CISPR 32 EMI specifications.
+
+
+
+
+                                                                           Table of Contents
+1 Introduction.............................................................................................................................................................................2
+2 Dual Random Spread Spectrum (DRSS)...............................................................................................................................3
+3 Why is DRSS Needed?........................................................................................................................................................... 3
+4 BQ25773 DRSS Evaluation.................................................................................................................................................... 4
+   4.1 Equipment.......................................................................................................................................................................... 4
+   4.2 Equipment Setup................................................................................................................................................................4
+   4.3 Evaluation and Results...................................................................................................................................................... 5
+5 Summary................................................................................................................................................................................. 6
+6 References.............................................................................................................................................................................. 6
+
+                                                                              List of Figures
+Figure 1-1. EMI Reduction by Spread Spectrum, Frequency Modulation................................................................................... 2
+Figure 2-1. Implementation of DRSS...........................................................................................................................................3
+Figure 4-1. No Dithering (Disabled)............................................................................................................................................. 5
+Figure 4-2. 1X Dithering (±2%).................................................................................................................................................... 5
+Figure 4-3. 2X Dithering (±4%).................................................................................................................................................... 5
+Figure 4-4. 3X Dithering (±6%).................................................................................................................................................... 5
+Trademarks
+All trademarks are the property of their respective owners.
+
+
+
+
+SDAA093 – FEBRUARY 2026                                                                Minimizing Charger EMI with DRSS: Practical Benefits and Lab Validation                             1
+Submit Document Feedback                                                                                                                          Techniques
+                                                                Copyright © 2026 Texas Instruments Incorporated
+Introduction                                                                                                               www.ti.com
+
+
+1 Introduction
+Spread spectrum also know as frequency dithering is widely used in switching regulators to reduce
+electromagnetic interference (EMI) by converting a narrowband signal into a wideband signal, which spreads
+energy across multiple frequencies, rather than concentrating the energy at the fundamental switching frequency
+and the harmonics. Conservation of energy requires the total energy to remain constant, but by spreading this
+energy across multiple frequency bands, peak energy is minimized. As a result, nearby sensitive circuits is less
+perturbed by the interference. Figure 1-1 illustrates how manipulating the clock frequency over time has the
+effect of spreading energy generated by a switching circuit.
+                                            Energy
+                                                                                     Unmodulated
+                                                      EMI Peak                       Modulated
+                                                      Reduction
+
+
+
+
+                                                                          fc                     Frequency
+
+                        Figure 1-1. EMI Reduction by Spread Spectrum, Frequency Modulation
+
+
+
+
+2      Minimizing Charger EMI with DRSS: Practical Benefits and Lab Validation                               SDAA093 – FEBRUARY 2026
+       Techniques                                                                                             Submit Document Feedback
+                                                    Copyright © 2026 Texas Instruments Incorporated
+www.ti.com                                                                                              Dual Random Spread Spectrum (DRSS)
+
+
+2 Dual Random Spread Spectrum (DRSS)
+Traditional approaches such as analog triangular dithering and pseudorandom modulation can effectively reduce
+peak EMI in certain ranges, but these approaches often struggle to maintain consistent performance across
+multiple resolution bandwidths (RBWs). These challenges become especially important in charger designs
+that must satisfy conducted EMI requirements without introducing excessive ripple, audible tones, or stability
+concerns.
+Dual Random Spread Spectrum (DRSS) addresses these limitations by combining two independent layers of
+variation: a low-frequency triangular sweep and a higher-frequency pseudorandom component. The triangular
+sweep provides a controlled and predictable frequency deviation, while the pseudorandom modulation prevents
+repetitive spectral patterns that can accumulate into secondary peaks. By combining these two mechanisms,
+DRSS verifies that the switching frequency never stays at any single value long enough to create dominant
+narrowband emissions. This improves peak EMI performance across multiple frequency bands while maintaining
+stable, efficient operation, producing a smoother spectral profile and lower peak amplitudes without noticeably
+affecting average switching behavior.
+                                    Clock
+                                  Frequency     High RBW                     Low RBW
+
+
+
+
+                                                                                                 Time
+
+
+                                        Figure 2-1. Implementation of DRSS
+
+3 Why is DRSS Needed?
+IEC-CISPR 32 is an international radio disturbance standard for multimedia equipment (MME). The standard
+establishes requirements that provide an adequate level of protection for the radio spectrum and specifies
+procedures to verify the reproducibility of measurement and the repeatability of results.
+With the demand for higher-efficiency chargers, the need for faster switching continues to grow. Faster switching
+speeds, however, lead to increased EMI. In addition, the shift towards higher DC input voltages and higher
+inductor current, such as those associated with the EPR range, further amplifies EMI challenges. Due to project
+constraints, it can be difficult for battery charger systems to meet emission limits using layout and filtering alone.
+To help support compliance with IEC-CISPR 32, some newer charger devices incorporate DRSS to improve
+system-level EMI performance without the need for layout changes.
+
+
+
+
+SDAA093 – FEBRUARY 2026                                              Minimizing Charger EMI with DRSS: Practical Benefits and Lab Validation   3
+Submit Document Feedback                                                                                                        Techniques
+                                              Copyright © 2026 Texas Instruments Incorporated
+BQ25773 DRSS Evaluation                                                                                           www.ti.com
+
+
+4 BQ25773 DRSS Evaluation
+The BQ25773 is one of TI's battery chargers that integrates Dual Random Spread Spectrum to help reduce
+switching-related EMI. While the specific implementation details mentioned below can vary by device, the
+underlying DRSS concept and the EMI benefits apply broadly across all of TI's battery chargers that support this
+feature.
+4.1 Equipment
+To evaluate the functionality the DRSS feature on the BQ25773, the following equipment is required:
+1. TI EVM: BQ25773 evaluation module (EVM).
+2. EMI Analyzer/Signal cable: A Rhode & Schawarz ESRP3 or equivalent CISPR compliant EMI Test
+   Receiver.
+3. EMC Test Chamber: Shielded room for electromagnetic compatibility (EMC) testing.
+4. LISN'S: Two line impedance stabilization networks (LISN's), one for each power line.
+5. Power Supply: DC power supply capablsu of supplying 20V at 5A.
+6. Load: Kepco BOP36-6M, DC 0 to ±36V, 0 to ±6A, or equivalent. When testing without a real battery, connect
+   2000uF of capacitance across the battery input.
+7. Computer: A computer with at least one USB port and a USB cable.
+8. Communication Kit EV2400 or equivalent communication adapter.
+
+4.2 Equipment Setup
+
+
+
+
+Use the following steps to evaluate the functionality of the BQ25773 DRSS Feature
+1. Connect the 36V power supply to the input of both LISNs, one for each power line.
+2. Connect the output of the LISN's to the input of the BQ25773 EVM (J1).
+3. Connect the load/battery simulator to output of the BQ25773 EVM (J3).
+4. Connect the EMI Analyzer signal cable to the positive LISN signal output.
+5. Use the EV2400 communicate with the BQ25773 to configure the board per the BQ2577xEVM Evaluation
+   Module.
+6. Configure the EMI receiver for CISPR32 evaluation. The required settings depend on the CISPR 32 version
+   being used and the specific emi receiver model
+7. Use REGx3D[3:4] to configue DRSS frequency dithering.
+
+When evaluating DRSS functionality, TI recommends first capturing the conducted EMI measurement under
+normal operation with dithering disabled and then evaluate with dithering enabled.
+
+
+
+4    Minimizing Charger EMI with DRSS: Practical Benefits and Lab Validation                        SDAA093 – FEBRUARY 2026
+     Techniques                                                                                      Submit Document Feedback
+                                                  Copyright © 2026 Texas Instruments Incorporated
+www.ti.com                                                                                                          BQ25773 DRSS Evaluation
+
+4.3 Evaluation and Results
+All DRSS tests results were evaluated under the same test conditions 36V/4A input, 15.4V/9A output,
+approximately 140W, 600kHz switching frequency.
+
+
+
+
+                                                                                                  78.7dBuV
+
+                                                                                                           66.5dBuV
+
+
+
+
+             Figure 4-1. No Dithering (Disabled)                                     Figure 4-2. 1X Dithering (±2%)
+
+
+
+
+                           75.2dBuV
+                                  63.6dBuV
+
+
+
+
+               Figure 4-3. 2X Dithering (±4%)                                        Figure 4-4. 3X Dithering (±6%)
+
+
+With dithering disabled, the baseline EMI quasi-peak is 79.8dBuV at approximately 1.2MHz, which corresponds
+to roughly twice the switching frequency (600kHz). Enabling ±2% dithering results in a slight reduction of the
+noise peak compared to no dithering, but limited overall improvement. Increasing the dithering range to ±4%
+results in a more noticeable reduction in the noise peak, demonstrating that dithering the switching frequency
+helps to lower the dominant EMI peak. The best EMI performance is achieved with ±6% dithering, where the
+noise peak is reduced by approximately 5.4-8.5dBuV relative to the baseline. Overall, these results show a clear
+trend that DRSS can be used reduce the magnitude of the dominant EMI quasi-peak.
+
+
+
+
+SDAA093 – FEBRUARY 2026                                             Minimizing Charger EMI with DRSS: Practical Benefits and Lab Validation   5
+Submit Document Feedback                                                                                                       Techniques
+                                             Copyright © 2026 Texas Instruments Incorporated
+Summary                                                                                                           www.ti.com
+
+
+5 Summary
+This application note describes the benefits of Dual Random Spread Spectrum (DRSS) in minimizing charger
+EMI. Practical guidance is provided for evaluating DRSS using the BQ25773 EVM, including recommended test
+setups, and comparison of EMI spectra with DRSS enabled versus disabled. The results confirm the DRSS
+feature can be used effectively to reduce peak EMI to meet IEC-CISPR 32 EMI specifications.
+6 References
+•   Texas Instruments, Understanding Noise-Spreading Techniques and their Effects in Switch-Mode Power
+    Applications, seminar.
+•   Timothy Hegarty. The Engineer’s Guide To EMI In DC-DC Converters (Part 1): Standards Requirements And
+    Measurement Techniques How2Power Today, December 2017.
+•   Pareschi, F.; Rovatti, R.; Setti, G. EMI reduction via spread-spectrum in DC/DC converters: State of the art,
+    optimization, and tradeoffs IEEE Access. 2015, 3, 2857–2874.
+•   CISPR 25:2016, 4th edition (or EN 55025:2017), Vehicles, boats and internal combustion engines – Radio
+    disturbance characteristics – Limits and methods of measurement for the protection of on-board receivers.
+•   Texas Instruments, EMI Reduction Technique, Dual Random Spread Spectrum, application note.
+
+
+
+
+6    Minimizing Charger EMI with DRSS: Practical Benefits and Lab Validation                        SDAA093 – FEBRUARY 2026
+     Techniques                                                                                      Submit Document Feedback
+                                                  Copyright © 2026 Texas Instruments Incorporated
+                                         IMPORTANT NOTICE AND DISCLAIMER
+TI PROVIDES TECHNICAL AND RELIABILITY DATA (INCLUDING DATASHEETS), DESIGN RESOURCES (INCLUDING REFERENCE
+DESIGNS), APPLICATION OR OTHER DESIGN ADVICE, WEB TOOLS, SAFETY INFORMATION, AND OTHER RESOURCES “AS IS”
+AND WITH ALL FAULTS, AND DISCLAIMS ALL WARRANTIES, EXPRESS AND IMPLIED, INCLUDING WITHOUT LIMITATION ANY
+IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT OF THIRD
+PARTY INTELLECTUAL PROPERTY RIGHTS.
+These resources are intended for skilled developers designing with TI products. You are solely responsible for (1) selecting the appropriate
+TI products for your application, (2) designing, validating and testing your application, and (3) ensuring your application meets applicable
+standards, and any other safety, security, regulatory or other requirements.
+These resources are subject to change without notice. TI grants you permission to use these resources only for development of an
+application that uses the TI products described in the resource. Other reproduction and display of these resources is prohibited. No license
+is granted to any other TI intellectual property right or to any third party intellectual property right. TI disclaims responsibility for, and you fully
+indemnify TI and its representatives against any claims, damages, costs, losses, and liabilities arising out of your use of these resources.
+TI’s products are provided subject to TI’s Terms of Sale, TI’s General Quality Guidelines, or other applicable terms available either on
+ti.com or provided in conjunction with such TI products. TI’s provision of these resources does not expand or otherwise alter TI’s applicable
+warranties or warranty disclaimers for TI products. Unless TI explicitly designates a product as custom or customer-specified, TI products
+are standard, catalog, general purpose devices.
+TI objects to and rejects any additional or different terms you may propose.
+IMPORTANT NOTICE
+
+                                                Copyright © 2026, Texas Instruments Incorporated
+                                                                Last updated 10/2025
+
