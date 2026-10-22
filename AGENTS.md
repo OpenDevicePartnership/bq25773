@@ -79,19 +79,18 @@ committed file's header records generator version **2.1.1**.
 the committed file and do not regenerate it.
 
 The `device-driver-pregen-check` workflow
-(`.github/workflows/device-driver.yml`) delegates to
-[`tullom/device-driver-pregen-check@v1.1.0`](https://github.com/tullom/device-driver-pregen-check/blob/v1.1.0/action.yml).
-Without overrides, that action installs the newest compatible CLI
-matching `^2.1.1` and uses **Rust 1.94.0** with its stable `rustfmt`.
-It fails if the regenerated, formatted file differs from the
-committed one. Check the workflow and action defaults when updating
-the generator.
+(`.github/workflows/device-driver.yml`) pins the CLI to **exactly 2.1.1**
+and uses **Rust 1.94.0** with its stable `rustfmt`. It generates into a
+temporary file and fails if the formatted output differs from the
+committed file. Upgrade the generator and generation toolchain together,
+checking the CLI's MSRV and generated output. Do not replace the exact
+CLI pin with a caret range: CLI 2.2.0 requires Rust 1.95.
 
 To regenerate locally:
 
 ```sh
 rustup toolchain install 1.94.0 --profile minimal --component rustfmt
-cargo +1.94.0 install device-driver-cli --version '^2.1.1' --locked
+cargo +1.94.0 install device-driver-cli --version '=2.1.1' --locked
 ddc build --source device.ddsl --output src/device.rs rust --rust-defmt-feature=defmt
 rustup run 1.94.0 rustfmt --edition 2024 --config newline_style=Unix src/device.rs
 ```

@@ -19,9 +19,21 @@ jobs:
         with:
           submodules: true
           persist-credentials: false
-      - name: Check generated device driver
-        uses: tullom/device-driver-pregen-check@v1.1.0
+      - name: Install generation toolchain
+        uses: dtolnay/rust-toolchain@1.94.0
         with:
-          source: device.ddsl
-          generated-file: src/device.rs
-          rust-defmt-feature: defmt
+          components: rustfmt
+      - name: Install pinned device-driver compiler
+        # A caret range can select a newer CLI whose MSRV exceeds this toolchain.
+        run: cargo install device-driver-cli --version '=2.1.1' --locked
+      - name: Check generated device driver
+        shell: bash
+        run: |
+          set -euo pipefail
+          generated="$(mktemp --tmpdir=. --suffix=.rs '.device-driver-pregen.XXXXXXXX')"
+          trap 'rm -f -- "$generated"' EXIT
+          ddc --version
+          rustfmt --version
+          ddc build --source device.ddsl --output "$generated" rust --rust-defmt-feature=defmt
+          rustfmt --edition 2024 --config newline_style=Unix "$generated"
+          diff -u -- src/device.rs "$generated"
