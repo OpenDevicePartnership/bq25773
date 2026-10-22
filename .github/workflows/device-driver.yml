@@ -20,8 +20,10 @@ jobs:
           submodules: true
           persist-credentials: false
       - name: Check generated device driver
-        uses: tullom/device-driver-pregen-check@v1.1.0
+        uses: tullom/device-driver-pregen-check@v1.2.0
         with:
           source: device.ddsl
           generated-file: src/device.rs
+          cli-version: '2.1.0'
+          rust-toolchain: '1.94.0'
           rust-defmt-feature: defmt

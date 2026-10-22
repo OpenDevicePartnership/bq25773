@@ -1,11 +1,10 @@
-// This code was generated using device-driver `2.1.1` (),
+// This code was generated using device-driver `2.1.0` (),
 // a tool distributed under MIT OR Apache-2.0 by Dion Dokter <dev@diondokter.nl>
 //
 // For more information about device-driver, visit the website: https://device-driver.com
 
 /// Root block of the Device driver
 #[derive(Debug)]
-#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub struct Device<I> {
     interface: I,
     #[doc(hidden)]

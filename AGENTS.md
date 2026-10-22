@@ -72,15 +72,14 @@ Key facts:
 
 `src/device.rs` is produced from `device.ddsl` by `device-driver-cli`
 (`ddc`) and **must be regenerated** rather than hand-edited. The
-committed file's header records generator version **2.1.1**.
+committed file's header records generator version **2.1.0**.
 `build.rs` only emits `rerun-if-changed`; ordinary Cargo builds use
 the committed file and do not regenerate it.
 
 The `device-driver-pregen-check` workflow
 (`.github/workflows/device-driver.yml`) delegates to
-[`tullom/device-driver-pregen-check@v1.1.0`](https://github.com/tullom/device-driver-pregen-check/blob/v1.1.0/action.yml).
-Without overrides, that action installs the newest compatible CLI
-matching `^2.1.1` and uses **Rust 1.94.0** with its stable `rustfmt`.
+[`tullom/device-driver-pregen-check@v1.2.0`](https://github.com/tullom/device-driver-pregen-check/blob/v1.2.0/action.yml).
+The workflow pins CLI **2.1.0** and **Rust 1.94.0** with its stable `rustfmt`.
 It fails if the regenerated, formatted file differs from the
 committed one. Check the workflow and action defaults when updating
 the generator.
@@ -89,7 +88,7 @@ To regenerate locally:
 
 ```sh
 rustup toolchain install 1.94.0 --profile minimal --component rustfmt
-cargo +1.94.0 install device-driver-cli --version '^2.1.1' --locked
+cargo +1.94.0 install device-driver-cli --version '=2.1.0' --locked
 ddc build --source device.ddsl --output src/device.rs rust --rust-defmt-feature=defmt
 rustup run 1.94.0 rustfmt --edition 2024 --config newline_style=Unix src/device.rs
 ```
