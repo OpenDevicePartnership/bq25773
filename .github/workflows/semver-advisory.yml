@@ -1,0 +1,50 @@
+name: API compatibility advisory
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: semver-advisory-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    # release-plz already analyzes API compatibility while preparing releases.
+    if: ${{ !startsWith(github.head_ref, 'release-plz-') }}
+    # Advisory only: do not add this job to required status checks.
+    name: API compatibility (advisory)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch target baseline
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git fetch --no-tags origin "$BASE_SHA"
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Test advisory scripts
+        run: node --test .github/scripts/semver-advisory.test.cjs
+      - name: Install cargo-semver-checks
+        uses: taiki-e/install-action@v2
+        with:
+          # The classifier understands this version's final stderr summary.
+          tool: cargo-semver-checks@0.50.0
+      - name: Analyze API changes
+        env:
+          SEMVER_REPORT_DIR: ${{ runner.temp }}/semver-report
+        run: node .github/scripts/semver-advisory.cjs
+      - name: Preserve analysis
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: semver-report-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/semver-report/
+          retention-days: 14
+          if-no-files-found: warn

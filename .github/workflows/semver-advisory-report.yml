@@ -1,0 +1,54 @@
+name: API compatibility PR report
+
+on:
+  workflow_run:
+    workflows: [API compatibility advisory]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: semver-report-${{ github.event.workflow_run.head_repository.id }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+jobs:
+  report:
+    if: >-
+      ${{ github.event.workflow_run.event == 'pull_request' &&
+          github.event.workflow_run.conclusion != 'cancelled' &&
+          github.event.workflow_run.conclusion != 'skipped' &&
+          !startsWith(github.event.workflow_run.head_branch, 'release-plz-') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Never check out PR code in this write-capable workflow. This workflow
+      # and its reporter must exist on the default branch before it can run.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Download advisory result
+        id: artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          name: semver-report-${{ github.event.workflow_run.run_attempt }}
+          # Untrusted artifact contents cannot overwrite trusted reporter code.
+          path: ${{ runner.temp }}/semver-result
+      - name: Update advisory label and comment
+        uses: actions/github-script@v7
+        env:
+          RESULT_PATH: ${{ runner.temp }}/semver-result/result.json
+          ARTIFACT_OUTCOME: ${{ steps.artifact.outcome }}
+        with:
+          script: |
+            const { readResult, report } = require('./.github/scripts/semver-report.cjs');
+            const result = process.env.ARTIFACT_OUTCOME === 'success'
+              ? readResult(process.env.RESULT_PATH) : null;
+            await report({ github, context, core, result });

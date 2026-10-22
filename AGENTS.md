@@ -65,6 +65,8 @@ Key facts:
         ├── check.yml               # fmt / clippy / doc / hack / deny / test / msrv
         ├── device-driver.yml       # verifies src/device.rs matches device.ddsl
         ├── nostd.yml               # cross-check for thumbv8m.main-none-eabihf
+        ├── semver-advisory.yml     # non-blocking PR API analysis (not release-plz PRs)
+        ├── semver-advisory-report.yml # trusted label/comment reporter for PR analysis
         └── release-plz.yml         # release PRs and crates.io Trusted Publishing
 ```
 
@@ -119,6 +121,7 @@ assignments below use POSIX syntax.
 | Feature powerset | `cargo hack --feature-powerset check` | `hack` |
 | License/advisory scan | `cargo deny --all-features check` | `deny` |
 | Dependency audit coverage | `cargo vet --locked` | `vet` in `cargo-vet.yml` |
+| Advisory automation tests | `node --test .github/scripts/semver-advisory.test.cjs` | `analyze` in `semver-advisory.yml` |
 | Device manifest check | regenerate as above, then `git diff --exit-code -- src/device.rs` | `device-driver-pregen-check` |
 
 Install `cargo-hack` and `cargo-deny` with
@@ -200,6 +203,11 @@ setup and the manual step needed to trigger CI on release PRs.
 
 Release-plz retains its default semver analysis and prepares version bumps.
 There is no standalone semver PR gate; feature PRs do not bump the version.
+The optional `semver-advisory.yml` workflow detects PR-time API breaks and
+`semver-advisory-report.yml` manages an advisory label and comment. Do not
+make its analysis job a required status check. Both skip `release-plz-*`
+source branches. See [API compatibility advisory in CONTRIBUTING.md](CONTRIBUTING.md#api-compatibility-advisory)
+for behavior, trust boundaries, local tests, and default-branch setup.
 
 ## Code conventions
 
