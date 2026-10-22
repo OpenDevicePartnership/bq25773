@@ -34,6 +34,51 @@ We disabled squashing of commit and would like to maintain a clean commit histor
 
 When reporting a regression, please ensure that you use `git bisect` to find the first offending commit, as that will help us finding the culprit a lot faster.
 
+## API compatibility advisory
+
+[API compatibility advisory](.github/workflows/semver-advisory.yml) runs
+`cargo-semver-checks` on feature PRs, comparing the PR head with its merge
+base with the target branch. It permits additive APIs but reports breaking
+APIs even when the PR already changes the package version. All crate
+features are checked. Release-plz PRs (source branches beginning with
+`release-plz-`, the default prefix) skip both analysis and reporting.
+
+Detected breaks produce a warning, a downloadable `semver-report-<attempt>` artifact,
+and an `api-breaking-change` label with a bot-updated PR comment. A later
+compatible result removes the label and updates an existing comment.
+Analysis failures report **analysis unavailable**, not a breaking change or
+a clean result, and do not clear an existing label. The label is managed by
+automation; use a different label for manually recorded release decisions.
+
+This is advisory, not a merge gate. **Do not make `API compatibility
+(advisory)` a required status check.** A detected break does not fail the
+analysis job; an infrastructure/build/analyzer error can fail this optional
+job and should be investigated. No branch-protection bypass is needed for
+intentional API changes. Review the report and explain intended API breaks
+and migrations in the PR. The analyzer does not catch every semantic or
+behavioral compatibility change; review remains necessary.
+
+The [reporter](.github/workflows/semver-advisory-report.yml) runs separately
+with label/comment permissions, so fork PR builds receive no write token.
+It executes only default-branch reporter code, treats result artifacts as
+untrusted data, and ignores results for outdated PR heads or target bases.
+Artifacts are bound to the run and attempt so retries cannot reuse an older
+successful result after a failed analysis. If a missing fork artifact leaves
+the original target base unknown, the reporter retains an existing comment
+rather than overwrite it with a potentially stale result.
+The reporter workflow and scripts must be merged into the default branch
+before automatic labeling can work; analysis can run from a feature PR.
+
+Run the script regression tests locally with:
+
+```sh
+node --test .github/scripts/semver-advisory.test.cjs
+```
+
+`cargo-semver-checks` is pinned to **0.50.0** because the prototype classifies
+its final stderr summary (there is no stable JSON report). When upgrading,
+verify the classifier against real compatible, breaking, and failed builds.
+
 ## Releases
 
 The [Release-plz workflow](.github/workflows/release-plz.yml) follows the

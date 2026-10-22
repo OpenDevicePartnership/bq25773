@@ -62,9 +62,11 @@ Key facts:
     └── workflows/
         ├── cargo-vet.yml           # checks dependency audit coverage
         ├── cargo-vet-pr-comment.yml # reports cargo-vet results on PRs
-        ├── check.yml               # fmt / clippy / semver / doc / hack / deny / test / msrv
+        ├── check.yml               # fmt / clippy / doc / hack / deny / test / msrv
         ├── device-driver.yml       # verifies src/device.rs matches device.ddsl
         ├── nostd.yml               # cross-check for thumbv8m.main-none-eabihf
+        ├── semver-advisory.yml     # non-blocking PR API analysis (not release-plz PRs)
+        ├── semver-advisory-report.yml # trusted label/comment reporter for PR analysis
         └── release-plz.yml         # release PRs and crates.io Trusted Publishing
 ```
 
@@ -77,19 +79,18 @@ committed file's header records generator version **2.1.1**.
 the committed file and do not regenerate it.
 
 The `device-driver-pregen-check` workflow
-(`.github/workflows/device-driver.yml`) delegates to
-[`tullom/device-driver-pregen-check@v1.1.0`](https://github.com/tullom/device-driver-pregen-check/blob/v1.1.0/action.yml).
-Without overrides, that action installs the newest compatible CLI
-matching `^2.1.1` and uses **Rust 1.94.0** with its stable `rustfmt`.
-It fails if the regenerated, formatted file differs from the
-committed one. Check the workflow and action defaults when updating
-the generator.
+(`.github/workflows/device-driver.yml`) pins the CLI to **exactly 2.1.1**
+and uses **Rust 1.94.0** with its stable `rustfmt`. It generates into a
+temporary file and fails if the formatted output differs from the
+committed file. Upgrade the generator and generation toolchain together,
+checking the CLI's MSRV and generated output. Do not replace the exact
+CLI pin with a caret range: CLI 2.2.0 requires Rust 1.95.
 
 To regenerate locally:
 
 ```sh
 rustup toolchain install 1.94.0 --profile minimal --component rustfmt
-cargo +1.94.0 install device-driver-cli --version '^2.1.1' --locked
+cargo +1.94.0 install device-driver-cli --version '=2.1.1' --locked
 ddc build --source device.ddsl --output src/device.rs rust --rust-defmt-feature=defmt
 rustup run 1.94.0 rustfmt --edition 2024 --config newline_style=Unix src/device.rs
 ```
@@ -118,11 +119,11 @@ assignments below use POSIX syntax.
 | `no_std` cross build | `cargo check --target thumbv8m.main-none-eabihf --no-default-features` | `nostd` |
 | Feature powerset | `cargo hack --feature-powerset check` | `hack` |
 | License/advisory scan | `cargo deny --all-features check` | `deny` |
-| Semver check | `cargo semver-checks` | `semver` |
 | Dependency audit coverage | `cargo vet --locked` | `vet` in `cargo-vet.yml` |
+| Advisory automation tests | `node --test .github/scripts/semver-advisory.test.cjs` | `analyze` in `semver-advisory.yml` |
 | Device manifest check | regenerate as above, then `git diff --exit-code -- src/device.rs` | `device-driver-pregen-check` |
 
-Install `cargo-hack`, `cargo-deny`, and `cargo-semver-checks` with
+Install `cargo-hack` and `cargo-deny` with
 `cargo install` if needed. The vet workflow uses `cargo-vet` **0.10.2**
 (`cargo install cargo-vet --version 0.10.2`). Follow
 [supply-chain/README.md](supply-chain/README.md) when dependency
@@ -198,6 +199,14 @@ upstream `main`. It uses crates.io Trusted Publishing and the built-in
 drafts and requires a merged release PR before publishing. See
 [Releases in CONTRIBUTING.md](CONTRIBUTING.md#releases) for maintainer
 setup and the manual step needed to trigger CI on release PRs.
+
+Release-plz retains its default semver analysis and prepares version bumps.
+There is no standalone semver PR gate; feature PRs do not bump the version.
+The optional `semver-advisory.yml` workflow detects PR-time API breaks and
+`semver-advisory-report.yml` manages an advisory label and comment. Do not
+make its analysis job a required status check. Both skip `release-plz-*`
+source branches. See [API compatibility advisory in CONTRIBUTING.md](CONTRIBUTING.md#api-compatibility-advisory)
+for behavior, trust boundaries, local tests, and default-branch setup.
 
 ## Code conventions
 
