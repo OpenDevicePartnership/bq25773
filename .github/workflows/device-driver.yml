@@ -24,6 +24,6 @@ jobs:
         with:
           source: device.ddsl
           generated-file: src/device.rs
-          cli-version: '2.1.0'
+          cli-version: '2.1.1'
           rust-toolchain: '1.94.0'
           rust-defmt-feature: defmt
